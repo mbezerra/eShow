@@ -256,8 +256,11 @@ curl -X GET "http://localhost:8000/health"
 **Resposta:**
 ```json
 {
-  "status": "healthy",
-  "timestamp": "2024-01-01T12:00:00"
+    "status": "healthy",
+    "architecture": "hexagonal",
+    "timestamp": "2025-07-19T17:54:24.947336",
+    "version": "1.0.0",
+    "copyright": "© 2025 eShow. Todos os direitos reservados."
 }
 ```
 
