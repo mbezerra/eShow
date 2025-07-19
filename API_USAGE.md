@@ -155,6 +155,97 @@ curl -X DELETE "http://localhost:8000/api/v1/roles/1" \
   -H "Authorization: Bearer SEU_ACCESS_TOKEN_AQUI"
 ```
 
+## Endpoints de Profiles (Protegidos)
+
+### 1. Listar Todos os Profiles
+```bash
+curl -X GET "http://localhost:8000/api/v1/profiles/" \
+  -H "Authorization: Bearer SEU_ACCESS_TOKEN_AQUI"
+```
+
+**Parâmetros de Paginação:**
+- `skip`: Número de registros para pular (padrão: 0)
+- `limit`: Número máximo de registros (padrão: 100)
+
+### 2. Obter Profile por ID
+```bash
+curl -X GET "http://localhost:8000/api/v1/profiles/1" \
+  -H "Authorization: Bearer SEU_ACCESS_TOKEN_AQUI"
+```
+
+### 3. Obter Profiles por Role
+```bash
+curl -X GET "http://localhost:8000/api/v1/profiles/role/2" \
+  -H "Authorization: Bearer SEU_ACCESS_TOKEN_AQUI"
+```
+
+### 4. Criar Novo Profile
+```bash
+curl -X POST "http://localhost:8000/api/v1/profiles/" \
+  -H "Authorization: Bearer SEU_ACCESS_TOKEN_AQUI" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "role_id": 2,
+    "full_name": "João Silva Costa",
+    "artistic_name": "João Artista",
+    "bio": "Artista versátil com experiência em diversos estilos musicais",
+    "cep": "12345-678",
+    "logradouro": "Rua das Flores",
+    "numero": "123",
+    "complemento": "Apto 45",
+    "cidade": "São Paulo",
+    "uf": "SP",
+    "telefone_fixo": "(11) 3333-4444",
+    "telefone_movel": "(11) 99999-8888",
+    "whatsapp": "(11) 99999-8888"
+  }'
+```
+
+**Campos Obrigatórios:**
+- `role_id`: ID do role associado (deve existir na tabela roles)
+- `full_name`: Nome completo ou Razão Social (máx: 255 caracteres)
+- `artistic_name`: Nome artístico ou Nome de Fantasia (máx: 255 caracteres)
+- `bio`: Bio/apresentação (texto livre)
+- `cep`: CEP (8-10 caracteres)
+- `logradouro`: Logradouro (máx: 255 caracteres)
+- `numero`: Número (máx: 20 caracteres)
+- `cidade`: Cidade (máx: 100 caracteres)
+- `uf`: UF (exatamente 2 caracteres)
+- `telefone_movel`: Telefone móvel (máx: 20 caracteres)
+
+**Campos Opcionais:**
+- `complemento`: Complemento (máx: 100 caracteres)
+- `telefone_fixo`: Telefone fixo (máx: 20 caracteres)
+- `whatsapp`: WhatsApp (máx: 20 caracteres)
+
+### 5. Atualizar Profile
+```bash
+curl -X PUT "http://localhost:8000/api/v1/profiles/1" \
+  -H "Authorization: Bearer SEU_ACCESS_TOKEN_AQUI" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "artistic_name": "João Artista Atualizado",
+    "bio": "Nova bio atualizada",
+    "cidade": "Rio de Janeiro",
+    "uf": "RJ"
+  }'
+```
+
+**Nota:** Todos os campos são opcionais na atualização. Apenas os campos fornecidos serão atualizados.
+
+### 6. Deletar Profile
+```bash
+curl -X DELETE "http://localhost:8000/api/v1/profiles/1" \
+  -H "Authorization: Bearer SEU_ACCESS_TOKEN_AQUI"
+```
+
+**Resposta:**
+```json
+{
+  "message": "Profile com ID 1 foi deletado com sucesso"
+}
+```
+
 ## Endpoints Públicos
 
 ### Health Check
