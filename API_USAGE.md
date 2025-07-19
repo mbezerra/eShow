@@ -110,6 +110,51 @@ curl -X DELETE "http://localhost:8000/api/users/1" \
   -H "Authorization: Bearer SEU_ACCESS_TOKEN_AQUI"
 ```
 
+## Endpoints de Roles (Protegidos)
+
+### 1. Listar Todos os Roles
+```bash
+curl -X GET "http://localhost:8000/api/v1/roles/" \
+  -H "Authorization: Bearer SEU_ACCESS_TOKEN_AQUI"
+```
+
+### 2. Obter Role por ID
+```bash
+curl -X GET "http://localhost:8000/api/v1/roles/1" \
+  -H "Authorization: Bearer SEU_ACCESS_TOKEN_AQUI"
+```
+
+### 3. Criar Novo Role
+```bash
+curl -X POST "http://localhost:8000/api/v1/roles/" \
+  -H "Authorization: Bearer SEU_ACCESS_TOKEN_AQUI" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "role": "Admin"
+  }'
+```
+
+**Valores válidos para role:**
+- `"Admin"`
+- `"Artista"`
+- `"Espaço"`
+
+### 4. Atualizar Role
+```bash
+curl -X PUT "http://localhost:8000/api/v1/roles/1" \
+  -H "Authorization: Bearer SEU_ACCESS_TOKEN_AQUI" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "role": "Artista"
+  }'
+```
+
+### 5. Deletar Role
+```bash
+curl -X DELETE "http://localhost:8000/api/v1/roles/1" \
+  -H "Authorization: Bearer SEU_ACCESS_TOKEN_AQUI"
+```
+
 ## Endpoints Públicos
 
 ### Health Check

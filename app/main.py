@@ -29,10 +29,11 @@ from datetime import datetime
 
 @app.get("/health")
 async def health_check():
+    current_year = datetime.now().year
     return {
         "status": "healthy", 
         "architecture": "hexagonal", 
         "timestamp": datetime.now().isoformat(),
         "version": settings.APP_VERSION,
-        "copyright": "© 2024 eShow. Todos os direitos reservados."
+        "copyright": f"© {current_year} eShow. Todos os direitos reservados."
     } 
