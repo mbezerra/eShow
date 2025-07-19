@@ -1,8 +1,10 @@
 from infrastructure.database.database import get_database_session
 from infrastructure.repositories.user_repository_impl import UserRepositoryImpl
 from infrastructure.repositories.role_repository_impl import RoleRepositoryImpl
+from infrastructure.repositories.profile_repository_impl import ProfileRepositoryImpl
 from app.application.services.user_service import UserService
 from app.application.services.role_service import RoleService
+from app.application.services.profile_service import ProfileService
 
 def get_user_repository():
     """Dependency para obter o repositório de usuários"""
@@ -22,4 +24,15 @@ def get_role_repository():
 def get_role_service():
     """Dependency para obter o serviço de roles"""
     role_repository = get_role_repository()
-    return RoleService(role_repository) 
+    return RoleService(role_repository)
+
+def get_profile_repository():
+    """Dependency para obter o repositório de profiles"""
+    session = next(get_database_session())
+    return ProfileRepositoryImpl(session)
+
+def get_profile_service():
+    """Dependency para obter o serviço de profiles"""
+    profile_repository = get_profile_repository()
+    role_repository = get_role_repository()
+    return ProfileService(profile_repository, role_repository) 
