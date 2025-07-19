@@ -1,0 +1,1 @@
+# Módulo de infraestrutura - Adaptadores de saída 
