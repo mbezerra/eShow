@@ -5,6 +5,10 @@ from infrastructure.repositories.profile_repository_impl import ProfileRepositor
 from app.application.services.user_service import UserService
 from app.application.services.role_service import RoleService
 from app.application.services.profile_service import ProfileService
+from domain.repositories.artist_type_repository import ArtistTypeRepository
+from infrastructure.repositories.artist_type_repository_impl import ArtistTypeRepositoryImpl
+from app.application.services.artist_type_service import ArtistTypeService
+from fastapi import Depends
 
 def get_user_repository():
     """Dependency para obter o repositório de usuários"""
@@ -35,4 +39,10 @@ def get_profile_service():
     """Dependency para obter o serviço de profiles"""
     profile_repository = get_profile_repository()
     role_repository = get_role_repository()
-    return ProfileService(profile_repository, role_repository) 
+    return ProfileService(profile_repository, role_repository)
+
+def get_artist_type_repository(db=Depends(get_database_session)) -> ArtistTypeRepository:
+    return ArtistTypeRepositoryImpl(db)
+
+def get_artist_type_service(artist_type_repository: ArtistTypeRepository = Depends(get_artist_type_repository)) -> ArtistTypeService:
+    return ArtistTypeService(artist_type_repository) 

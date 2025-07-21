@@ -12,5 +12,5 @@ class RoleModel(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
-    # Relacionamento com Profile
+    # Relacionamento com Profile (importação local para evitar erro de importação circular)
     profiles = relationship("ProfileModel", back_populates="role") 

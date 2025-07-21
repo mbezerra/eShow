@@ -287,3 +287,58 @@ curl -X GET "http://localhost:8000/health"
 
 ### 422 Validation Error
 - Dados de entrada não atendem ao schema 
+
+## Tipos de Artistas (Artist Types)
+
+Endpoint para gerenciar os tipos de artistas disponíveis no sistema.
+
+### Campos
+- `id`: Identificador único do tipo de artista
+- `tipo`: Tipo de artista (enum: Cantor(a) solo, Dupla, Trio, Banda, Grupo)
+- `created_at`: Data de criação
+- `updated_at`: Data de atualização
+
+### Criar tipo de artista
+```bash
+curl -X POST "http://localhost:8000/api/v1/artist-types/" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tipo": "Cantor(a) solo"
+}'
+```
+
+### Listar todos os tipos de artistas
+```bash
+curl -X GET "http://localhost:8000/api/v1/artist-types/" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### Buscar tipo de artista por ID
+```bash
+curl -X GET "http://localhost:8000/api/v1/artist-types/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### Atualizar tipo de artista
+```bash
+curl -X PUT "http://localhost:8000/api/v1/artist-types/1" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tipo": "Banda"
+}'
+```
+
+### Deletar tipo de artista
+```bash
+curl -X DELETE "http://localhost:8000/api/v1/artist-types/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### Possíveis valores para `tipo`
+- "Cantor(a) solo"
+- "Dupla"
+- "Trio"
+- "Banda"
+- "Grupo" 

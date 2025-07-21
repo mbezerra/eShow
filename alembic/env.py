@@ -11,6 +11,9 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 # Importar os modelos
 from infrastructure.database.database import Base
 from infrastructure.database.models.user_model import UserModel
+from infrastructure.database.models.role_model import RoleModel
+from infrastructure.database.models.profile_model import ProfileModel
+from infrastructure.database.models.artist_type_model import ArtistTypeModel
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
