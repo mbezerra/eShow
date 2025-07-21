@@ -30,6 +30,17 @@ eshow/
 
 ## Como Executar
 
+### Versionamento Automático
+O projeto utiliza versionamento automático baseado em tags Git. Veja [VERSIONING.md](VERSIONING.md) para detalhes.
+
+```bash
+# Verificar versão atual
+python version.py show
+
+# Criar nova versão
+python version.py patch  # ou minor/major
+```
+
 ### Desenvolvimento (SQLite)
 
 1. Instalar dependências:

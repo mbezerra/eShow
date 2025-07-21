@@ -94,3 +94,117 @@ git checkout v0.1.0
 - Documentação completa
 - Performance otimizada
 - Monitoramento e métricas 
+
+# Sistema de Versionamento Automático
+
+O projeto eShow utiliza um sistema de versionamento automático baseado em tags do Git. A versão da API é automaticamente detectada a partir da tag mais recente do repositório.
+
+## Como Funciona
+
+1. **Detecção Automática**: A API detecta automaticamente a versão atual baseada na tag Git mais recente
+2. **Fallback**: Se não houver tags, usa o hash do commit atual com prefixo `dev-`
+3. **Fallback Final**: Se não conseguir acessar o Git, usa a versão padrão `0.1.0`
+
+## Script de Versionamento
+
+O projeto inclui um script `version.py` para facilitar o gerenciamento de versões:
+
+### Comandos Disponíveis
+
+```bash
+# Mostrar versão atual
+python version.py show
+
+# Incrementar versão patch (0.1.0 -> 0.1.1)
+python version.py patch
+
+# Incrementar versão minor (0.1.0 -> 0.2.0)
+python version.py minor
+
+# Incrementar versão major (0.1.0 -> 1.0.0)
+python version.py major
+```
+
+### Exemplo de Uso
+
+```bash
+# Verificar versão atual
+$ python version.py show
+Versão atual: 0.1.1
+
+# Criar nova versão patch
+$ python version.py patch
+Versão atual: 0.1.1
+Nova versão: 0.1.2
+Deseja criar a tag e fazer push? (y/N): y
+Tag criada: v0.1.2
+Tag enviada para o repositório remoto: v0.1.2
+✅ Versão 0.1.2 criada com sucesso!
+📦 A API agora usará automaticamente a versão 0.1.2
+```
+
+## Convenções de Versionamento
+
+O projeto segue o padrão [Semantic Versioning (SemVer)](https://semver.org/):
+
+- **MAJOR**: Mudanças incompatíveis com versões anteriores
+- **MINOR**: Novas funcionalidades compatíveis com versões anteriores
+- **PATCH**: Correções de bugs compatíveis com versões anteriores
+
+### Exemplos
+
+- `1.0.0` - Primeira versão estável
+- `1.1.0` - Nova funcionalidade adicionada
+- `1.1.1` - Correção de bug
+- `2.0.0` - Mudança que quebra compatibilidade
+
+## Verificação da Versão
+
+A versão atual pode ser verificada através do endpoint `/health`:
+
+```bash
+curl http://localhost:8000/health
+```
+
+Resposta:
+```json
+{
+    "status": "healthy",
+    "architecture": "hexagonal",
+    "timestamp": "2025-07-21T13:23:40.081315",
+    "version": "0.1.1",
+    "copyright": "© 2025 eShow. Todos os direitos reservados."
+}
+```
+
+## Configuração Manual
+
+Se necessário, a versão pode ser definida manualmente através da variável de ambiente `APP_VERSION` no arquivo `.env`:
+
+```env
+APP_VERSION=1.0.0
+```
+
+**Nota**: A variável de ambiente tem prioridade sobre a detecção automática do Git.
+
+## Fluxo de Trabalho Recomendado
+
+1. **Desenvolvimento**: Trabalhe normalmente nos commits
+2. **Release**: Quando estiver pronto para uma nova versão:
+   ```bash
+   # Faça commit de todas as mudanças
+   git add .
+   git commit -m "Descrição das mudanças"
+   
+   # Crie a nova versão
+   python version.py patch  # ou minor/major
+   ```
+3. **Deploy**: A API automaticamente usará a nova versão após reiniciar
+
+## Benefícios
+
+- ✅ **Automatização**: Não precisa lembrar de atualizar versões manualmente
+- ✅ **Consistência**: Versão sempre sincronizada com o Git
+- ✅ **Rastreabilidade**: Cada versão tem uma tag Git correspondente
+- ✅ **Flexibilidade**: Suporte a desenvolvimento e produção
+- ✅ **Padrão**: Segue convenções da indústria (SemVer) 
