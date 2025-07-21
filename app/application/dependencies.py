@@ -8,6 +8,9 @@ from app.application.services.profile_service import ProfileService
 from domain.repositories.artist_type_repository import ArtistTypeRepository
 from infrastructure.repositories.artist_type_repository_impl import ArtistTypeRepositoryImpl
 from app.application.services.artist_type_service import ArtistTypeService
+from domain.repositories.musical_style_repository import MusicalStyleRepository
+from infrastructure.repositories.musical_style_repository_impl import MusicalStyleRepositoryImpl
+from app.application.services.musical_style_service import MusicalStyleService
 from fastapi import Depends
 
 def get_user_repository():
@@ -45,4 +48,10 @@ def get_artist_type_repository(db=Depends(get_database_session)) -> ArtistTypeRe
     return ArtistTypeRepositoryImpl(db)
 
 def get_artist_type_service(artist_type_repository: ArtistTypeRepository = Depends(get_artist_type_repository)) -> ArtistTypeService:
-    return ArtistTypeService(artist_type_repository) 
+    return ArtistTypeService(artist_type_repository)
+
+def get_musical_style_repository(db=Depends(get_database_session)) -> MusicalStyleRepository:
+    return MusicalStyleRepositoryImpl(db)
+
+def get_musical_style_service(musical_style_repository: MusicalStyleRepository = Depends(get_musical_style_repository)) -> MusicalStyleService:
+    return MusicalStyleService(musical_style_repository) 

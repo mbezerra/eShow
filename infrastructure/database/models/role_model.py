@@ -11,6 +11,7 @@ class RoleModel(Base):
     role = Column(SQLAlchemyEnum(RoleType), unique=True, index=True, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-    
-    # Relacionamento com Profile (importação local para evitar erro de importação circular)
-    profiles = relationship("ProfileModel", back_populates="role") 
+
+# Importação tardia para evitar importação circular
+from infrastructure.database.models.profile_model import ProfileModel
+RoleModel.profiles = relationship("ProfileModel", back_populates="role") 

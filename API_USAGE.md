@@ -195,7 +195,6 @@ curl -X POST "http://localhost:8000/api/v1/profiles/" \
     "complemento": "Apto 45",
     "cidade": "São Paulo",
     "uf": "SP",
-    "telefone_fixo": "(11) 3333-4444",
     "telefone_movel": "(11) 99999-8888",
     "whatsapp": "(11) 99999-8888"
   }'
@@ -342,3 +341,54 @@ curl -X DELETE "http://localhost:8000/api/v1/artist-types/1" \
 - "Trio"
 - "Banda"
 - "Grupo" 
+
+## Estilos Musicais (Musical Styles)
+
+Endpoint para gerenciar os estilos musicais disponíveis no sistema.
+
+### Campos
+- `id`: Identificador único do estilo musical
+- `estyle`: Estilo musical (qualquer valor string)
+- `created_at`: Data de criação
+- `updated_at`: Data de atualização
+
+### Criar estilo musical
+```bash
+curl -X POST "http://localhost:8000/api/v1/musical-styles/" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "estyle": "Samba"
+}'
+```
+
+### Listar todos os estilos musicais
+```bash
+curl -X GET "http://localhost:8000/api/v1/musical-styles/" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### Buscar estilo musical por ID
+```bash
+curl -X GET "http://localhost:8000/api/v1/musical-styles/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### Atualizar estilo musical
+```bash
+curl -X PUT "http://localhost:8000/api/v1/musical-styles/1" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "estyle": "Pagode"
+}'
+```
+
+### Deletar estilo musical
+```bash
+curl -X DELETE "http://localhost:8000/api/v1/musical-styles/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### Observação
+O campo `estyle` aceita qualquer valor string. Não há restrição de valores fixos. 

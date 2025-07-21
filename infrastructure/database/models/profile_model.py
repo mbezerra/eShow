@@ -25,4 +25,7 @@ class ProfileModel(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     role = relationship("RoleModel", back_populates="profiles")
-    user = relationship("UserModel") 
+
+# Importação tardia para evitar importação circular
+from infrastructure.database.models.user_model import UserModel
+ProfileModel.user = relationship("UserModel") 
