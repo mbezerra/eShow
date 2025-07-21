@@ -1,13 +1,49 @@
 import os
+import subprocess
 from datetime import timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
 
+def get_git_version():
+    """Obtém a versão atual do Git baseada na tag mais recente"""
+    try:
+        # Tenta obter a tag mais recente
+        result = subprocess.run(
+            ["git", "describe", "--tags", "--abbrev=0"],
+            capture_output=True,
+            text=True,
+            cwd=os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        )
+        if result.returncode == 0:
+            version = result.stdout.strip()
+            # Remove o 'v' se presente (ex: v1.0.0 -> 1.0.0)
+            if version.startswith('v'):
+                version = version[1:]
+            return version
+    except (subprocess.SubprocessError, FileNotFoundError):
+        pass
+    
+    # Fallback: tenta obter o hash do commit atual
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            capture_output=True,
+            text=True,
+            cwd=os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        )
+        if result.returncode == 0:
+            return f"dev-{result.stdout.strip()}"
+    except (subprocess.SubprocessError, FileNotFoundError):
+        pass
+    
+    # Fallback final
+    return "0.1.0"
+
 class Settings:
     # Configurações da aplicação
     APP_NAME: str = os.getenv("APP_NAME", "eShow API")
-    APP_VERSION: str = os.getenv("APP_VERSION", "0.1.0")
+    APP_VERSION: str = os.getenv("APP_VERSION", get_git_version())
     DEBUG: bool = os.getenv("DEBUG", "True").lower() == "true"
     
     # Configurações do banco de dados
