@@ -82,6 +82,8 @@ from infrastructure.database.database import engine
 with engine.connect() as conn:
     result = conn.execute('SELECT COUNT(*) FROM users')
     print(f'Usuários migrados: {result.fetchone()[0]}')
+    result = conn.execute('SELECT COUNT(*) FROM artists')
+    print(f'Artistas migrados: {result.fetchone()[0]}')
 "
 ```
 
@@ -170,5 +172,7 @@ psql -U eshow_user eshow < eshow_backup_20250719.sql
 
 # Verificar dados
 sqlite3 eshow.db "SELECT COUNT(*) FROM users;"
+sqlite3 eshow.db "SELECT COUNT(*) FROM artists;"
 psql -U eshow_user -d eshow -c "SELECT COUNT(*) FROM users;"
+psql -U eshow_user -d eshow -c "SELECT COUNT(*) FROM artists;"
 ``` 

@@ -12,9 +12,19 @@ O domínio contém as regras de negócio e é independente de qualquer tecnologi
 
 #### Entidades (`domain/entities/`)
 - **User**: Entidade que representa um usuário do sistema
+- **Artist**: Entidade que representa um artista do sistema
+- **Profile**: Entidade que representa um perfil de usuário
+- **Role**: Entidade que representa um papel/função no sistema
+- **ArtistType**: Entidade que representa um tipo de artista
+- **MusicalStyle**: Entidade que representa um estilo musical
 
 #### Repositórios (`domain/repositories/`)
 - **UserRepository**: Interface para operações de usuários
+- **ArtistRepository**: Interface para operações de artistas
+- **ProfileRepository**: Interface para operações de perfis
+- **RoleRepository**: Interface para operações de papéis
+- **ArtistTypeRepository**: Interface para operações de tipos de artista
+- **MusicalStyleRepository**: Interface para operações de estilos musicais
 
 ### 2. Aplicação (`app/`)
 
@@ -26,6 +36,11 @@ A camada de aplicação contém os casos de uso e adaptadores de entrada.
 
 #### Serviços (`app/application/services/`)
 - **UserService**: Orquestra as operações de usuários
+- **ArtistService**: Orquestra as operações de artistas
+- **ProfileService**: Orquestra as operações de perfis
+- **RoleService**: Orquestra as operações de papéis
+- **ArtistTypeService**: Orquestra as operações de tipos de artista
+- **MusicalStyleService**: Orquestra as operações de estilos musicais
 
 ### 3. Infraestrutura (`infrastructure/`)
 
@@ -37,6 +52,11 @@ A camada de infraestrutura contém os adaptadores de saída.
 
 #### Repositórios (`infrastructure/repositories/`)
 - **UserRepositoryImpl**: Implementação concreta do repositório de usuários
+- **ArtistRepositoryImpl**: Implementação concreta do repositório de artistas
+- **ProfileRepositoryImpl**: Implementação concreta do repositório de perfis
+- **RoleRepositoryImpl**: Implementação concreta do repositório de papéis
+- **ArtistTypeRepositoryImpl**: Implementação concreta do repositório de tipos de artista
+- **MusicalStyleRepositoryImpl**: Implementação concreta do repositório de estilos musicais
 
 ## Fluxo de Dados
 

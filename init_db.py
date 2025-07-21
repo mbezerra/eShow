@@ -4,6 +4,11 @@ Script para inicializar o banco de dados
 """
 from infrastructure.database.database import engine, Base
 from infrastructure.database.models.user_model import UserModel
+from infrastructure.database.models.role_model import RoleModel
+from infrastructure.database.models.profile_model import ProfileModel
+from infrastructure.database.models.artist_type_model import ArtistTypeModel
+from infrastructure.database.models.musical_style_model import MusicalStyleModel
+from infrastructure.database.models.artist_model import ArtistModel
 
 def init_database():
     """Criar todas as tabelas no banco de dados"""

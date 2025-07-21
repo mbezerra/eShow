@@ -109,5 +109,16 @@ alembic upgrade head
 - `PUT /{user_id}` - Atualizar usuário
 - `DELETE /{user_id}` - Deletar usuário
 
+### Artists (`/api/v1/artists/`) - Requer autenticação
+- `POST /` - Criar novo artista
+- `GET /` - Listar todos os artistas
+- `GET /{artist_id}` - Obter artista por ID
+- `GET /profile/{profile_id}` - Obter artista por profile ID
+- `GET /type/{artist_type_id}` - Listar artistas por tipo
+- `PUT /{artist_id}` - Atualizar artista
+- `DELETE /{artist_id}` - Deletar artista
+
+**Parâmetro `include_relations`**: Use `?include_relations=true` nos endpoints GET para incluir dados relacionados (profile e artist_type).
+
 A API estará disponível em `http://localhost:8000`
 A documentação automática estará em `http://localhost:8000/docs` 

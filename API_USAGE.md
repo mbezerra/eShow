@@ -245,6 +245,149 @@ curl -X DELETE "http://localhost:8000/api/v1/profiles/1" \
 }
 ```
 
+## Endpoints de Artists (Protegidos)
+
+### 1. Criar Novo Artista
+```bash
+curl -X POST "http://localhost:8000/api/v1/artists/" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "profile_id": 1,
+    "artist_type_id": 1,
+    "dias_apresentacao": ["sexta", "sábado", "domingo"],
+    "raio_atuacao": 50.0,
+    "duracao_apresentacao": 2.0,
+    "valor_hora": 150.0,
+    "valor_couvert": 20.0,
+    "requisitos_minimos": "Sistema de som básico, microfone, iluminação adequada",
+    "instagram": "https://instagram.com/artista1",
+    "youtube": "https://youtube.com/@artista1",
+    "spotify": "https://open.spotify.com/artist/artista1"
+  }'
+```
+
+**Campos Obrigatórios:**
+- `profile_id`: ID do profile associado (deve existir na tabela profiles)
+- `artist_type_id`: ID do tipo de artista (deve existir na tabela artist_types)
+- `dias_apresentacao`: Lista de dias da semana para apresentação
+- `raio_atuacao`: Raio de atuação em km (deve ser > 0)
+- `duracao_apresentacao`: Duração da apresentação em horas (deve ser > 0)
+- `valor_hora`: Valor por hora em reais (deve ser >= 0)
+- `valor_couvert`: Valor do couvert artístico em reais (deve ser >= 0)
+- `requisitos_minimos`: Requisitos mínimos para apresentação (texto)
+
+**Campos Opcionais:**
+- `instagram`: Link do Instagram
+- `tiktok`: Link do TikTok
+- `youtube`: Link do YouTube
+- `facebook`: Link do Facebook
+- `soundcloud`: Link do SoundCloud
+- `bandcamp`: Link do Bandcamp
+- `spotify`: Link do Spotify
+- `deezer`: Link do Deezer
+
+**Dias válidos para apresentação:**
+- `"segunda"`, `"terça"`, `"quarta"`, `"quinta"`, `"sexta"`, `"sábado"`, `"domingo"`
+
+**Relacionamentos:**
+A tabela `artists` possui relacionamentos com:
+- **profiles**: Um artista pertence a um profile (1:1)
+- **artist_types**: Um artista tem um tipo específico (N:1)
+
+Para incluir os dados relacionados nas respostas, use o parâmetro `include_relations=true` nos endpoints GET.
+
+### 2. Listar Todos os Artistas
+```bash
+curl -X GET "http://localhost:8000/api/v1/artists/" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Parâmetros:**
+- `skip`: Número de registros para pular (padrão: 0)
+- `limit`: Número máximo de registros (padrão: 100)
+- `include_relations`: Incluir dados relacionados (padrão: false)
+
+**Exemplo com relacionamentos:**
+```bash
+curl -X GET "http://localhost:8000/api/v1/artists/?include_relations=true" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### 3. Obter Artista por ID
+```bash
+curl -X GET "http://localhost:8000/api/v1/artists/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Parâmetros:**
+- `include_relations`: Incluir dados relacionados (padrão: false)
+
+**Exemplo com relacionamentos:**
+```bash
+curl -X GET "http://localhost:8000/api/v1/artists/1?include_relations=true" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### 4. Obter Artista por Profile ID
+```bash
+curl -X GET "http://localhost:8000/api/v1/artists/profile/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Parâmetros:**
+- `include_relations`: Incluir dados relacionados (padrão: false)
+
+**Exemplo com relacionamentos:**
+```bash
+curl -X GET "http://localhost:8000/api/v1/artists/profile/1?include_relations=true" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### 5. Listar Artistas por Tipo
+```bash
+curl -X GET "http://localhost:8000/api/v1/artists/type/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Parâmetros:**
+- `skip`: Número de registros para pular (padrão: 0)
+- `limit`: Número máximo de registros (padrão: 100)
+- `include_relations`: Incluir dados relacionados (padrão: false)
+
+**Exemplo com relacionamentos:**
+```bash
+curl -X GET "http://localhost:8000/api/v1/artists/type/1?include_relations=true" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### 6. Atualizar Artista
+```bash
+curl -X PUT "http://localhost:8000/api/v1/artists/1" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "valor_hora": 180.0,
+    "dias_apresentacao": ["sexta", "sábado"],
+    "instagram": "https://instagram.com/artista1_atualizado"
+  }'
+```
+
+**Nota:** Todos os campos são opcionais na atualização. Apenas os campos fornecidos serão atualizados.
+
+### 7. Deletar Artista
+```bash
+curl -X DELETE "http://localhost:8000/api/v1/artists/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Resposta:**
+```json
+{
+  "message": "Artista com ID 1 foi deletado com sucesso"
+}
+```
+
 ## Endpoints Públicos
 
 ### Health Check
