@@ -1,7 +1,7 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.1.0** - Initial release
+**v0.3.0** - Artists endpoints with relationships
 
 ## Estrutura de Versionamento
 Utilizamos [Semantic Versioning (SemVer)](https://semver.org/) para controle de versão:
@@ -12,6 +12,31 @@ Utilizamos [Semantic Versioning (SemVer)](https://semver.org/) para controle de 
   - **PATCH**: Correções de bugs compatíveis
 
 ## Histórico de Versões
+
+### v0.3.0 (2024-07-19)
+- **Artists endpoints with relationships**
+- Endpoints de Artists (CRUD completo)
+- Relacionamentos Profile e Artist Type
+- Parâmetro `include_relations` para carregar dados relacionados
+- Validação de dados com Pydantic
+- Documentação atualizada com exemplos práticos
+- Scripts de migração atualizados
+- Testes automatizados para relacionamentos
+
+### v0.2.0 (2024-07-19)
+- **Enhanced user management**
+- Endpoints de Profiles (CRUD completo)
+- Endpoints de Roles (CRUD completo)
+- Endpoints de Artist Types (CRUD completo)
+- Endpoints de Musical Styles (CRUD completo)
+- Sistema de relacionamentos entre entidades
+- Validação avançada de dados
+
+### v0.1.1 (2024-07-19)
+- **Bug fixes and improvements**
+- Correções no sistema de autenticação
+- Melhorias na documentação
+- Otimizações de performance
 
 ### v0.1.0 (2024-07-19)
 - **Initial release**
