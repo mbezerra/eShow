@@ -146,7 +146,7 @@ def update_artist(
             detail=str(e)
         )
 
-@router.delete("/{artist_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{artist_id}", status_code=status.HTTP_200_OK)
 def delete_artist(
     artist_id: int,
     artist_service: ArtistService = Depends(get_artist_service),
@@ -158,4 +158,6 @@ def delete_artist(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Artista não encontrado"
-        ) 
+        )
+    
+    return {"message": f"Artista com ID {artist_id} foi deletado com sucesso"} 
