@@ -85,6 +85,14 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - ✅ Padrão consistente com outros endpoints
 - ✅ Script de inicialização automática
 
+### 11. Gerenciamento de Festival Types
+- ✅ CRUD completo de tipos de festival
+- ✅ 14 tipos pré-cadastrados (Aniversário de Emancipação Política, Festa Religiosa, etc.)
+- ✅ Validação de unicidade de tipos
+- ✅ Flexibilidade para adicionar novos tipos
+- ✅ Padrão consistente com outros endpoints
+- ✅ Script de inicialização automática
+
 ## Estrutura do Banco de Dados
 
 ### Tabelas Principais
@@ -97,6 +105,7 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 7. **artist_musical_style**: Relacionamento N:N entre artistas e estilos
 8. **space_types**: Tipos de espaço (Bar, Restaurante, Clube, etc.)
 9. **event_types**: Tipos de evento (Aniversário, Casamento, Formatura, etc.)
+10. **festival_types**: Tipos de festival (Aniversário de Emancipação Política, Festa Religiosa, etc.)
 
 ### Relacionamentos
 - **users** ↔ **profiles**: 1:1
@@ -183,6 +192,13 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - `PUT /api/v1/event-types/{id}` - Atualizar tipo de evento
 - `DELETE /api/v1/event-types/{id}` - Deletar tipo de evento
 
+### Festival Types (Protegidos)
+- `GET /api/v1/festival-types/` - Listar tipos de festival
+- `GET /api/v1/festival-types/{id}` - Tipo de festival por ID
+- `POST /api/v1/festival-types/` - Criar tipo de festival
+- `PUT /api/v1/festival-types/{id}` - Atualizar tipo de festival
+- `DELETE /api/v1/festival-types/{id}` - Deletar tipo de festival
+
 ### Públicos
 - `GET /health` - Health check
 
@@ -214,6 +230,7 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - `init_artist_musical_styles.py` - Relacionamentos de exemplo
 - `init_space_types.py` - Tipos de espaço (15 tipos pré-cadastrados)
 - `init_event_types.py` - Tipos de evento (7 tipos pré-cadastrados)
+- `init_festival_types.py` - Tipos de festival (14 tipos pré-cadastrados)
 - `start_server.sh` - Script de inicialização automática do servidor
 
 ### Testes

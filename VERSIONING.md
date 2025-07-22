@@ -1,8 +1,20 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.6.0** - Event Types e expansão do sistema
+**v0.7.0** - Festival Types e expansão completa do sistema
 
+- Implementação completa dos endpoints Festival Types (CRUD)
+- 14 tipos de festival pré-cadastrados (Aniversário de Emancipação Política, Festa Religiosa, etc.)
+- Validação de unicidade de tipos de festival
+- Flexibilidade para adicionar novos tipos de festival
+- Padrão consistente com outros endpoints
+- Script de inicialização automática
+- Documentação completa atualizada (API_USAGE.md)
+- Migração Alembic para tabela festival_types
+- Dados iniciais populados automaticamente
+
+### v0.6.0 (2024-07-22)
+- **Event Types e expansão do sistema**
 - Implementação completa dos endpoints Event Types (CRUD)
 - 7 tipos de evento pré-cadastrados (Aniversário, Casamento, Formatura, etc.)
 - Validação de unicidade de tipos de evento

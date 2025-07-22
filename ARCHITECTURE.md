@@ -19,6 +19,7 @@ O domínio contém as regras de negócio e é independente de qualquer tecnologi
 - **MusicalStyle**: Entidade que representa um estilo musical
 - **SpaceType**: Entidade que representa um tipo de espaço
 - **EventType**: Entidade que representa um tipo de evento
+- **FestivalType**: Entidade que representa um tipo de festival
 
 #### Repositórios (`domain/repositories/`)
 - **UserRepository**: Interface para operações de usuários
@@ -29,6 +30,7 @@ O domínio contém as regras de negócio e é independente de qualquer tecnologi
 - **MusicalStyleRepository**: Interface para operações de estilos musicais
 - **SpaceTypeRepository**: Interface para operações de tipos de espaço
 - **EventTypeRepository**: Interface para operações de tipos de evento
+- **FestivalTypeRepository**: Interface para operações de tipos de festival
 
 ### 2. Aplicação (`app/`)
 
@@ -47,6 +49,7 @@ A camada de aplicação contém os casos de uso e adaptadores de entrada.
 - **MusicalStyleService**: Orquestra as operações de estilos musicais
 - **SpaceTypeService**: Orquestra as operações de tipos de espaço
 - **EventTypeService**: Orquestra as operações de tipos de evento
+- **FestivalTypeService**: Orquestra as operações de tipos de festival
 
 ### 3. Infraestrutura (`infrastructure/`)
 
@@ -65,6 +68,7 @@ A camada de infraestrutura contém os adaptadores de saída.
 - **MusicalStyleRepositoryImpl**: Implementação concreta do repositório de estilos musicais
 - **SpaceTypeRepositoryImpl**: Implementação concreta do repositório de tipos de espaço
 - **EventTypeRepositoryImpl**: Implementação concreta do repositório de tipos de evento
+- **FestivalTypeRepositoryImpl**: Implementação concreta do repositório de tipos de festival
 
 ## Fluxo de Dados
 
