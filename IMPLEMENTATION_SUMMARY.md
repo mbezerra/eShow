@@ -77,6 +77,14 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - ✅ Padrão consistente com outros endpoints
 - ✅ Script de inicialização automática
 
+### 10. Gerenciamento de Event Types
+- ✅ CRUD completo de tipos de evento
+- ✅ 7 tipos pré-cadastrados (Aniversário, Casamento, Formatura, etc.)
+- ✅ Validação de unicidade de tipos
+- ✅ Flexibilidade para adicionar novos tipos
+- ✅ Padrão consistente com outros endpoints
+- ✅ Script de inicialização automática
+
 ## Estrutura do Banco de Dados
 
 ### Tabelas Principais
@@ -88,6 +96,7 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 6. **artists**: Artistas com dados de apresentação
 7. **artist_musical_style**: Relacionamento N:N entre artistas e estilos
 8. **space_types**: Tipos de espaço (Bar, Restaurante, Clube, etc.)
+9. **event_types**: Tipos de evento (Aniversário, Casamento, Formatura, etc.)
 
 ### Relacionamentos
 - **users** ↔ **profiles**: 1:1
@@ -167,6 +176,13 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - `PUT /api/v1/space-types/{id}` - Atualizar tipo de espaço
 - `DELETE /api/v1/space-types/{id}` - Deletar tipo de espaço
 
+### Event Types (Protegidos)
+- `GET /api/v1/event-types/` - Listar tipos de evento
+- `GET /api/v1/event-types/{id}` - Tipo de evento por ID
+- `POST /api/v1/event-types/` - Criar tipo de evento
+- `PUT /api/v1/event-types/{id}` - Atualizar tipo de evento
+- `DELETE /api/v1/event-types/{id}` - Deletar tipo de evento
+
 ### Públicos
 - `GET /health` - Health check
 
@@ -197,6 +213,7 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - `init_artists.py` - Artistas de exemplo
 - `init_artist_musical_styles.py` - Relacionamentos de exemplo
 - `init_space_types.py` - Tipos de espaço (15 tipos pré-cadastrados)
+- `init_event_types.py` - Tipos de evento (7 tipos pré-cadastrados)
 - `start_server.sh` - Script de inicialização automática do servidor
 
 ### Testes

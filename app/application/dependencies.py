@@ -20,6 +20,9 @@ from app.application.services.artist_musical_style_service import ArtistMusicalS
 from domain.repositories.space_type_repository import SpaceTypeRepository
 from infrastructure.repositories.space_type_repository_impl import SpaceTypeRepositoryImpl
 from app.application.services.space_type_service import SpaceTypeService
+from domain.repositories.event_type_repository import EventTypeRepository
+from infrastructure.repositories.event_type_repository_impl import EventTypeRepositoryImpl
+from app.application.services.event_type_service import EventTypeService
 from fastapi import Depends
 
 def get_user_repository():
@@ -81,4 +84,10 @@ def get_space_type_repository(db=Depends(get_database_session)) -> SpaceTypeRepo
     return SpaceTypeRepositoryImpl(db)
 
 def get_space_type_service(space_type_repository: SpaceTypeRepository = Depends(get_space_type_repository)) -> SpaceTypeService:
-    return SpaceTypeService(space_type_repository) 
+    return SpaceTypeService(space_type_repository)
+
+def get_event_type_repository(db=Depends(get_database_session)) -> EventTypeRepository:
+    return EventTypeRepositoryImpl(db)
+
+def get_event_type_service(event_type_repository: EventTypeRepository = Depends(get_event_type_repository)) -> EventTypeService:
+    return EventTypeService(event_type_repository) 

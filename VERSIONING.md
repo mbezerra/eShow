@@ -1,8 +1,20 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.5.0** - Space Types e melhorias de infraestrutura
+**v0.6.0** - Event Types e expansão do sistema
 
+- Implementação completa dos endpoints Event Types (CRUD)
+- 7 tipos de evento pré-cadastrados (Aniversário, Casamento, Formatura, etc.)
+- Validação de unicidade de tipos de evento
+- Flexibilidade para adicionar novos tipos de evento
+- Padrão consistente com outros endpoints
+- Script de inicialização automática
+- Documentação completa atualizada (API_USAGE.md)
+- Migração Alembic para tabela event_types
+- Dados iniciais populados automaticamente
+
+### v0.5.0 (2024-07-22)
+- **Space Types e melhorias de infraestrutura**
 - Implementação completa dos endpoints Space Types (CRUD)
 - 15 tipos de espaço pré-cadastrados (Bar, Restaurante, Clube, etc.)
 - Resolução do problema de compatibilidade do bcrypt

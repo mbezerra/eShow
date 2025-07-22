@@ -766,4 +766,132 @@ curl -X DELETE "http://localhost:8000/api/v1/space-types/1" \
 
 4. **Performance:**
    - O campo `tipo` possui índice único para busca eficiente
+   - Paginação disponível para listagens grandes
+
+## Tipos de Evento (Event Types)
+
+Endpoint para gerenciar os tipos de evento disponíveis no sistema.
+
+### Campos
+- `id`: Identificador único do tipo de evento
+- `type`: Tipo de evento (string livre - não é enum)
+- `created_at`: Data de criação
+- `updated_at`: Data de atualização
+
+### Valores Iniciais Populados
+O sistema já vem com os seguintes tipos de evento pré-cadastrados:
+- Aniversário
+- Casamento
+- Formatura
+- Inauguração
+- Lançamento
+- Casual
+- Recorrente
+
+### 1. Criar tipo de evento
+```bash
+curl -X POST "http://localhost:8000/api/v1/event-types/" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "Conferência"
+  }'
+```
+
+**Resposta:**
+```json
+{
+  "type": "Conferência",
+  "id": 8,
+  "created_at": "2025-07-22T20:52:41",
+  "updated_at": "2025-07-22T20:52:41"
+}
+```
+
+### 2. Listar todos os tipos de evento
+```bash
+curl -X GET "http://localhost:8000/api/v1/event-types/" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Parâmetros:**
+- `skip`: Número de registros para pular (padrão: 0)
+- `limit`: Número máximo de registros (padrão: 100)
+
+**Exemplo:**
+```bash
+curl -X GET "http://localhost:8000/api/v1/event-types/?skip=0&limit=10" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### 3. Buscar tipo de evento por ID
+```bash
+curl -X GET "http://localhost:8000/api/v1/event-types/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Resposta:**
+```json
+{
+  "type": "Aniversário",
+  "id": 1,
+  "created_at": "2025-07-22T20:52:16",
+  "updated_at": "2025-07-22T20:52:16"
+}
+```
+
+### 4. Atualizar tipo de evento
+```bash
+curl -X PUT "http://localhost:8000/api/v1/event-types/1" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "Aniversário Especial"
+  }'
+```
+
+**Resposta:**
+```json
+{
+  "type": "Aniversário Especial",
+  "id": 1,
+  "created_at": "2025-07-22T20:52:16",
+  "updated_at": "2025-07-22T20:52:45"
+}
+```
+
+### 5. Deletar tipo de evento
+```bash
+curl -X DELETE "http://localhost:8000/api/v1/event-types/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Resposta:**
+```json
+{
+  "message": "EventType com ID 1 foi deletado com sucesso"
+}
+```
+
+**Status:**
+- 200 OK (sucesso)
+- 404 Not Found (se o tipo não existir)
+
+### Observações Importantes
+
+1. **Validações:**
+   - O campo `type` é obrigatório e deve ser uma string não vazia
+   - Não é possível criar tipos duplicados (mesmo nome)
+   - IDs devem ser maiores que zero
+
+2. **Flexibilidade:**
+   - Diferente dos Artist Types, os Event Types aceitam qualquer valor string
+   - Não há restrição de valores fixos (não é enum)
+
+3. **Integridade:**
+   - Não é possível deletar um tipo de evento que esteja sendo usado por outros registros
+   - A atualização verifica se o novo nome já existe em outro registro
+
+4. **Performance:**
+   - O campo `type` possui índice único para busca eficiente
    - Paginação disponível para listagens grandes 
