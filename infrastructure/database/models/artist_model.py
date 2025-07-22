@@ -36,5 +36,4 @@ from infrastructure.database.models.artist_type_model import ArtistTypeModel
 from infrastructure.database.models.musical_style_model import MusicalStyleModel
 
 ArtistModel.profile = relationship("ProfileModel", back_populates="artist")
-ArtistModel.artist_type = relationship("ArtistTypeModel", back_populates="artists")
-ArtistModel.musical_styles = relationship("MusicalStyleModel", secondary="artist_musical_style", back_populates="artists") 
+ArtistModel.artist_type = relationship("ArtistTypeModel", back_populates="artists") 

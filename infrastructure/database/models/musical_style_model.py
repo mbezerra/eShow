@@ -15,6 +15,4 @@ class MusicalStyleModel(Base):
         return f"<MusicalStyleModel(id={self.id}, estyle='{self.estyle}')>"
 
 # Importação tardia para evitar importação circular
-from infrastructure.database.models.artist_model import ArtistModel
-
-MusicalStyleModel.artists = relationship("ArtistModel", secondary="artist_musical_style", back_populates="musical_styles") 
+# MusicalStyleModel.artists = relationship("ArtistModel", secondary="artist_musical_style", back_populates="musical_styles") 

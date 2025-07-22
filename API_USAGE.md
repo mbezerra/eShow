@@ -630,4 +630,140 @@ curl -X DELETE "http://localhost:8000/api/v1/artist-musical-styles/musical-style
    - Relacionamentos existentes são removidos e novos são criados
 
 4. **Integração com Artists:**
-   - Ao usar `include_relations=true` nos endpoints de artists, os estilos musicais serão incluídos na resposta 
+   - Ao usar `include_relations=true` nos endpoints de artists, os estilos musicais serão incluídos na resposta
+
+## Tipos de Espaço (Space Types)
+
+Endpoint para gerenciar os tipos de espaço disponíveis no sistema.
+
+### Campos
+- `id`: Identificador único do tipo de espaço
+- `tipo`: Tipo de espaço (string livre - não é enum)
+- `created_at`: Data de criação
+- `updated_at`: Data de atualização
+
+### Valores Iniciais Populados
+O sistema já vem com os seguintes tipos de espaço pré-cadastrados:
+- Bar
+- Restaurante
+- Clube
+- Balneário
+- Parque Aquático
+- Resort
+- Embarcação
+- Boate
+- Salão de Baile
+- Casa de Forró
+- Centro de Tradições Regionais
+- Associação Social
+- Salão de Recepções
+- Evento
+- Festival
+
+### 1. Criar tipo de espaço
+```bash
+curl -X POST "http://localhost:8000/api/v1/space-types/" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tipo": "Teatro"
+  }'
+```
+
+**Resposta:**
+```json
+{
+  "tipo": "Teatro",
+  "id": 16,
+  "created_at": "2025-07-22T20:17:21",
+  "updated_at": "2025-07-22T20:17:21"
+}
+```
+
+### 2. Listar todos os tipos de espaço
+```bash
+curl -X GET "http://localhost:8000/api/v1/space-types/" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Parâmetros:**
+- `skip`: Número de registros para pular (padrão: 0)
+- `limit`: Número máximo de registros (padrão: 100)
+
+**Exemplo:**
+```bash
+curl -X GET "http://localhost:8000/api/v1/space-types/?skip=0&limit=10" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### 3. Buscar tipo de espaço por ID
+```bash
+curl -X GET "http://localhost:8000/api/v1/space-types/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Resposta:**
+```json
+{
+  "tipo": "Bar",
+  "id": 1,
+  "created_at": "2025-07-22T20:11:39",
+  "updated_at": "2025-07-22T20:11:39"
+}
+```
+
+### 4. Atualizar tipo de espaço
+```bash
+curl -X PUT "http://localhost:8000/api/v1/space-types/1" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tipo": "Bar e Restaurante"
+  }'
+```
+
+**Resposta:**
+```json
+{
+  "tipo": "Bar e Restaurante",
+  "id": 1,
+  "created_at": "2025-07-22T20:11:39",
+  "updated_at": "2025-07-22T20:17:28"
+}
+```
+
+### 5. Deletar tipo de espaço
+```bash
+curl -X DELETE "http://localhost:8000/api/v1/space-types/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Resposta:**
+```json
+{
+  "message": "SpaceType com ID 1 foi deletado com sucesso"
+}
+```
+
+**Status:**
+- 200 OK (sucesso)
+- 404 Not Found (se o tipo não existir)
+
+### Observações Importantes
+
+1. **Validações:**
+   - O campo `tipo` é obrigatório e deve ser uma string não vazia
+   - Não é possível criar tipos duplicados (mesmo nome)
+   - IDs devem ser maiores que zero
+
+2. **Flexibilidade:**
+   - Diferente dos Artist Types, os Space Types aceitam qualquer valor string
+   - Não há restrição de valores fixos (não é enum)
+
+3. **Integridade:**
+   - Não é possível deletar um tipo de espaço que esteja sendo usado por outros registros
+   - A atualização verifica se o novo nome já existe em outro registro
+
+4. **Performance:**
+   - O campo `tipo` possui índice único para busca eficiente
+   - Paginação disponível para listagens grandes 

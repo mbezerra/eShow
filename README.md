@@ -43,23 +43,38 @@ python version.py patch  # ou minor/major
 
 ### Desenvolvimento (SQLite)
 
-1. Instalar dependências:
+**Opção 1: Usando script de inicialização (Recomendado)**
+```bash
+# Executar script que ativa ambiente virtual automaticamente
+./start_server.sh
+```
+
+**Opção 2: Configuração manual**
+1. Criar e ativar ambiente virtual:
+```bash
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# ou
+venv\Scripts\activate     # Windows
+```
+
+2. Instalar dependências:
 ```bash
 pip install -r requirements.txt
 ```
 
-2. Configurar variáveis de ambiente:
+3. Configurar variáveis de ambiente:
 ```bash
 cp env.example .env
 # Editar o arquivo .env e configurar SECRET_KEY
 ```
 
-3. Inicializar banco de dados:
+4. Inicializar banco de dados:
 ```bash
 python init_db.py
 ```
 
-4. Iniciar o servidor:
+5. Iniciar o servidor:
 ```bash
 python run.py
 ```
