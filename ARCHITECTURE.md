@@ -17,6 +17,7 @@ O domínio contém as regras de negócio e é independente de qualquer tecnologi
 - **Role**: Entidade que representa um papel/função no sistema
 - **ArtistType**: Entidade que representa um tipo de artista
 - **MusicalStyle**: Entidade que representa um estilo musical
+- **SpaceType**: Entidade que representa um tipo de espaço
 
 #### Repositórios (`domain/repositories/`)
 - **UserRepository**: Interface para operações de usuários
@@ -25,6 +26,7 @@ O domínio contém as regras de negócio e é independente de qualquer tecnologi
 - **RoleRepository**: Interface para operações de papéis
 - **ArtistTypeRepository**: Interface para operações de tipos de artista
 - **MusicalStyleRepository**: Interface para operações de estilos musicais
+- **SpaceTypeRepository**: Interface para operações de tipos de espaço
 
 ### 2. Aplicação (`app/`)
 
@@ -41,6 +43,7 @@ A camada de aplicação contém os casos de uso e adaptadores de entrada.
 - **RoleService**: Orquestra as operações de papéis
 - **ArtistTypeService**: Orquestra as operações de tipos de artista
 - **MusicalStyleService**: Orquestra as operações de estilos musicais
+- **SpaceTypeService**: Orquestra as operações de tipos de espaço
 
 ### 3. Infraestrutura (`infrastructure/`)
 
@@ -57,6 +60,7 @@ A camada de infraestrutura contém os adaptadores de saída.
 - **RoleRepositoryImpl**: Implementação concreta do repositório de papéis
 - **ArtistTypeRepositoryImpl**: Implementação concreta do repositório de tipos de artista
 - **MusicalStyleRepositoryImpl**: Implementação concreta do repositório de estilos musicais
+- **SpaceTypeRepositoryImpl**: Implementação concreta do repositório de tipos de espaço
 
 ## Fluxo de Dados
 

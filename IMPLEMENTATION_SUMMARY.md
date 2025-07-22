@@ -69,6 +69,14 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - ✅ Deleção individual e em lote
 - ✅ Integração com endpoints de artists
 
+### 9. Gerenciamento de Space Types
+- ✅ CRUD completo de tipos de espaço
+- ✅ 15 tipos pré-cadastrados (Bar, Restaurante, Clube, etc.)
+- ✅ Validação de unicidade de tipos
+- ✅ Flexibilidade para adicionar novos tipos
+- ✅ Padrão consistente com outros endpoints
+- ✅ Script de inicialização automática
+
 ## Estrutura do Banco de Dados
 
 ### Tabelas Principais
@@ -79,6 +87,7 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 5. **musical_styles**: Estilos musicais
 6. **artists**: Artistas com dados de apresentação
 7. **artist_musical_style**: Relacionamento N:N entre artistas e estilos
+8. **space_types**: Tipos de espaço (Bar, Restaurante, Clube, etc.)
 
 ### Relacionamentos
 - **users** ↔ **profiles**: 1:1
@@ -151,6 +160,13 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - `DELETE /api/v1/artist-musical-styles/artist/{artist_id}` - Deletar todos os relacionamentos de artista
 - `DELETE /api/v1/artist-musical-styles/musical-style/{musical_style_id}` - Deletar todos os relacionamentos de estilo
 
+### Space Types (Protegidos)
+- `GET /api/v1/space-types/` - Listar tipos de espaço
+- `GET /api/v1/space-types/{id}` - Tipo de espaço por ID
+- `POST /api/v1/space-types/` - Criar tipo de espaço
+- `PUT /api/v1/space-types/{id}` - Atualizar tipo de espaço
+- `DELETE /api/v1/space-types/{id}` - Deletar tipo de espaço
+
 ### Públicos
 - `GET /health` - Health check
 
@@ -180,6 +196,8 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - `init_musical_styles.py` - Estilos musicais
 - `init_artists.py` - Artistas de exemplo
 - `init_artist_musical_styles.py` - Relacionamentos de exemplo
+- `init_space_types.py` - Tipos de espaço (15 tipos pré-cadastrados)
+- `start_server.sh` - Script de inicialização automática do servidor
 
 ### Testes
 - `test_api_complete.py` - Testes completos da API

@@ -1,8 +1,20 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.4.0** - Relacionamento N:N Artists-Musical Styles, testes e limpeza
+**v0.5.0** - Space Types e melhorias de infraestrutura
 
+- Implementação completa dos endpoints Space Types (CRUD)
+- 15 tipos de espaço pré-cadastrados (Bar, Restaurante, Clube, etc.)
+- Resolução do problema de compatibilidade do bcrypt
+- Script de inicialização `start_server.sh` para facilitar desenvolvimento
+- Ambiente virtual configurado corretamente
+- Padrão consistente nos endpoints DELETE (mensagens de sucesso)
+- Documentação completa atualizada (API_USAGE.md)
+- Migração Alembic para tabela space_types
+- Dados iniciais populados automaticamente
+
+### v0.4.0 (2024-07-22)
+- **Relacionamento N:N Artists-Musical Styles, testes e limpeza**
 - Implementação completa dos endpoints N:N entre Artists e Musical Styles
 - Testes automatizados dos novos endpoints
 - População e consulta dos relacionamentos
