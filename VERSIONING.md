@@ -1,17 +1,13 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.3.0** - Artists endpoints with relationships
+**v0.4.0** - Relacionamento N:N Artists-Musical Styles, testes e limpeza
 
-## Estrutura de Versionamento
-Utilizamos [Semantic Versioning (SemVer)](https://semver.org/) para controle de versão:
-
-- **MAJOR.MINOR.PATCH**
-  - **MAJOR**: Mudanças incompatíveis na API
-  - **MINOR**: Novas funcionalidades compatíveis
-  - **PATCH**: Correções de bugs compatíveis
-
-## Histórico de Versões
+- Implementação completa dos endpoints N:N entre Artists e Musical Styles
+- Testes automatizados dos novos endpoints
+- População e consulta dos relacionamentos
+- Limpeza de arquivos de teste temporários
+- Ajustes finais e documentação
 
 ### v0.3.0 (2024-07-19)
 - **Artists endpoints with relationships**
