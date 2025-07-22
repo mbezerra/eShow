@@ -35,7 +35,8 @@ def convert_artist_to_response(artist, include_relations: bool = False):
                 "created_at": artist.created_at,
                 "updated_at": artist.updated_at,
                 "profile": artist.profile,
-                "artist_type": artist.artist_type
+                "artist_type": artist.artist_type,
+                "musical_styles": artist.musical_styles
             })
         else:
             return ArtistResponseWithRelations.model_validate(artist)

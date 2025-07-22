@@ -534,4 +534,100 @@ curl -X DELETE "http://localhost:8000/api/v1/musical-styles/1" \
 ```
 
 ### Observação
-O campo `estyle` aceita qualquer valor string. Não há restrição de valores fixos. 
+O campo `estyle` aceita qualquer valor string. Não há restrição de valores fixos.
+
+## Relacionamento Artists-Musical Styles (N:N)
+
+Endpoint para gerenciar o relacionamento N:N entre artistas e estilos musicais.
+
+### Campos
+- `artist_id`: ID do artista (relacionamento com artista)
+- `musical_style_id`: ID do estilo musical (relacionamento com estilo musical)
+- `created_at`: Data de criação do relacionamento
+
+### 1. Criar Relacionamento Individual
+```bash
+curl -X POST "http://localhost:8000/api/v1/artist-musical-styles/" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "artist_id": 1,
+    "musical_style_id": 2
+  }'
+```
+
+### 2. Criar Relacionamentos em Lote
+```bash
+curl -X POST "http://localhost:8000/api/v1/artist-musical-styles/bulk" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "artist_id": 1,
+    "musical_style_ids": [1, 2, 3]
+  }'
+```
+
+### 3. Obter Estilos Musicais de um Artista
+```bash
+curl -X GET "http://localhost:8000/api/v1/artist-musical-styles/artist/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### 4. Obter Artistas de um Estilo Musical
+```bash
+curl -X GET "http://localhost:8000/api/v1/artist-musical-styles/musical-style/2" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### 5. Obter Relacionamento Específico
+```bash
+curl -X GET "http://localhost:8000/api/v1/artist-musical-styles/1/2" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### 6. Atualizar Estilos Musicais de um Artista
+```bash
+curl -X PUT "http://localhost:8000/api/v1/artist-musical-styles/artist/1" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '[1, 3, 5]'
+```
+
+**Nota:** Este endpoint substitui todos os estilos musicais existentes do artista pelos novos fornecidos.
+
+### 7. Deletar Relacionamento Específico
+```bash
+curl -X DELETE "http://localhost:8000/api/v1/artist-musical-styles/1/2" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### 8. Deletar Todos os Relacionamentos de um Artista
+```bash
+curl -X DELETE "http://localhost:8000/api/v1/artist-musical-styles/artist/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### 9. Deletar Todos os Relacionamentos de um Estilo Musical
+```bash
+curl -X DELETE "http://localhost:8000/api/v1/artist-musical-styles/musical-style/2" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### Observações Importantes
+
+1. **Validações:**
+   - O artista e o estilo musical devem existir antes de criar o relacionamento
+   - Não é possível criar relacionamentos duplicados
+   - IDs devem ser maiores que zero
+
+2. **Operações em Lote:**
+   - A criação em lote é mais eficiente para múltiplos relacionamentos
+   - Todos os estilos musicais devem existir
+   - Se qualquer relacionamento já existir, a operação falha
+
+3. **Atualização:**
+   - A atualização substitui completamente os estilos musicais do artista
+   - Relacionamentos existentes são removidos e novos são criados
+
+4. **Integração com Artists:**
+   - Ao usar `include_relations=true` nos endpoints de artists, os estilos musicais serão incluídos na resposta 

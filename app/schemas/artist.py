@@ -5,6 +5,7 @@ from datetime import datetime
 # Schemas relacionados
 from .profile import ProfileResponse
 from .artist_type import ArtistTypeResponse
+from .musical_style import MusicalStyleResponse
 
 class ArtistBase(BaseModel):
     profile_id: int
@@ -136,6 +137,7 @@ class ArtistResponseWithRelations(ArtistResponse):
     """Schema com dados relacionados incluídos"""
     profile: Optional[ProfileResponse] = None
     artist_type: Optional[ArtistTypeResponse] = None
+    musical_styles: Optional[List[MusicalStyleResponse]] = None
 
 class ArtistListResponse(BaseModel):
     """Schema para resposta dinâmica de lista de artistas"""
