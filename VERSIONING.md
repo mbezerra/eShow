@@ -1,8 +1,18 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.7.1** - Spaces e parâmetro include_relations
+**v0.7.2** - Correção do parâmetro include_relations
 
+- **CORREÇÃO CRÍTICA**: Parâmetro `include_relations` agora funciona corretamente
+- `include_relations=false`: Retorna apenas campos básicos (21 campos)
+- `include_relations=true`: Retorna campos básicos + relacionamentos (25 campos)
+- Removidos response_models fixos dos endpoints GET de Spaces
+- Entidade Space limpa sem atributos de relacionamento desnecessários
+- Performance otimizada: relacionamentos só são carregados quando solicitados
+- Correção aplicada a todos os endpoints GET de Spaces
+
+### v0.7.1 (2024-07-23)
+- **Spaces e parâmetro include_relations**
 - Implementação completa dos endpoints Spaces (CRUD)
 - Entidade Space com relacionamentos para profiles, space_types, event_types e festival_types
 - Parâmetro `include_relations=true` para Artists e Spaces
