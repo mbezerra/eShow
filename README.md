@@ -1,22 +1,42 @@
-# eShow API - Arquitetura Hexagonal
+# eShow API
 
-Esta é uma API construída usando FastAPI e arquitetura hexagonal (também conhecida como arquitetura de portas e adaptadores).
+Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvido com **FastAPI** e arquitetura hexagonal.
 
-## Estrutura do Projeto
+## 🎯 **Funcionalidades Principais**
+
+- **Gestão de Usuários** com autenticação JWT
+- **Sistema de Perfis** (Artists e Spaces)
+- **Gerenciamento de Artistas** e estilos musicais
+- **Administração de Espaços** e tipos de evento
+- **Sistema de Agendamentos/Reservas** (Bookings)
+- **Relacionamentos N:N** entre entidades
+- **API REST** completa com documentação automática
+- **Arquitetura Hexagonal** para facilitar manutenção
+
+## 📊 **Estatísticas do Projeto**
+
+- **Total de Endpoints:** 95
+- **Entidades de Domínio:** 14
+- **Relacionamentos N:N:** 3
+- **Tabelas no Banco:** 14
+- **Schemas Pydantic:** 47+
+- **Cobertura de Testes:** Em desenvolvimento
+
+## 📁 **Estrutura do Projeto**
 
 ```
-eshow/
-├── app/                    # Camada de aplicação (adaptadores de entrada)
-│   ├── api/               # Controllers/endpoints da API
-│   ├── schemas/           # Schemas Pydantic para validação
-│   └── main.py           # Ponto de entrada da aplicação
-├── domain/                # Camada de domínio (núcleo da aplicação)
-│   ├── entities/          # Entidades de domínio
-│   ├── repositories/      # Interfaces dos repositórios
-│   └── services/          # Serviços de domínio
-├── infrastructure/        # Camada de infraestrutura (adaptadores de saída)
-│   ├── database/          # Configuração e modelos do banco
-│   ├── repositories/      # Implementações dos repositórios
+eShow/
+├── app/                   # Camada de aplicação
+│   ├── api/              # Endpoints da API
+│   ├── core/             # Configurações e autenticação
+│   ├── schemas/          # Modelos Pydantic
+│   └── application/      # Serviços e casos de uso
+├── domain/               # Camada de domínio
+│   ├── entities/         # Entidades de negócio
+│   └── repositories/     # Interfaces dos repositórios
+├── infrastructure/       # Camada de infraestrutura
+│   ├── database/         # Modelos e configuração do banco
+│   ├── repositories/     # Implementação dos repositórios
 │   └── external/          # Serviços externos
 ├── tests/                 # Testes unitários e de integração
 └── alembic/               # Migrações do banco de dados

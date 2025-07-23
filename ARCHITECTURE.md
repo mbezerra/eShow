@@ -21,6 +21,7 @@ O domínio contém as regras de negócio e é independente de qualquer tecnologi
 - **EventType**: Entidade que representa um tipo de evento
 - **FestivalType**: Entidade que representa um tipo de festival
 - **Space**: Entidade que representa um espaço para apresentações
+- **Booking**: Entidade que representa um agendamento/reserva
 
 #### Repositórios (`domain/repositories/`)
 - **UserRepository**: Interface para operações de usuários
@@ -33,6 +34,7 @@ O domínio contém as regras de negócio e é independente de qualquer tecnologi
 - **EventTypeRepository**: Interface para operações de tipos de evento
 - **FestivalTypeRepository**: Interface para operações de tipos de festival
 - **SpaceRepository**: Interface para operações de espaços
+- **BookingRepository**: Interface para operações de agendamentos/reservas
 
 ### 2. Aplicação (`app/`)
 
@@ -48,6 +50,12 @@ A camada de aplicação contém os casos de uso e adaptadores de entrada.
 - **ProfileService**: Orquestra as operações de perfis
 - **RoleService**: Orquestra as operações de papéis
 - **ArtistTypeService**: Orquestra as operações de tipos de artista
+- **MusicalStyleService**: Orquestra as operações de estilos musicais
+- **SpaceTypeService**: Orquestra as operações de tipos de espaço
+- **EventTypeService**: Orquestra as operações de tipos de evento
+- **FestivalTypeService**: Orquestra as operações de tipos de festival
+- **SpaceService**: Orquestra as operações de espaços
+- **BookingService**: Orquestra as operações de agendamentos/reservas
 - **MusicalStyleService**: Orquestra as operações de estilos musicais
 - **SpaceTypeService**: Orquestra as operações de tipos de espaço
 - **EventTypeService**: Orquestra as operações de tipos de evento
