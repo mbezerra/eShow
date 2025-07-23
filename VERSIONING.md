@@ -1,8 +1,22 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.7.0** - Festival Types e expansão completa do sistema
+**v0.7.1** - Spaces e parâmetro include_relations
 
+- Implementação completa dos endpoints Spaces (CRUD)
+- Entidade Space com relacionamentos para profiles, space_types, event_types e festival_types
+- Parâmetro `include_relations=true` para Artists e Spaces
+- Carregamento otimizado de relacionamentos usando SQLAlchemy joinedload
+- Schemas específicos para relacionamentos (ProfileRelation, SpaceTypeRelation, etc.)
+- Validação de enums para acesso (Público/Privado) e público estimado
+- Suporte a arrays JSON para dias de apresentação e fotos
+- Script de inicialização com dados de exemplo
+- Migração Alembic para tabela spaces
+- Documentação completa atualizada em todos os arquivos
+- Performance otimizada evitando N+1 queries
+
+### v0.7.0 (2024-07-22)
+- **Festival Types e expansão completa do sistema**
 - Implementação completa dos endpoints Festival Types (CRUD)
 - 14 tipos de festival pré-cadastrados (Aniversário de Emancipação Política, Festa Religiosa, etc.)
 - Validação de unicidade de tipos de festival
