@@ -2,10 +2,37 @@ from pydantic import BaseModel, validator
 from typing import List, Optional
 from datetime import datetime
 
-# Schemas relacionados
+# Schemas relacionados  
 from .profile import ProfileResponse
 from .space import SpaceResponse
-from .artist import ArtistResponse
+# from .artist import ArtistResponse  # Evitar imports circulares
+from .space_event_type import SpaceEventTypeResponse
+from .space_festival_type import SpaceFestivalTypeResponse
+
+# Schema simplificado para artista nos relacionamentos de booking
+class ArtistRelation(BaseModel):
+    id: int
+    profile_id: int
+    artist_type_id: int
+    dias_apresentacao: List[str]
+    raio_atuacao: float
+    duracao_apresentacao: float
+    valor_hora: float
+    valor_couvert: float
+    requisitos_minimos: str
+    instagram: Optional[str] = None
+    tiktok: Optional[str] = None
+    youtube: Optional[str] = None
+    facebook: Optional[str] = None
+    soundcloud: Optional[str] = None
+    bandcamp: Optional[str] = None
+    spotify: Optional[str] = None
+    deezer: Optional[str] = None
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True
 
 class BookingBase(BaseModel):
     profile_id: int
@@ -143,8 +170,9 @@ class BookingWithRelations(BookingResponse):
     """Schema com dados relacionados incluídos"""
     profile: Optional[ProfileResponse] = None
     space: Optional[SpaceResponse] = None
-    artist: Optional[ArtistResponse] = None
-    # space_event_type e space_festival_type podem ser adicionados depois se necessário
+    artist: Optional[ArtistRelation] = None
+    space_event_type: Optional[SpaceEventTypeResponse] = None
+    space_festival_type: Optional[SpaceFestivalTypeResponse] = None
 
 class BookingListResponse(BaseModel):
     """Schema para resposta de lista de bookings"""

@@ -1,6 +1,6 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 from datetime import datetime
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from domain.repositories.booking_repository import BookingRepository
 from domain.entities.booking import Booking
 from infrastructure.database.models.booking_model import BookingModel
@@ -15,6 +15,18 @@ class BookingRepositoryImpl(BookingRepository):
     
     def __init__(self, db: Session):
         self.db = db
+    
+    def _configure_relations(self, query, include_relations: bool = False):
+        """Configurar relacionamentos para a query"""
+        if include_relations:
+            query = query.options(
+                joinedload(BookingModel.profile),
+                joinedload(BookingModel.space),
+                joinedload(BookingModel.artist),
+                joinedload(BookingModel.space_event_type),
+                joinedload(BookingModel.space_festival_type)
+            )
+        return query
     
     def create(self, booking: Booking) -> Booking:
         """Criar um novo agendamento"""
@@ -63,46 +75,80 @@ class BookingRepositoryImpl(BookingRepository):
         
         return self._to_entity(db_booking)
     
-    def get_by_id(self, booking_id: int) -> Optional[Booking]:
+    def get_by_id(self, booking_id: int, include_relations: bool = False) -> Optional[Union[Booking, BookingModel]]:
         """Obter um agendamento por ID"""
-        booking = self.db.query(BookingModel).filter(BookingModel.id == booking_id).first()
+        query = self.db.query(BookingModel).filter(BookingModel.id == booking_id)
+        query = self._configure_relations(query, include_relations)
+        booking = query.first()
         
         if not booking:
             return None
         
+        if include_relations:
+            return booking  # Retorna o modelo com relacionamentos carregados
         return self._to_entity(booking)
     
-    def get_by_profile_id(self, profile_id: int) -> List[Booking]:
+    def get_by_profile_id(self, profile_id: int, include_relations: bool = False) -> List[Union[Booking, BookingModel]]:
         """Obter todos os agendamentos de um profile"""
-        bookings = self.db.query(BookingModel).filter(BookingModel.profile_id == profile_id).all()
+        query = self.db.query(BookingModel).filter(BookingModel.profile_id == profile_id)
+        query = self._configure_relations(query, include_relations)
+        bookings = query.all()
+        
+        if include_relations:
+            return bookings  # Retorna modelos com relacionamentos carregados
         return [self._to_entity(booking) for booking in bookings]
     
-    def get_by_space_id(self, space_id: int) -> List[Booking]:
+    def get_by_space_id(self, space_id: int, include_relations: bool = False) -> List[Union[Booking, BookingModel]]:
         """Obter todos os agendamentos de um espaço"""
-        bookings = self.db.query(BookingModel).filter(BookingModel.space_id == space_id).all()
+        query = self.db.query(BookingModel).filter(BookingModel.space_id == space_id)
+        query = self._configure_relations(query, include_relations)
+        bookings = query.all()
+        
+        if include_relations:
+            return bookings  # Retorna modelos com relacionamentos carregados
         return [self._to_entity(booking) for booking in bookings]
     
-    def get_by_artist_id(self, artist_id: int) -> List[Booking]:
+    def get_by_artist_id(self, artist_id: int, include_relations: bool = False) -> List[Union[Booking, BookingModel]]:
         """Obter todos os agendamentos de um artista"""
-        bookings = self.db.query(BookingModel).filter(BookingModel.artist_id == artist_id).all()
+        query = self.db.query(BookingModel).filter(BookingModel.artist_id == artist_id)
+        query = self._configure_relations(query, include_relations)
+        bookings = query.all()
+        
+        if include_relations:
+            return bookings  # Retorna modelos com relacionamentos carregados
         return [self._to_entity(booking) for booking in bookings]
     
-    def get_by_space_event_type_id(self, space_event_type_id: int) -> List[Booking]:
+    def get_by_space_event_type_id(self, space_event_type_id: int, include_relations: bool = False) -> List[Union[Booking, BookingModel]]:
         """Obter todos os agendamentos de um space-event type"""
-        bookings = self.db.query(BookingModel).filter(BookingModel.space_event_type_id == space_event_type_id).all()
+        query = self.db.query(BookingModel).filter(BookingModel.space_event_type_id == space_event_type_id)
+        query = self._configure_relations(query, include_relations)
+        bookings = query.all()
+        
+        if include_relations:
+            return bookings  # Retorna modelos com relacionamentos carregados
         return [self._to_entity(booking) for booking in bookings]
     
-    def get_by_space_festival_type_id(self, space_festival_type_id: int) -> List[Booking]:
+    def get_by_space_festival_type_id(self, space_festival_type_id: int, include_relations: bool = False) -> List[Union[Booking, BookingModel]]:
         """Obter todos os agendamentos de um space-festival type"""
-        bookings = self.db.query(BookingModel).filter(BookingModel.space_festival_type_id == space_festival_type_id).all()
+        query = self.db.query(BookingModel).filter(BookingModel.space_festival_type_id == space_festival_type_id)
+        query = self._configure_relations(query, include_relations)
+        bookings = query.all()
+        
+        if include_relations:
+            return bookings  # Retorna modelos com relacionamentos carregados
         return [self._to_entity(booking) for booking in bookings]
     
-    def get_by_date_range(self, data_inicio: datetime, data_fim: datetime) -> List[Booking]:
+    def get_by_date_range(self, data_inicio: datetime, data_fim: datetime, include_relations: bool = False) -> List[Union[Booking, BookingModel]]:
         """Obter agendamentos em um período"""
-        bookings = self.db.query(BookingModel).filter(
+        query = self.db.query(BookingModel).filter(
             BookingModel.data_inicio >= data_inicio,
             BookingModel.data_fim <= data_fim
-        ).all()
+        )
+        query = self._configure_relations(query, include_relations)
+        bookings = query.all()
+        
+        if include_relations:
+            return bookings  # Retorna modelos com relacionamentos carregados
         return [self._to_entity(booking) for booking in bookings]
     
     def update(self, booking_id: int, booking: Booking) -> Optional[Booking]:
@@ -167,9 +213,14 @@ class BookingRepositoryImpl(BookingRepository):
         self.db.commit()
         return True
     
-    def get_all(self) -> List[Booking]:
+    def get_all(self, include_relations: bool = False) -> List[Union[Booking, BookingModel]]:
         """Obter todos os agendamentos"""
-        bookings = self.db.query(BookingModel).all()
+        query = self.db.query(BookingModel)
+        query = self._configure_relations(query, include_relations)
+        bookings = query.all()
+        
+        if include_relations:
+            return bookings  # Retorna modelos com relacionamentos carregados
         return [self._to_entity(booking) for booking in bookings]
     
     def _to_entity(self, model: BookingModel) -> Booking:

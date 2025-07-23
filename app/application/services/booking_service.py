@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Union, Any
 from datetime import datetime
 from domain.repositories.booking_repository import BookingRepository
 from domain.repositories.profile_repository import ProfileRepository
@@ -52,33 +52,33 @@ class BookingService:
         
         return self.booking_repository.create(booking)
     
-    def get_booking_by_id(self, booking_id: int) -> Optional[Booking]:
+    def get_booking_by_id(self, booking_id: int, include_relations: bool = False) -> Optional[Union[Booking, Any]]:
         """Obter um agendamento por ID"""
-        return self.booking_repository.get_by_id(booking_id)
+        return self.booking_repository.get_by_id(booking_id, include_relations=include_relations)
     
-    def get_bookings_by_profile(self, profile_id: int) -> List[Booking]:
+    def get_bookings_by_profile(self, profile_id: int, include_relations: bool = False) -> List[Union[Booking, Any]]:
         """Obter todos os agendamentos de um profile"""
-        return self.booking_repository.get_by_profile_id(profile_id)
+        return self.booking_repository.get_by_profile_id(profile_id, include_relations=include_relations)
     
-    def get_bookings_by_space(self, space_id: int) -> List[Booking]:
+    def get_bookings_by_space(self, space_id: int, include_relations: bool = False) -> List[Union[Booking, Any]]:
         """Obter todos os agendamentos de um espaço"""
-        return self.booking_repository.get_by_space_id(space_id)
+        return self.booking_repository.get_by_space_id(space_id, include_relations=include_relations)
     
-    def get_bookings_by_artist(self, artist_id: int) -> List[Booking]:
+    def get_bookings_by_artist(self, artist_id: int, include_relations: bool = False) -> List[Union[Booking, Any]]:
         """Obter todos os agendamentos de um artista"""
-        return self.booking_repository.get_by_artist_id(artist_id)
+        return self.booking_repository.get_by_artist_id(artist_id, include_relations=include_relations)
     
-    def get_bookings_by_space_event_type(self, space_event_type_id: int) -> List[Booking]:
+    def get_bookings_by_space_event_type(self, space_event_type_id: int, include_relations: bool = False) -> List[Union[Booking, Any]]:
         """Obter todos os agendamentos de um space-event type"""
-        return self.booking_repository.get_by_space_event_type_id(space_event_type_id)
+        return self.booking_repository.get_by_space_event_type_id(space_event_type_id, include_relations=include_relations)
     
-    def get_bookings_by_space_festival_type(self, space_festival_type_id: int) -> List[Booking]:
+    def get_bookings_by_space_festival_type(self, space_festival_type_id: int, include_relations: bool = False) -> List[Union[Booking, Any]]:
         """Obter todos os agendamentos de um space-festival type"""
-        return self.booking_repository.get_by_space_festival_type_id(space_festival_type_id)
+        return self.booking_repository.get_by_space_festival_type_id(space_festival_type_id, include_relations=include_relations)
     
-    def get_bookings_by_date_range(self, data_inicio: datetime, data_fim: datetime) -> List[Booking]:
+    def get_bookings_by_date_range(self, data_inicio: datetime, data_fim: datetime, include_relations: bool = False) -> List[Union[Booking, Any]]:
         """Obter agendamentos em um período"""
-        return self.booking_repository.get_by_date_range(data_inicio, data_fim)
+        return self.booking_repository.get_by_date_range(data_inicio, data_fim, include_relations=include_relations)
     
     def update_booking(self, booking_id: int, booking_data: BookingUpdate) -> Optional[Booking]:
         """Atualizar um agendamento"""
@@ -109,6 +109,6 @@ class BookingService:
         """Deletar um agendamento"""
         return self.booking_repository.delete(booking_id)
     
-    def get_all_bookings(self) -> List[Booking]:
+    def get_all_bookings(self, include_relations: bool = False) -> List[Union[Booking, Any]]:
         """Obter todos os agendamentos"""
-        return self.booking_repository.get_all() 
+        return self.booking_repository.get_all(include_relations=include_relations) 
