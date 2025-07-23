@@ -1280,7 +1280,34 @@ curl -X PUT "http://localhost:8000/api/v1/spaces/1" \
   }'
 ```
 
-**Nota:** Todos os campos são opcionais na atualização. Apenas os campos fornecidos serão atualizados.
+**Resposta:**
+```json
+{
+  "profile_id": 1,
+  "space_type_id": 1,
+  "event_type_id": null,
+  "festival_type_id": null,
+  "acesso": "Público",
+  "dias_apresentacao": ["sexta", "sábado", "domingo"],
+  "duracao_apresentacao": 3.0,
+  "valor_hora": 180.0,
+  "valor_couvert": 20.0,
+  "requisitos_minimos": "Equipamento de som básico, microfone, instrumentos próprios",
+  "oferecimentos": "Equipamento de som, iluminação, camarim, bebidas",
+  "estrutura_apresentacao": "Palco de 4x3 metros, sistema de som profissional, iluminação cênica",
+  "publico_estimado": "101-500",
+  "fotos_ambiente": ["/fotos/bar1.jpg", "/fotos/bar2.jpg"],
+  "instagram": "https://instagram.com/bar_exemplo_atualizado",
+  "tiktok": "https://tiktok.com/@bar_exemplo",
+  "youtube": null,
+  "facebook": "https://facebook.com/barexemplo",
+  "id": 1,
+  "created_at": "2025-07-23T00:02:19",
+  "updated_at": "2025-07-23T01:01:56"
+}
+```
+
+**Atualização Parcial:** Todos os campos são opcionais na atualização. Apenas os campos fornecidos serão atualizados, os demais serão preservados com seus valores atuais.
 
 ### 9. Deletar Espaço
 ```bash
