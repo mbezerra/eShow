@@ -4,4 +4,6 @@ from .role_model import RoleModel
 from .profile_model import ProfileModel
 from .artist_type_model import ArtistTypeModel
 from .musical_style_model import MusicalStyleModel
-from .artist_model import ArtistModel 
+from .artist_model import ArtistModel
+from .artist_musical_style_model import ArtistMusicalStyleModel
+from .space_model import SpaceModel 

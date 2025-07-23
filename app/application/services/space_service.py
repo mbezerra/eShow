@@ -1,16 +1,26 @@
 from typing import List, Optional, Union, TYPE_CHECKING
 from domain.entities.space import Space
 from domain.repositories.space_repository import SpaceRepository
+from domain.repositories.profile_repository import ProfileRepository
 
 if TYPE_CHECKING:
     from infrastructure.database.models.space_model import SpaceModel
 
 class SpaceService:
-    def __init__(self, space_repository: SpaceRepository):
+    def __init__(self, space_repository: SpaceRepository, profile_repository: ProfileRepository):
         self.space_repository = space_repository
+        self.profile_repository = profile_repository
 
     def create_space(self, space_data: dict) -> Space:
         """Criar um novo espaço"""
+        # Validar se o profile tem role_id = 3 (ESPACO)
+        profile = self.profile_repository.get_by_id(space_data["profile_id"])
+        if not profile:
+            raise ValueError(f"Profile com ID {space_data['profile_id']} não encontrado")
+        
+        if profile.role_id != 3:
+            raise ValueError("Apenas perfis com role 'ESPACO' podem cadastrar espaços")
+        
         space = Space(
             profile_id=space_data["profile_id"],
             space_type_id=space_data["space_type_id"],
@@ -62,6 +72,15 @@ class SpaceService:
         space = self.space_repository.get_by_id(space_id)
         if not space:
             raise ValueError(f"Space with id {space_id} not found")
+
+        # Validar role se profile_id estiver sendo alterado
+        if "profile_id" in space_data:
+            profile = self.profile_repository.get_by_id(space_data["profile_id"])
+            if not profile:
+                raise ValueError(f"Profile com ID {space_data['profile_id']} não encontrado")
+            
+            if profile.role_id != 3:
+                raise ValueError("Apenas perfis com role 'ESPACO' podem cadastrar espaços")
 
         # Atualizar apenas os campos fornecidos (atualização parcial)
         if "profile_id" in space_data:

@@ -1073,7 +1073,7 @@ curl -X POST "http://localhost:8000/api/v1/spaces/" \
   -H "Authorization: Bearer <TOKEN>" \
   -H "Content-Type: application/json" \
   -d '{
-    "profile_id": 1,
+    "profile_id": 3,
     "space_type_id": 1,
     "event_type_id": null,
     "festival_type_id": null,
@@ -1098,6 +1098,10 @@ curl -X POST "http://localhost:8000/api/v1/spaces/" \
 - `profile_id`: ID do profile associado (deve existir na tabela profiles)
 - `space_type_id`: ID do tipo de espaço (deve existir na tabela space_types)
 - `acesso`: Tipo de acesso ("Público" ou "Privado")
+
+**⚠️ RESTRIÇÃO IMPORTANTE:**
+- Apenas profiles com `role_id = 3` (role "ESPACO") podem cadastrar espaços
+- Se tentar usar um profile com role diferente, retornará erro 400: "Apenas perfis com role 'ESPACO' podem cadastrar espaços"
 - `dias_apresentacao`: Lista de dias da semana para apresentação
 - `duracao_apresentacao`: Duração da apresentação em horas (deve ser > 0)
 - `valor_hora`: Valor por hora em reais (deve ser >= 0)
@@ -1308,6 +1312,8 @@ curl -X PUT "http://localhost:8000/api/v1/spaces/1" \
 ```
 
 **Atualização Parcial:** Todos os campos são opcionais na atualização. Apenas os campos fornecidos serão atualizados, os demais serão preservados com seus valores atuais.
+
+**⚠️ RESTRIÇÃO:** Se for alterado o `profile_id`, o novo profile deve ter `role_id = 3` (role "ESPACO").
 
 ### 9. Deletar Espaço
 ```bash

@@ -9,6 +9,10 @@ def main():
         {"name": "Alice Silva", "email": "alice@example.com", "password": get_password_hash("senha123"), "is_active": True},
         {"name": "Bruno Souza", "email": "bruno@example.com", "password": get_password_hash("senha456"), "is_active": True},
         {"name": "Carla Lima", "email": "carla@example.com", "password": get_password_hash("senha789"), "is_active": True},
+        # Novos usuários para espaços
+        {"name": "Bar do Centro", "email": "bar.centro@example.com", "password": get_password_hash("espaco123"), "is_active": True},
+        {"name": "Casa de Shows Musical", "email": "casa.musical@example.com", "password": get_password_hash("espaco456"), "is_active": True},
+        {"name": "Pub Rock Station", "email": "pub.rock@example.com", "password": get_password_hash("espaco789"), "is_active": True},
     ]
     for user in users:
         if not db.query(UserModel).filter_by(email=user["email"]).first():

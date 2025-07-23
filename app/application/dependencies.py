@@ -107,5 +107,8 @@ def get_festival_type_service(festival_type_repository: FestivalTypeRepository =
 def get_space_repository(db=Depends(get_database_session)) -> SpaceRepository:
     return SpaceRepositoryImpl(db)
 
-def get_space_service(space_repository: SpaceRepository = Depends(get_space_repository)) -> SpaceService:
-    return SpaceService(space_repository) 
+def get_space_service(
+    space_repository: SpaceRepository = Depends(get_space_repository),
+    profile_repository = Depends(get_profile_repository)
+) -> SpaceService:
+    return SpaceService(space_repository, profile_repository) 
