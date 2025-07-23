@@ -31,6 +31,13 @@ class ArtistRelation(BaseModel):
     created_at: datetime
     updated_at: datetime
 
+    @validator('dias_apresentacao', pre=True)
+    def parse_dias_apresentacao(cls, v):
+        if isinstance(v, str):
+            import json
+            return json.loads(v)
+        return v
+
     class Config:
         from_attributes = True
 
