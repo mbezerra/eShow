@@ -6,4 +6,8 @@ from .artist_type_model import ArtistTypeModel
 from .musical_style_model import MusicalStyleModel
 from .artist_model import ArtistModel
 from .artist_musical_style_model import ArtistMusicalStyleModel
-from .space_model import SpaceModel 
+from .space_model import SpaceModel
+from .event_type_model import EventTypeModel
+from .space_type_model import SpaceTypeModel
+from .festival_type_model import FestivalTypeModel
+from .space_event_type_model import SpaceEventTypeModel 

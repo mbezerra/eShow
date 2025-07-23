@@ -1,0 +1,7 @@
+# Este arquivo garante que o diretório static/banners seja versionado no Git
+# Aqui devem ser armazenadas as imagens dos banners dos eventos (Space-Event Types)
+# Exemplo de paths:
+# - /static/banners/jazz-night.jpg
+# - /static/banners/electronic-festival.jpg
+# - /static/banners/acoustic-show.jpg
+# - /static/banners/festa-junina.jpg 

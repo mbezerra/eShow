@@ -29,6 +29,9 @@ from app.application.services.festival_type_service import FestivalTypeService
 from domain.repositories.space_repository import SpaceRepository
 from infrastructure.repositories.space_repository_impl import SpaceRepositoryImpl
 from app.application.services.space_service import SpaceService
+from domain.repositories.space_event_type_repository import SpaceEventTypeRepository
+from infrastructure.repositories.space_event_type_repository_impl import SpaceEventTypeRepositoryImpl
+from app.application.services.space_event_type_service import SpaceEventTypeService
 from fastapi import Depends
 
 def get_user_repository():
@@ -114,4 +117,10 @@ def get_space_service(
     space_repository: SpaceRepository = Depends(get_space_repository),
     profile_repository = Depends(get_profile_repository)
 ) -> SpaceService:
-    return SpaceService(space_repository, profile_repository) 
+    return SpaceService(space_repository, profile_repository)
+
+def get_space_event_type_repository(db=Depends(get_database_session)) -> SpaceEventTypeRepository:
+    return SpaceEventTypeRepositoryImpl(db)
+
+def get_space_event_type_service(space_event_type_repository: SpaceEventTypeRepository = Depends(get_space_event_type_repository)) -> SpaceEventTypeService:
+    return SpaceEventTypeService(space_event_type_repository) 

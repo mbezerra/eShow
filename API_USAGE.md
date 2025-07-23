@@ -1357,3 +1357,198 @@ curl -X DELETE "http://localhost:8000/api/v1/spaces/1" \
    - Paginação disponível para listagens grandes
    - Índices nos campos de relacionamento para busca eficiente
    - Use relacionamentos apenas quando necessário para otimizar performance
+
+## Relacionamento Space-Event Types (N:N)
+
+Endpoint para gerenciar o relacionamento N:N entre espaços e tipos de evento. Este relacionamento permite criar eventos específicos associando um espaço a um tipo de evento com informações detalhadas como tema, descrição, data, horário e banners.
+
+### Campos
+- `id`: Identificador único do relacionamento
+- `space_id`: ID do espaço (relacionamento com space)
+- `event_type_id`: ID do tipo de evento (relacionamento com event_type)
+- `tema`: Tema do evento (string obrigatória)
+- `descricao`: Descrição do evento (string obrigatória)
+- `data`: Data e horário do evento (datetime obrigatório)
+- `horario`: Horário do evento (string obrigatória)
+- `link_divulgacao`: Link para divulgação do evento (string opcional)
+- `banner`: Path local da imagem do banner (string opcional)
+- `created_at`: Data de criação do relacionamento
+
+### 1. Criar Relacionamento
+```bash
+curl -X POST "http://localhost:8000/api/v1/space-event-types/" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "space_id": 1,
+    "event_type_id": 2,
+    "tema": "Show de Rock Especial",
+    "descricao": "Uma noite especial com as melhores bandas de rock da cidade",
+    "data": "2025-08-15T20:00:00",
+    "horario": "20:00",
+    "link_divulgacao": "https://example.com/rock-show",
+    "banner": "/static/banners/rock-show.jpg"
+  }'
+```
+
+**Resposta:**
+```json
+{
+  "space_id": 1,
+  "event_type_id": 2,
+  "tema": "Show de Rock Especial",
+  "descricao": "Uma noite especial com as melhores bandas de rock da cidade",
+  "link_divulgacao": "https://example.com/rock-show",
+  "banner": "/static/banners/rock-show.jpg",
+  "data": "2025-08-15T20:00:00",
+  "horario": "20:00",
+  "id": 1,
+  "created_at": "2025-07-23T11:33:42"
+}
+```
+
+### 2. Listar Todos os Relacionamentos
+```bash
+curl -X GET "http://localhost:8000/api/v1/space-event-types/" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Resposta:**
+```json
+{
+  "items": [
+    {
+      "space_id": 1,
+      "event_type_id": 1,
+      "tema": "Noite de Jazz Clássico",
+      "descricao": "Uma noite especial dedicada aos grandes clássicos do jazz",
+      "link_divulgacao": "https://example.com/jazz-classico",
+      "banner": "/static/banners/jazz-night.jpg",
+      "data": "2025-07-30T20:00:00",
+      "horario": "20:00",
+      "id": 1,
+      "created_at": "2025-07-23T11:28:23"
+    }
+  ]
+}
+```
+
+### 3. Obter Relacionamento por ID
+```bash
+curl -X GET "http://localhost:8000/api/v1/space-event-types/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### 4. Obter Eventos de um Espaço
+```bash
+curl -X GET "http://localhost:8000/api/v1/space-event-types/space/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### 5. Obter Espaços de um Tipo de Evento
+```bash
+curl -X GET "http://localhost:8000/api/v1/space-event-types/event-type/2" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### 6. Obter Relacionamentos Específicos (Espaço + Tipo de Evento)
+```bash
+curl -X GET "http://localhost:8000/api/v1/space-event-types/space/1/event-type/2" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### 7. Atualizar Relacionamento
+```bash
+curl -X PUT "http://localhost:8000/api/v1/space-event-types/1" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tema": "Show de Rock Atualizado",
+    "descricao": "Descrição atualizada do evento",
+    "horario": "21:00"
+  }'
+```
+
+**Resposta:**
+```json
+{
+  "space_id": 1,
+  "event_type_id": 2,
+  "tema": "Show de Rock Atualizado",
+  "descricao": "Descrição atualizada do evento",
+  "link_divulgacao": "https://example.com/rock-show",
+  "banner": "/static/banners/rock-show.jpg",
+  "data": "2025-08-15T20:00:00",
+  "horario": "21:00",
+  "id": 1,
+  "created_at": "2025-07-23T11:33:42"
+}
+```
+
+### 8. Deletar Relacionamento Específico
+```bash
+curl -X DELETE "http://localhost:8000/api/v1/space-event-types/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Resposta:**
+```json
+{
+  "message": "Relacionamento 1 foi deletado com sucesso"
+}
+```
+
+### 9. Deletar Todos os Relacionamentos de um Espaço
+```bash
+curl -X DELETE "http://localhost:8000/api/v1/space-event-types/space/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Resposta:**
+```json
+{
+  "message": "Todos os relacionamentos do espaço 1 foram deletados com sucesso"
+}
+```
+
+### 10. Deletar Todos os Relacionamentos de um Tipo de Evento
+```bash
+curl -X DELETE "http://localhost:8000/api/v1/space-event-types/event-type/2" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Resposta:**
+```json
+{
+  "message": "Todos os relacionamentos do tipo de evento 2 foram deletados com sucesso"
+}
+```
+
+### Observações Importantes
+
+1. **Validações:**
+   - O espaço e o tipo de evento devem existir antes de criar o relacionamento
+   - Os campos `tema`, `descricao`, `data` e `horario` são obrigatórios
+   - A data deve ser um datetime válido
+   - Não há restrição de relacionamentos duplicados (um espaço pode ter múltiplos eventos do mesmo tipo)
+
+2. **Campos de Banner:**
+   - O campo `banner` armazena o path local da imagem (ex: `/static/banners/evento.jpg`)
+   - As imagens devem ser salvas no diretório `static/banners/` do projeto
+   - O servidor está configurado para servir arquivos estáticos em `/static/`
+
+3. **Operações em Lote:**
+   - É possível deletar todos os relacionamentos de um espaço específico
+   - É possível deletar todos os relacionamentos de um tipo de evento específico
+   - Útil para limpeza ou alterações massivas
+
+4. **Flexibilidade:**
+   - Permite múltiplos eventos do mesmo tipo em um espaço
+   - Campos opcionais para link de divulgação e banner
+   - Atualização parcial de campos
+
+5. **Casos de Uso:**
+   - Criar eventos específicos para espaços
+   - Gerenciar programação de eventos
+   - Associar informações detalhadas a combinações espaço-evento
+   - Controlar banners e divulgação por evento

@@ -166,5 +166,17 @@ O sistema implementa controle de acesso baseado em roles para garantir que apena
 
 **⚠️ RESTRIÇÃO IMPORTANTE**: Apenas profiles com `role_id = 3` (role "ESPACO") podem cadastrar espaços.
 
+### Space-Event Types (`/api/v1/space-event-types/`) - Requer autenticação
+- `POST /` - Criar novo relacionamento entre espaço e tipo de evento
+- `GET /` - Listar todos os relacionamentos
+- `GET /{space_event_type_id}` - Obter relacionamento por ID
+- `GET /space/{space_id}` - Obter todos os eventos de um espaço
+- `GET /event-type/{event_type_id}` - Obter todos os espaços de um tipo de evento
+- `GET /space/{space_id}/event-type/{event_type_id}` - Obter relacionamentos específicos
+- `PUT /{space_event_type_id}` - Atualizar relacionamento
+- `DELETE /{space_event_type_id}` - Deletar relacionamento específico
+- `DELETE /space/{space_id}` - Deletar todos os relacionamentos de um espaço
+- `DELETE /event-type/{event_type_id}` - Deletar todos os relacionamentos de um tipo de evento
+
 A API estará disponível em `http://localhost:8000`
 A documentação automática estará em `http://localhost:8000/docs` 

@@ -4,4 +4,5 @@ from .role import RoleCreate, RoleUpdate, RoleResponse
 from .profile import ProfileCreate, ProfileUpdate, ProfileResponse
 from .artist_type import ArtistTypeCreate, ArtistTypeUpdate, ArtistTypeResponse
 from .musical_style import MusicalStyleCreate, MusicalStyleUpdate, MusicalStyleResponse
-from .artist import ArtistCreate, ArtistUpdate, ArtistResponse 
+from .artist import ArtistCreate, ArtistUpdate, ArtistResponse
+from .space_event_type import SpaceEventTypeCreate, SpaceEventTypeUpdate, SpaceEventTypeResponse 

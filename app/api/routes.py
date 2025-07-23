@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api.endpoints import users, auth, roles, profiles, artist_types, musical_styles, artists, artist_musical_styles, space_types, event_types, festival_types, spaces
+from app.api.endpoints import users, auth, roles, profiles, artist_types, musical_styles, artists, artist_musical_styles, space_types, event_types, festival_types, spaces, space_event_types
 
 api_router = APIRouter()
 
@@ -15,4 +15,5 @@ api_router.include_router(artist_musical_styles.router, prefix="/artist-musical-
 api_router.include_router(space_types.router, prefix="/space-types", tags=["space_types"])
 api_router.include_router(event_types.router, prefix="/event-types", tags=["event_types"])
 api_router.include_router(festival_types.router, prefix="/festival-types", tags=["festival_types"])
-api_router.include_router(spaces.router, prefix="/spaces", tags=["spaces"]) 
+api_router.include_router(spaces.router, prefix="/spaces", tags=["spaces"])
+api_router.include_router(space_event_types.router, prefix="/space-event-types", tags=["space-event-types"]) 

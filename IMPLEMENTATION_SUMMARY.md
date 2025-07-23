@@ -121,6 +121,7 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 9. **event_types**: Tipos de evento (Aniversário, Casamento, Formatura, etc.)
 10. **festival_types**: Tipos de festival (Aniversário de Emancipação Política, Festa Religiosa, etc.)
 11. **spaces**: Espaços para apresentações com relacionamentos para profiles, space_types, event_types e festival_types
+12. **space_event_types**: Relacionamento N:N entre espaços e tipos de evento com dados específicos
 
 ### Relacionamentos
 - **users** ↔ **profiles**: 1:1
@@ -132,6 +133,7 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - **event_types** ↔ **spaces**: 1:N (opcional)
 - **festival_types** ↔ **spaces**: 1:N (opcional)
 - **artists** ↔ **musical_styles**: N:N (via artist_musical_style)
+- **spaces** ↔ **event_types**: N:N (via space_event_types)
 
 ## Endpoints Disponíveis
 
@@ -228,6 +230,18 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - `POST /api/v1/spaces/` - Criar espaço
 - `PUT /api/v1/spaces/{id}` - Atualizar espaço
 - `DELETE /api/v1/spaces/{id}` - Deletar espaço
+
+### Space-Event Types (Protegidos)
+- `GET /api/v1/space-event-types/` - Listar relacionamentos
+- `GET /api/v1/space-event-types/{id}` - Relacionamento por ID
+- `GET /api/v1/space-event-types/space/{space_id}` - Eventos de um espaço
+- `GET /api/v1/space-event-types/event-type/{event_type_id}` - Espaços de um tipo de evento
+- `GET /api/v1/space-event-types/space/{space_id}/event-type/{event_type_id}` - Relacionamentos específicos
+- `POST /api/v1/space-event-types/` - Criar relacionamento
+- `PUT /api/v1/space-event-types/{id}` - Atualizar relacionamento
+- `DELETE /api/v1/space-event-types/{id}` - Deletar relacionamento
+- `DELETE /api/v1/space-event-types/space/{space_id}` - Deletar todos de um espaço
+- `DELETE /api/v1/space-event-types/event-type/{event_type_id}` - Deletar todos de um tipo
 
 **Parâmetro `include_relations`**: Disponível nos endpoints GET de Artists e Spaces para incluir dados relacionados.
 
@@ -339,6 +353,7 @@ python test_artist_musical_styles.py
 - [x] **Gerenciamento de espaços** ✨
 - [x] **Sistema de controle de acesso por roles** ✨
 - [x] **Validação de roles para Artists e Spaces** ✨
+- [x] **Relacionamento N:N Space-Event Types** ✨
 - [x] Validações e tratamento de erros
 - [x] Documentação da API
 - [x] Scripts de inicialização
