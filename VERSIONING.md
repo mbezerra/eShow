@@ -1,8 +1,26 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.7.4** - Sistema de Controle de Acesso por Roles
+**v0.10.1** (2025-07-23) - Sistema de Bookings Completo e Testes da API
 
+- **SISTEMA DE BOOKINGS**: Implementação completa do sistema de agendamentos
+  - 4 tipos de booking: Artista→Espaço, Espaço→Artista, Evento Específico, Festival Específico
+  - Validações de regras de negócio por role: ADMIN não pode agendar, ARTISTA só agenda espaços, ESPAÇO só agenda artistas
+  - Filtros especializados: por profile, espaço, artista, evento, festival, período de datas
+  - CRUD completo com endpoints otimizados
+- **TESTES COMPLETOS**: Validação exaustiva de todos os endpoints da API
+  - Autenticação JWT: registro, login, refresh token - 100% funcional
+  - Sistema de bookings: 15+ endpoints testados com sucesso
+  - Validações de negócio: mensagens de erro corretas implementadas
+  - Filtros e consultas: todos os endpoints de consulta funcionando
+- **DOCUMENTAÇÃO**: API_USAGE.md atualizada com prefixos corretos (/api/v1/)
+- **VERSIONAMENTO**: Sistema automático de versionamento via Git tags implementado
+- **ARQUITETURA**: API executando perfeitamente com arquitetura hexagonal
+
+> **Nota sobre Versionamento:** A partir da v0.10.1, o projeto adotou um sistema de versionamento automático baseado em Git tags. As versões intermediárias (v0.8.x, v0.9.x, v0.10.0) foram incrementos de desenvolvimento que culminaram na implementação completa do sistema de bookings e testes exaustivos da API. O salto de versão reflete a maturidade alcançada pelo sistema.
+
+### v0.7.4 (2025-07-23)
+- **Sistema de Controle de Acesso por Roles**
 - **NOVA FUNCIONALIDADE**: Sistema de validação de roles implementado
 - **Artists**: Apenas profiles com `role_id = 2` (role "ARTISTA") podem cadastrar artistas
 - **Spaces**: Apenas profiles com `role_id = 3` (role "ESPACO") podem cadastrar espaços
@@ -14,7 +32,7 @@
 - Documentação atualizada com novas restrições
 - Validação aplicada tanto na criação quanto na atualização
 
-### v0.7.3 (2024-07-23)
+### v0.7.3 (2025-07-23)
 - **Correção do endpoint PUT de Spaces**
 - Implementação de atualização parcial para Spaces
 - Todos os campos do SpaceUpdate agora são opcionais
@@ -23,7 +41,7 @@
 - Documentação atualizada com exemplo de resposta
 - Funcionalidade de atualização parcial totalmente operacional
 
-### v0.7.2 (2024-07-23)
+### v0.7.2 (2025-07-23)
 - **Correção do parâmetro include_relations**
 - `include_relations=false`: Retorna apenas campos básicos (21 campos)
 - `include_relations=true`: Retorna campos básicos + relacionamentos (25 campos)
@@ -32,7 +50,7 @@
 - Performance otimizada: relacionamentos só são carregados quando solicitados
 - Correção aplicada a todos os endpoints GET de Spaces
 
-### v0.7.1 (2024-07-23)
+### v0.7.1 (2025-07-23)
 - **Spaces e parâmetro include_relations**
 - Implementação completa dos endpoints Spaces (CRUD)
 - Entidade Space com relacionamentos para profiles, space_types, event_types e festival_types
@@ -46,7 +64,7 @@
 - Documentação completa atualizada em todos os arquivos
 - Performance otimizada evitando N+1 queries
 
-### v0.7.0 (2024-07-22)
+### v0.7.0 (2025-07-22)
 - **Festival Types e expansão completa do sistema**
 - Implementação completa dos endpoints Festival Types (CRUD)
 - 14 tipos de festival pré-cadastrados (Aniversário de Emancipação Política, Festa Religiosa, etc.)
@@ -58,7 +76,7 @@
 - Migração Alembic para tabela festival_types
 - Dados iniciais populados automaticamente
 
-### v0.6.0 (2024-07-22)
+### v0.6.0 (2025-07-22)
 - **Event Types e expansão do sistema**
 - Implementação completa dos endpoints Event Types (CRUD)
 - 7 tipos de evento pré-cadastrados (Aniversário, Casamento, Formatura, etc.)
@@ -70,7 +88,7 @@
 - Migração Alembic para tabela event_types
 - Dados iniciais populados automaticamente
 
-### v0.5.0 (2024-07-22)
+### v0.5.0 (2025-07-22)
 - **Space Types e melhorias de infraestrutura**
 - Implementação completa dos endpoints Space Types (CRUD)
 - 15 tipos de espaço pré-cadastrados (Bar, Restaurante, Clube, etc.)
@@ -82,7 +100,7 @@
 - Migração Alembic para tabela space_types
 - Dados iniciais populados automaticamente
 
-### v0.4.0 (2024-07-22)
+### v0.4.0 (2025-07-22)
 - **Relacionamento N:N Artists-Musical Styles, testes e limpeza**
 - Implementação completa dos endpoints N:N entre Artists e Musical Styles
 - Testes automatizados dos novos endpoints
@@ -90,7 +108,7 @@
 - Limpeza de arquivos de teste temporários
 - Ajustes finais e documentação
 
-### v0.3.0 (2024-07-19)
+### v0.3.0 (2025-07-19)
 - **Artists endpoints with relationships**
 - Endpoints de Artists (CRUD completo)
 - Relacionamentos Profile e Artist Type
@@ -100,7 +118,7 @@
 - Scripts de migração atualizados
 - Testes automatizados para relacionamentos
 
-### v0.2.0 (2024-07-19)
+### v0.2.0 (2025-07-19)
 - **Enhanced user management**
 - Endpoints de Profiles (CRUD completo)
 - Endpoints de Roles (CRUD completo)
@@ -109,13 +127,13 @@
 - Sistema de relacionamentos entre entidades
 - Validação avançada de dados
 
-### v0.1.1 (2024-07-19)
+### v0.1.1 (2025-07-19)
 - **Bug fixes and improvements**
 - Correções no sistema de autenticação
 - Melhorias na documentação
 - Otimizações de performance
 
-### v0.1.0 (2024-07-19)
+### v0.1.0 (2025-07-19)
 - **Initial release**
 - Arquitetura hexagonal implementada
 - Sistema de autenticação JWT
@@ -185,17 +203,24 @@ git checkout v0.1.0
 
 ## Próximas Versões Planejadas
 
-### v0.2.0
+### v0.11.0
 - Migração para PostgreSQL
 - Sistema de logs estruturado
-- Testes automatizados
-- Rate limiting
+- Rate limiting para endpoints
+- Melhorias de performance nos bookings
+
+### v0.12.0
+- Interface web de administração
+- Relatórios de agendamentos
+- Sistema de notificações
+- Backup automático de dados
 
 ### v1.0.0
 - API estável para produção
 - Documentação completa
 - Performance otimizada
-- Monitoramento e métricas 
+- Monitoramento e métricas
+- Certificação de qualidade para produção 
 
 # Sistema de Versionamento Automático
 
@@ -232,17 +257,17 @@ python version.py major
 ```bash
 # Verificar versão atual
 $ python version.py show
-Versão atual: 0.1.1
+Versão atual: 0.10.1
 
 # Criar nova versão patch
 $ python version.py patch
-Versão atual: 0.1.1
-Nova versão: 0.1.2
+Versão atual: 0.10.1
+Nova versão: 0.10.2
 Deseja criar a tag e fazer push? (y/N): y
-Tag criada: v0.1.2
-Tag enviada para o repositório remoto: v0.1.2
-✅ Versão 0.1.2 criada com sucesso!
-📦 A API agora usará automaticamente a versão 0.1.2
+Tag criada: v0.10.2
+Tag enviada para o repositório remoto: v0.10.2
+✅ Versão 0.10.2 criada com sucesso!
+📦 A API agora usará automaticamente a versão 0.10.2
 ```
 
 ## Convenções de Versionamento
@@ -273,8 +298,8 @@ Resposta:
 {
     "status": "healthy",
     "architecture": "hexagonal",
-    "timestamp": "2025-07-21T13:23:40.081315",
-    "version": "0.1.1",
+    "timestamp": "2025-07-23T13:21:51.256633",
+    "version": "0.10.1",
     "copyright": "© 2025 eShow. Todos os direitos reservados."
 }
 ```
