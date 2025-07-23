@@ -1,17 +1,43 @@
 from typing import List, Optional
 from datetime import datetime
 from domain.repositories.booking_repository import BookingRepository
+from domain.repositories.profile_repository import ProfileRepository
 from domain.entities.booking import Booking
 from app.schemas.booking import BookingCreate, BookingUpdate
 
 class BookingService:
     """Serviço de aplicação para agendamentos/reservas"""
     
-    def __init__(self, booking_repository: BookingRepository):
+    def __init__(self, booking_repository: BookingRepository, profile_repository: ProfileRepository):
         self.booking_repository = booking_repository
+        self.profile_repository = profile_repository
     
     def create_booking(self, booking_data: BookingCreate) -> Booking:
         """Criar um novo agendamento"""
+        
+        # Validar regras de negócio por role
+        profile = self.profile_repository.get_by_id(booking_data.profile_id)
+        if not profile:
+            raise ValueError(f"Profile com ID {booking_data.profile_id} não encontrado")
+        
+        # Regra 1: ADMIN (role_id = 1) NUNCA faz agendamento
+        if profile.role_id == 1:
+            raise ValueError("Usuários com role ADMIN não podem fazer agendamentos")
+        
+        # Regra 2: ARTISTA (role_id = 2) NUNCA agenda artist_id, apenas space_id
+        elif profile.role_id == 2:
+            if booking_data.artist_id is not None:
+                raise ValueError("Usuários com role ARTISTA não podem agendar artistas, apenas espaços")
+            if booking_data.space_id is None and booking_data.space_event_type_id is None and booking_data.space_festival_type_id is None:
+                raise ValueError("Usuários com role ARTISTA devem agendar espaços, eventos ou festivais")
+        
+        # Regra 3: ESPACO (role_id = 3) NUNCA agenda space_id, apenas artist_id  
+        elif profile.role_id == 3:
+            if booking_data.space_id is not None:
+                raise ValueError("Usuários com role ESPACO não podem agendar espaços, apenas artistas")
+            if booking_data.artist_id is None and booking_data.space_event_type_id is None and booking_data.space_festival_type_id is None:
+                raise ValueError("Usuários com role ESPACO devem agendar artistas, eventos ou festivais")
+        
         booking = Booking(
             profile_id=booking_data.profile_id,
             data_inicio=booking_data.data_inicio,

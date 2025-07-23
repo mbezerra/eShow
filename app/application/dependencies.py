@@ -140,5 +140,8 @@ def get_space_festival_type_service(space_festival_type_repository: SpaceFestiva
 def get_booking_repository(db=Depends(get_database_session)) -> BookingRepository:
     return BookingRepositoryImpl(db)
 
-def get_booking_service(booking_repository: BookingRepository = Depends(get_booking_repository)) -> BookingService:
-    return BookingService(booking_repository) 
+def get_booking_service(
+    booking_repository: BookingRepository = Depends(get_booking_repository),
+    profile_repository = Depends(get_profile_repository)
+) -> BookingService:
+    return BookingService(booking_repository, profile_repository) 

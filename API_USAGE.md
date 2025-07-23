@@ -6,7 +6,7 @@
 
 ### 1. Registro de Usuário
 ```bash
-curl -X POST "http://localhost:8000/api/auth/register" \
+curl -X POST "http://localhost:8000/api/v1/auth/register" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "João Silva",
@@ -26,7 +26,7 @@ curl -X POST "http://localhost:8000/api/auth/register" \
 
 ### 2. Login
 ```bash
-curl -X POST "http://localhost:8000/api/auth/login" \
+curl -X POST "http://localhost:8000/api/v1/auth/login" \
   -H "Content-Type: application/json" \
   -d '{
     "email": "joao@example.com",
@@ -44,7 +44,7 @@ curl -X POST "http://localhost:8000/api/auth/login" \
 
 ### 3. Renovar Token
 ```bash
-curl -X POST "http://localhost:8000/api/auth/refresh" \
+curl -X POST "http://localhost:8000/api/v1/auth/refresh" \
   -H "Content-Type: application/json" \
   -d '{
     "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
@@ -232,7 +232,12 @@ curl -X POST "http://localhost:8000/api/v1/bookings/" \
 
 ### Validações Implementadas
 
-#### Regras de Negócio
+#### Regras de Negócio por Role
+- **ADMIN (role_id = 1):** NUNCA pode fazer agendamentos
+- **ARTISTA (role_id = 2):** NUNCA pode agendar artistas (artist_id), apenas espaços, eventos ou festivais
+- **ESPAÇO (role_id = 3):** NUNCA pode agendar espaços (space_id), apenas artistas, eventos ou festivais
+
+#### Regras Gerais
 - **Relacionamento único:** Apenas um dos campos (space_id, artist_id, space_event_type_id, space_festival_type_id) pode estar preenchido
 - **Data fim posterior:** Data/hora de fim deve ser posterior à data/hora de início
 - **Profile obrigatório:** Todo agendamento deve estar vinculado a um profile
@@ -240,6 +245,21 @@ curl -X POST "http://localhost:8000/api/v1/bookings/" \
 
 #### Respostas de Erro
 ```json
+// ADMIN tentando fazer agendamento
+{
+  "detail": "Usuários com role ADMIN não podem fazer agendamentos"
+}
+
+// ARTISTA tentando agendar outro artista
+{
+  "detail": "Usuários com role ARTISTA não podem agendar artistas, apenas espaços"
+}
+
+// ESPAÇO tentando agendar outro espaço
+{
+  "detail": "Usuários com role ESPACO não podem agendar espaços, apenas artistas"
+}
+
 // Múltiplos relacionamentos
 {
   "detail": [

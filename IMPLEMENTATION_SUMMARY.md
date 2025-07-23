@@ -22,15 +22,13 @@
   - Migração de banco de dados aplicada
   - Dados de exemplo populados
 
-- **Sistema de Bookings (Agendamentos)**: Sistema completo de agendamentos/reservas
-  - 4 tipos de agendamentos: Espaço, Artista, Evento e Festival
-  - 11 endpoints REST funcionais
-  - Validações robustas e regras de negócio
-  - Filtros especializados (profile, space, artist, event, festival, date-range)
-  - Autenticação JWT obrigatória
-  - Migração de banco de dados aplicada
-  - 10 agendamentos de exemplo populados
-  - Testado completamente via API (18 testes realizados)
+### **📅 Sistema de Agendamentos (Bookings)**
+- **4 tipos de agendamentos:** Espaço, Artista, Evento e Festival
+- **Regras por role:** ADMIN não agenda, ARTISTA só agenda espaços/eventos/festivais, ESPAÇO só agenda artistas/eventos/festivais
+- **Validações robustas:** Datas, horários e relacionamentos únicos
+- **Filtros especializados:** Por profile, espaço, artista, evento, festival e período
+- **CRUD completo:** Criar, ler, atualizar e deletar agendamentos
+- **Autenticação obrigatória:** Todos endpoints protegidos por JWT
 
 ## Visão Geral
 API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Architecture) para gerenciamento de artistas, espaços e eventos musicais.
