@@ -13,4 +13,5 @@ from .festival_type_model import FestivalTypeModel
 from .space_event_type_model import SpaceEventTypeModel
 from .space_festival_type_model import SpaceFestivalTypeModel
 from .booking_model import BookingModel
-from .review_model import ReviewModel 
+from .review_model import ReviewModel
+from .financial_model import FinancialModel 

@@ -200,6 +200,63 @@ GROUP BY DATE(data_hora)
 ORDER BY data;
 ```
 
+## 📋 Estrutura de Dados - Financial
+
+### **Tabela Financials:**
+```sql
+CREATE TABLE financials (
+    id INTEGER PRIMARY KEY,
+    profile_id INTEGER NOT NULL REFERENCES profiles(id),
+    banco INTEGER NOT NULL CHECK (banco >= 1 AND banco <= 999),
+    agencia VARCHAR(10) NOT NULL,
+    conta VARCHAR(15) NOT NULL,
+    tipo_conta VARCHAR(20) NOT NULL CHECK (tipo_conta IN ('Poupança', 'Corrente')),
+    cpf_cnpj VARCHAR(20) NOT NULL,
+    tipo_chave_pix VARCHAR(20) NOT NULL CHECK (tipo_chave_pix IN ('CPF', 'CNPJ', 'Celular', 'E-mail', 'Aleatória')),
+    chave_pix VARCHAR(50) NOT NULL UNIQUE,
+    preferencia VARCHAR(10) NOT NULL CHECK (preferencia IN ('PIX', 'TED')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### **Características:**
+- ✅ **Chave PIX única**: Constraint de unicidade para evitar duplicações
+- ✅ **Validação de banco**: Códigos de 1 a 999 (padrão brasileiro)
+- ✅ **Tipos de conta**: Apenas "Poupança" ou "Corrente"
+- ✅ **Tipos de chave PIX**: 5 tipos suportados (CPF, CNPJ, Celular, E-mail, Aleatória)
+- ✅ **Preferências**: PIX ou TED para transferências
+- ✅ **Auditoria**: Campos created_at e updated_at automáticos
+- ✅ **Integridade**: Foreign key para profiles
+
+### **Consultas Úteis:**
+```sql
+-- Distribuição por banco
+SELECT banco, COUNT(*) as quantidade
+FROM financials 
+GROUP BY banco 
+ORDER BY quantidade DESC;
+
+-- Distribuição por tipo de chave PIX
+SELECT tipo_chave_pix, COUNT(*) as quantidade
+FROM financials 
+GROUP BY tipo_chave_pix 
+ORDER BY quantidade DESC;
+
+-- Registros por profile
+SELECT p.name, COUNT(f.id) as total_financials
+FROM profiles p
+LEFT JOIN financials f ON p.id = f.profile_id
+GROUP BY p.id, p.name
+ORDER BY total_financials DESC;
+
+-- Verificar chaves PIX duplicadas (não deve retornar nada)
+SELECT chave_pix, COUNT(*) as total
+FROM financials
+GROUP BY chave_pix
+HAVING COUNT(*) > 1;
+```
+
 ## 🎯 Próximos Passos
 
 1. **Desenvolvimento**: Continuar com SQLite

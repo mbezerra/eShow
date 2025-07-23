@@ -1,35 +1,38 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.11.0** (2025-07-23) - Documentação Completa e Sistema Reviews Finalizado
+**v0.11.0** (2025-07-23) - Sistema Financial Implementado e Documentação Atualizada
 
-- **DOCUMENTAÇÃO COMPLETA**: Todas as documentações .md totalmente atualizadas
-  - README.md: Seção Reviews completa com 11 endpoints e regras de negócio
-  - ARCHITECTURE.md: Entidades, repositórios e relacionamentos Reviews incluídos
-  - IMPLEMENTATION_SUMMARY.md: Seção v0.10.3 detalhada com 25+ itens implementados
-  - DATABASE_STRATEGY.md: DDL da tabela reviews, consultas SQL úteis e comandos
-  - API_USAGE.md: Guia prático completo com 5 exemplos curl testáveis
-  - VERSIONING.md: Changelog organizado com marcos de desenvolvimento
-  - Estatísticas finais: **106 endpoints**, **15 entidades**, **55+ schemas**
-- **SISTEMA REVIEWS PRODUÇÃO-READY**: Sistema completamente funcional
-  - ✅ 11 endpoints REST testados e funcionando
-  - ✅ Validações robustas (notas 1-5, depoimento 10-1000 chars)
-  - ✅ Relacionamentos exclusivos com space_event_types/space_festival_types
-  - ✅ Filtros avançados (profile, nota, período, evento/festival)
-  - ✅ Parâmetro `include_relations=true` com dados relacionados
-  - ✅ Cálculo automático de médias de avaliação
-  - ✅ 6 reviews de exemplo com distribuição de notas
-- **VERSIONAMENTO AUTOMATIZADO**: Sistema de versioning Git tags implementado
-  - Incremento automático de versões: patch, minor, major
-  - Integração com pyproject.toml
-  - Tags Git sincronizadas com repositório remoto
-- **QUALIDADE DE CÓDIGO**: Arquitetura hexagonal madura
+- **SISTEMA FINANCIAL COMPLETO**: Sistema financeiro/bancário implementado
+  - ✅ 13 endpoints REST funcionais com autenticação JWT
+  - ✅ Gestão completa de dados bancários (banco, agência, conta, tipo)
+  - ✅ Sistema robusto de chaves PIX com 5 tipos: CPF, CNPJ, Celular, E-mail, Aleatória
+  - ✅ Validações específicas por tipo de chave PIX (formatos corretos)
+  - ✅ Garantia de unicidade de chaves PIX no sistema
+  - ✅ Preferências de transferência (PIX/TED)
+  - ✅ Relacionamento com profiles existentes
+  - ✅ Estatísticas em tempo real por banco e tipo de chave PIX
+  - ✅ Endpoint de verificação de disponibilidade de chave PIX
+  - ✅ Parâmetro `include_relations=true` para dados relacionados
+  - ✅ Migração de banco aplicada (tabela financials)
+  - ✅ 6 registros de exemplo com bancos reais (Itaú, Bradesco, Caixa, etc.)
+- **DOCUMENTAÇÃO ATUALIZADA**: Todos os 6 arquivos .md sincronizados
+  - README.md: Seção Financial completa com 13 endpoints e regras de negócio
+  - ARCHITECTURE.md: Entidade Financial, repositórios e relacionamentos incluídos
+  - IMPLEMENTATION_SUMMARY.md: Seção v0.11.0 detalhada com sistema Financial
+  - DATABASE_STRATEGY.md: DDL da tabela financials, consultas SQL e validações
+  - API_USAGE.md: Guia prático completo com exemplos curl para Financial
+  - VERSIONING.md: Changelog atualizado com marcos v0.11.0
+  - Estatísticas atualizadas: **119 endpoints**, **16 entidades**, **60+ schemas**
+- **ARQUITETURA HEXAGONAL MADURA**: Padrões estabelecidos seguidos fielmente
   - Separação clara de responsabilidades (Domain, Application, Infrastructure)
-  - Padrões Repository, Service, DTO consistentes
-  - Injeção de dependência bem estruturada
-  - Tratamento robusto de erros e validações
+  - Validações de negócio robustas na camada de domínio
+  - Repository Pattern com suporte a `include_relations`
+  - Service Layer com lógica de aplicação bem estruturada
+  - Schemas Pydantic com validações específicas por contexto
+  - Tratamento de erros padronizado e informativo
 
-> **Marco de Desenvolvimento:** A v0.11.0 marca a conclusão do sistema de Reviews e a finalização da documentação técnica completa. O projeto agora possui uma base sólida para expansão com todos os padrões arquiteturais estabelecidos e documentados.
+> **Marco de Desenvolvimento:** A v0.11.0 marca a implementação completa do sistema Financial com dados bancários e chaves PIX. O projeto agora possui 119 endpoints funcionais, 16 entidades de domínio e documentação técnica totalmente sincronizada.
 
 ### v0.10.3 (2025-07-23) - Sistema de Avaliações/Reviews Completo
 

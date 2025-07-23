@@ -1,6 +1,24 @@
 # Resumo da Implementação - eShow API
 
-## 🚀 Versão Atual: 0.10.3+
+## 🚀 Versão Atual: 0.11.0+
+
+### ✨ Funcionalidades Implementadas na v0.11.0
+
+#### **Sistema Financeiro/Bancário Completo:**
+
+- **Financial**: Sistema completo de dados financeiros/bancários com suporte a PIX
+  - 13 endpoints REST funcionais com autenticação JWT
+  - Gestão de dados bancários (banco, agência, conta, tipo de conta)
+  - Sistema completo de chaves PIX com 5 tipos: CPF, CNPJ, Celular, E-mail, Aleatória
+  - Validações robustas específicas por tipo de chave PIX
+  - Garantia de unicidade de chaves PIX no sistema
+  - Preferências de transferência (PIX/TED)
+  - Relacionamento com profiles existentes
+  - Estatísticas em tempo real por banco e tipo de chave PIX
+  - Parâmetro `include_relations=true` para carregar dados relacionados
+  - Endpoint de verificação de disponibilidade de chave PIX
+  - Migração de banco de dados aplicada
+  - Dados de exemplo populados (6 registros financeiros com bancos reais)
 
 ### ✨ Funcionalidades Implementadas na v0.10.3
 
@@ -196,6 +214,7 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 13. **space_festival_types**: Relacionamento N:N entre espaços e tipos de festival
 14. **bookings**: Agendamentos/reservas entre profiles
 15. **reviews**: Avaliações/reviews com notas de 1-5 estrelas
+16. **financials**: Dados financeiros/bancários com chaves PIX
 
 ### Relacionamentos
 - **users** ↔ **profiles**: 1:1
@@ -212,6 +231,7 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - **spaces** ↔ **festival_types**: N:N (via space_festival_types)
 - **space_event_types** ↔ **reviews**: 1:N (opcional, mutuamente exclusivo)
 - **space_festival_types** ↔ **reviews**: 1:N (opcional, mutuamente exclusivo)
+- **profiles** ↔ **financials**: 1:N
 
 ## Endpoints Disponíveis
 
@@ -360,6 +380,7 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - `init_space_festival_types.py` - Relacionamentos espaço-festival
 - `init_bookings.py` - Agendamentos de exemplo
 - `init_reviews.py` - Avaliações de exemplo (6 reviews com notas variadas)
+- `init_financials.py` - Dados financeiros de exemplo (6 registros com bancos reais)
 - `start_server.sh` - Script de inicialização automática do servidor
 
 ### Testes

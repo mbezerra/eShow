@@ -23,6 +23,7 @@ O domínio contém as regras de negócio e é independente de qualquer tecnologi
 - **Space**: Entidade que representa um espaço para apresentações
 - **Booking**: Entidade que representa um agendamento/reserva
 - **Review**: Entidade que representa uma avaliação/review com nota de 1-5 estrelas
+- **Financial**: Entidade que representa dados financeiros/bancários com informações PIX
 
 #### Repositórios (`domain/repositories/`)
 - **UserRepository**: Interface para operações de usuários
@@ -37,6 +38,7 @@ O domínio contém as regras de negócio e é independente de qualquer tecnologi
 - **SpaceRepository**: Interface para operações de espaços
 - **BookingRepository**: Interface para operações de agendamentos/reservas
 - **ReviewRepository**: Interface para operações de avaliações/reviews
+- **FinancialRepository**: Interface para operações de dados financeiros/bancários
 
 ### 2. Aplicação (`app/`)
 
@@ -59,6 +61,7 @@ A camada de aplicação contém os casos de uso e adaptadores de entrada.
 - **SpaceService**: Orquestra as operações de espaços
 - **BookingService**: Orquestra as operações de agendamentos/reservas
 - **ReviewService**: Orquestra as operações de avaliações/reviews
+- **FinancialService**: Orquestra as operações de dados financeiros/bancários
 
 ### 3. Infraestrutura (`infrastructure/`)
 
@@ -81,6 +84,7 @@ A camada de infraestrutura contém os adaptadores de saída.
 - **SpaceRepositoryImpl**: Implementação concreta do repositório de espaços
 - **BookingRepositoryImpl**: Implementação concreta do repositório de agendamentos/reservas
 - **ReviewRepositoryImpl**: Implementação concreta do repositório de avaliações/reviews
+- **FinancialRepositoryImpl**: Implementação concreta do repositório de dados financeiros/bancários
 
 ## Fluxo de Dados
 
@@ -196,6 +200,7 @@ GET /api/v1/spaces/1?include_relations=true
 - **Spaces**: profile, space_type, event_type, festival_type
 - **Bookings**: profile, space, artist, space_event_type, space_festival_type
 - **Reviews**: profile, space_event_type, space_festival_type
+- **Financials**: profile
 
 #### Benefícios
 - **Performance**: Evita N+1 queries

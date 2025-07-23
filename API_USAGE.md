@@ -616,6 +616,184 @@ curl -s -X GET "http://localhost:8000/api/v1/bookings/1?include_relations=true" 
 
 ---
 
+## 💰 Financial - Dados Financeiros/Bancários
+
+**Base URL:** `/api/v1/financials/`  
+**Autenticação:** Bearer Token obrigatório
+
+### **Criar Registro Financeiro**
+
+```bash
+# POST /api/v1/financials/
+curl -X POST "http://localhost:8000/api/v1/financials/" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "profile_id": 1,
+    "banco": 341,
+    "agencia": "1234",
+    "conta": "12345-6",
+    "tipo_conta": "Corrente",
+    "cpf_cnpj": "12345678901",
+    "tipo_chave_pix": "CPF",
+    "chave_pix": "12345678901",
+    "preferencia": "PIX"
+  }'
+```
+
+### **Buscar por ID**
+
+```bash
+# GET /api/v1/financials/{id}
+curl -X GET "http://localhost:8000/api/v1/financials/1" \
+  -H "Authorization: Bearer $TOKEN"
+
+# Com relacionamentos
+curl -X GET "http://localhost:8000/api/v1/financials/1?include_relations=true" \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+### **Filtros Especializados**
+
+```bash
+# Por banco específico
+curl -X GET "http://localhost:8000/api/v1/financials/banco/341" \
+  -H "Authorization: Bearer $TOKEN"
+
+# Por tipo de conta
+curl -X GET "http://localhost:8000/api/v1/financials/tipo-conta/Poupança" \
+  -H "Authorization: Bearer $TOKEN"
+
+# Por tipo de chave PIX
+curl -X GET "http://localhost:8000/api/v1/financials/tipo-chave-pix/EMAIL" \
+  -H "Authorization: Bearer $TOKEN"
+
+# Por chave PIX específica
+curl -X GET "http://localhost:8000/api/v1/financials/chave-pix/usuario@example.com" \
+  -H "Authorization: Bearer $TOKEN"
+
+# Por preferência de transferência
+curl -X GET "http://localhost:8000/api/v1/financials/preferencia/PIX" \
+  -H "Authorization: Bearer $TOKEN"
+
+# Por CPF/CNPJ
+curl -X GET "http://localhost:8000/api/v1/financials/cpf-cnpj/12345678901" \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+### **Verificação de Chave PIX**
+
+```bash
+# Verificar se chave PIX está disponível
+curl -X GET "http://localhost:8000/api/v1/financials/check-chave-pix/nova@chave.com" \
+  -H "Authorization: Bearer $TOKEN"
+
+# Verificar excluindo um ID específico (para updates)
+curl -X GET "http://localhost:8000/api/v1/financials/check-chave-pix/chave@test.com?exclude_id=1" \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+### **Estatísticas**
+
+```bash
+# Estatísticas por banco
+curl -X GET "http://localhost:8000/api/v1/financials/statistics/banks" \
+  -H "Authorization: Bearer $TOKEN" | jq
+
+# Estatísticas por tipo de chave PIX
+curl -X GET "http://localhost:8000/api/v1/financials/statistics/pix-types" \
+  -H "Authorization: Bearer $TOKEN" | jq
+```
+
+### **Atualizar Registro**
+
+```bash
+# PUT /api/v1/financials/{id}
+curl -X PUT "http://localhost:8000/api/v1/financials/1" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "banco": 237,
+    "agencia": "5678",
+    "conta": "98765-4",
+    "tipo_conta": "Poupança",
+    "chave_pix": "novachave@email.com",
+    "tipo_chave_pix": "E-mail",
+    "preferencia": "TED"
+  }'
+```
+
+### **Regras de Negócio**
+
+- **Código do banco:** Entre 1 e 999 (padrão brasileiro)
+- **Chave PIX única:** Não pode haver duplicatas no sistema
+- **Validação por tipo:**
+  - CPF: 11 dígitos
+  - CNPJ: 14 dígitos  
+  - Celular: 10 ou 11 dígitos
+  - E-mail: Formato válido de email
+  - Aleatória: 32-36 caracteres
+- **Profile_id imutável:** Não pode ser alterado após criação
+- **Tipos de conta:** "Poupança" ou "Corrente"
+- **Preferências:** "PIX" ou "TED"
+
+### **Exemplo Prático: Gerenciar Dados Bancários**
+
+```bash
+# 1. Login
+TOKEN=$(curl -s -X POST "http://localhost:8000/api/v1/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"email": "admin@eshow.com", "password": "admin123"}' | jq -r '.access_token')
+
+# 2. Criar dados financeiros
+curl -X POST "http://localhost:8000/api/v1/financials/" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "profile_id": 1,
+    "banco": 104,
+    "agencia": "0001",
+    "conta": "12345-6",
+    "tipo_conta": "Corrente",
+    "cpf_cnpj": "12345678901",
+    "tipo_chave_pix": "CPF",
+    "chave_pix": "12345678901",
+    "preferencia": "PIX"
+  }' | jq
+
+# 3. Verificar disponibilidade antes de atualizar
+curl -X GET "http://localhost:8000/api/v1/financials/check-chave-pix/novachave@test.com" \
+  -H "Authorization: Bearer $TOKEN" | jq
+
+# 4. Listar por banco
+curl -X GET "http://localhost:8000/api/v1/financials/banco/104" \
+  -H "Authorization: Bearer $TOKEN" | jq
+
+# 5. Ver estatísticas
+curl -X GET "http://localhost:8000/api/v1/financials/statistics/banks" \
+  -H "Authorization: Bearer $TOKEN" | jq
+```
+
+### **Parâmetro `include_relations`**
+
+```bash
+# Comparar resposta com e sem relacionamentos
+echo "Sem relacionamentos:"
+curl -s -X GET "http://localhost:8000/api/v1/financials/1?include_relations=false" \
+  -H "Authorization: Bearer $TOKEN" | jq .profile
+
+echo "Com relacionamentos:"
+curl -s -X GET "http://localhost:8000/api/v1/financials/1?include_relations=true" \
+  -H "Authorization: Bearer $TOKEN" | jq .profile
+```
+
+### **Resultado Esperado**
+- **Sem relacionamentos:** `profile: null`
+- **Com relacionamentos:** Objeto profile completo com name, email, address, etc.
+- **Campos extras incluídos:** `profile` (dados completos do profile associado)
+
+---
+
 ## 🔧 Configuração de Desenvolvimento
 
 ```API_USAGE.md

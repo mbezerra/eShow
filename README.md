@@ -10,17 +10,18 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Administração de Espaços** e tipos de evento
 - **Sistema de Agendamentos/Reservas** (Bookings)
 - **Sistema de Avaliações/Reviews** com notas de 1 a 5 estrelas
+- **Sistema Financeiro/Bancário** com dados PIX e transferências
 - **Relacionamentos N:N** entre entidades
 - **API REST** completa com documentação automática
 - **Arquitetura Hexagonal** para facilitar manutenção
 
 ## 📊 **Estatísticas do Projeto**
 
-- **Total de Endpoints:** 106 (+11 endpoints Reviews)
-- **Entidades de Domínio:** 15 (incluindo Review)
+- **Total de Endpoints:** 119 (+13 endpoints Financial)
+- **Entidades de Domínio:** 16 (incluindo Review e Financial)
 - **Relacionamentos N:N:** 3
-- **Tabelas no Banco:** 15 (incluindo reviews)
-- **Schemas Pydantic:** 55+ (incluindo schemas de Reviews)
+- **Tabelas no Banco:** 16 (incluindo reviews e financials)
+- **Schemas Pydantic:** 60+ (incluindo schemas de Reviews e Financial)
 - **Cobertura de Testes:** Em desenvolvimento
 
 ## 📁 **Estrutura do Projeto**
@@ -231,6 +232,35 @@ O sistema implementa controle de acesso baseado em roles para garantir que apena
 - Depoimento deve ter no mínimo 10 caracteres e máximo 1000
 - Cada review deve estar associado a UM space_event_type_id OU UM space_festival_type_id (não ambos)
 - Profile_id não pode ser alterado após criação do review
+
+### Financial (`/api/v1/financials/`) - Requer autenticação
+- `POST /` - Criar novo registro financeiro/bancário
+- `GET /` - Listar todos os registros financeiros
+- `GET /{financial_id}` - Obter registro financeiro por ID
+- `PUT /{financial_id}` - Atualizar registro financeiro
+- `DELETE /{financial_id}` - Deletar registro financeiro
+- `GET /profile/{profile_id}` - Obter registros financeiros de um profile
+- `GET /banco/{banco}` - Obter registros por código do banco (1-999)
+- `GET /tipo-conta/{tipo_conta}` - Filtrar por tipo de conta (Poupança/Corrente)
+- `GET /tipo-chave-pix/{tipo_chave_pix}` - Filtrar por tipo de chave PIX
+- `GET /chave-pix/{chave_pix}` - Buscar por chave PIX específica
+- `GET /preferencia/{preferencia}` - Filtrar por preferência (PIX/TED)
+- `GET /cpf-cnpj/{cpf_cnpj}` - Buscar por CPF ou CNPJ
+- `GET /check-chave-pix/{chave_pix}` - Verificar disponibilidade de chave PIX
+- `GET /statistics/banks` - Estatísticas de registros por banco
+- `GET /statistics/pix-types` - Estatísticas por tipo de chave PIX
+
+**Parâmetro `include_relations`**: Use `?include_relations=true` nos endpoints GET para incluir dados relacionados (profile).
+
+**⚠️ REGRAS DE NEGÓCIO**:
+- Código do banco deve estar entre 1 e 999
+- Chave PIX deve ser única no sistema
+- Validação específica por tipo de chave PIX (CPF: 11 dígitos, CNPJ: 14 dígitos, etc.)
+- CPF/CNPJ deve ter formato válido (11 ou 14 dígitos respectivamente)
+- Profile_id não pode ser alterado após criação do registro
+- Tipos de conta: "Poupança" ou "Corrente"
+- Tipos de chave PIX: "CPF", "CNPJ", "Celular", "E-mail", "Aleatória"
+- Preferências de transferência: "PIX" ou "TED"
 
 A API estará disponível em `http://localhost:8000`
 A documentação automática estará em `http://localhost:8000/docs` 
