@@ -1,8 +1,8 @@
 # Resumo da Implementação - eShow API
 
-## 🚀 Versão Atual: 0.8.0
+## 🚀 Versão Atual: 0.9.0
 
-### ✨ Funcionalidades Implementadas na v0.8.0
+### ✨ Funcionalidades Implementadas na v0.9.0
 
 #### **Relacionamentos N:N Implementados:**
 
@@ -377,7 +377,7 @@ python test_artist_musical_styles.py
 - [x] **Sistema de controle de acesso por roles** ✨
 - [x] **Validação de roles para Artists e Spaces** ✨
 - [x] **Relacionamento N:N Space-Event Types** ✨
-- [x] **Relacionamento N:N Space-Festival Types** ✨
+- [x] **Relacionamento N:N Space-Festival Types** ✨ **[v0.9.0]**
 - [x] Validações e tratamento de erros
 - [x] Documentação da API
 - [x] Scripts de inicialização
