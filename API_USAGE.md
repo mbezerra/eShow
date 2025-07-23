@@ -1552,3 +1552,156 @@ curl -X DELETE "http://localhost:8000/api/v1/space-event-types/event-type/2" \
    - Gerenciar programação de eventos
    - Associar informações detalhadas a combinações espaço-evento
    - Controlar banners e divulgação por evento
+
+---
+
+## 🎭 Space-Festival Types (Relacionamentos N:N)
+
+### Endpoints Disponíveis
+
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| `POST` | `/api/v1/space-festival-types/` | Criar relacionamento |
+| `GET` | `/api/v1/space-festival-types/` | Listar todos os relacionamentos |
+| `GET` | `/api/v1/space-festival-types/{id}` | Obter por ID |
+| `GET` | `/api/v1/space-festival-types/space/{space_id}` | Por espaço |
+| `GET` | `/api/v1/space-festival-types/festival-type/{festival_type_id}` | Por tipo de festival |
+| `GET` | `/api/v1/space-festival-types/space/{space_id}/festival-type/{festival_type_id}` | Combinação específica |
+| `PUT` | `/api/v1/space-festival-types/{id}` | Atualizar relacionamento |
+| `DELETE` | `/api/v1/space-festival-types/{id}` | Deletar relacionamento |
+| `DELETE` | `/api/v1/space-festival-types/space/{space_id}` | Deletar por espaço |
+| `DELETE` | `/api/v1/space-festival-types/festival-type/{festival_type_id}` | Deletar por tipo |
+
+### Estrutura do Relacionamento
+
+```json
+{
+  "id": 1,
+  "space_id": 1,
+  "festival_type_id": 1,
+  "tema": "Rock Paulista dos Anos 80",
+  "descricao": "Festival dedicado ao rock nacional paulista dos anos 80",
+  "link_divulgacao": "https://rockpaulista80.com.br",
+  "banner": "static/banners/rock_paulista_80.jpg",
+  "data": "2024-07-15T20:00:00",
+  "horario": "20:00-02:00",
+  "created_at": "2025-07-23T12:28:59"
+}
+```
+
+### Criar Relacionamento
+
+```bash
+curl -X POST "http://localhost:8000/api/v1/space-festival-types/" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "space_id": 1,
+    "festival_type_id": 2,
+    "tema": "Blues & Jazz Night",
+    "descricao": "Noite especial com apresentações de blues e jazz",
+    "link_divulgacao": "https://bluesjazznight.com",
+    "banner": "static/banners/blues_jazz_night.jpg",
+    "data": "2024-08-20T19:00:00",
+    "horario": "19:00-01:00"
+  }'
+```
+
+### Listar Todos os Relacionamentos
+
+```bash
+curl -X GET "http://localhost:8000/api/v1/space-festival-types/" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Buscar por Espaço
+
+```bash
+curl -X GET "http://localhost:8000/api/v1/space-festival-types/space/1" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Buscar por Tipo de Festival
+
+```bash
+curl -X GET "http://localhost:8000/api/v1/space-festival-types/festival-type/1" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Buscar Combinação Específica
+
+```bash
+curl -X GET "http://localhost:8000/api/v1/space-festival-types/space/1/festival-type/1" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Atualizar Relacionamento
+
+```bash
+curl -X PUT "http://localhost:8000/api/v1/space-festival-types/1" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tema": "Rock Paulista Clássico - ATUALIZADO",
+    "descricao": "Descrição atualizada do festival",
+    "banner": "static/banners/rock_paulista_novo.jpg"
+  }'
+```
+
+### Deletar Relacionamento
+
+```bash
+curl -X DELETE "http://localhost:8000/api/v1/space-festival-types/1" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Deletar por Espaço (Em Lote)
+
+```bash
+curl -X DELETE "http://localhost:8000/api/v1/space-festival-types/space/1" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Deletar por Tipo de Festival (Em Lote)
+
+```bash
+curl -X DELETE "http://localhost:8000/api/v1/space-festival-types/festival-type/1" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Validações
+
+- **Campos obrigatórios**: `space_id`, `festival_type_id`, `tema`, `descricao`, `data`, `horario`
+- **Campos opcionais**: `link_divulgacao`, `banner`
+- **Foreign keys**: Validação de existência de espaços e tipos de festivais
+- **Formato de data**: ISO 8601 (ex: "2024-07-15T20:00:00")
+
+### Respostas de Erro
+
+```json
+// Campos obrigatórios vazios
+{
+  "detail": [
+    {
+      "type": "value_error",
+      "loc": ["body", "tema"],
+      "msg": "Value error, Tema é obrigatório",
+      "input": ""
+    }
+  ]
+}
+
+// Foreign key inexistente
+{
+  "detail": "Espaço com ID 999 não encontrado"
+}
+
+// Relacionamento não encontrado
+{
+  "detail": "Relacionamento não encontrado"
+}
+```
+
+---
+
+## 📊 Códigos de Status HTTP

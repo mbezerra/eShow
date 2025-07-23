@@ -1,5 +1,27 @@
 # Resumo da Implementação - eShow API
 
+## 🚀 Versão Atual: 0.8.0
+
+### ✨ Funcionalidades Implementadas na v0.8.0
+
+#### **Relacionamentos N:N Implementados:**
+
+- **Space-Event Types**: Sistema completo de associação entre espaços e tipos de eventos
+  - 10 endpoints REST funcionais
+  - Sistema de banners para eventos
+  - Operações CRUD e em lote
+  - Filtros avançados por espaço, tipo de evento ou combinação
+  - Migração de banco de dados aplicada
+  - Dados de exemplo populados
+
+- **Space-Festival Types**: Sistema completo de associação entre espaços e tipos de festivais
+  - 10 endpoints REST funcionais
+  - Sistema de banners para festivais
+  - Operações CRUD e em lote
+  - Filtros avançados por espaço, tipo de festival ou combinação
+  - Migração de banco de dados aplicada
+  - Dados de exemplo populados
+
 ## Visão Geral
 API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Architecture) para gerenciamento de artistas, espaços e eventos musicais.
 
@@ -134,6 +156,7 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - **festival_types** ↔ **spaces**: 1:N (opcional)
 - **artists** ↔ **musical_styles**: N:N (via artist_musical_style)
 - **spaces** ↔ **event_types**: N:N (via space_event_types)
+- **spaces** ↔ **festival_types**: N:N (via space_festival_types)
 
 ## Endpoints Disponíveis
 
@@ -354,6 +377,7 @@ python test_artist_musical_styles.py
 - [x] **Sistema de controle de acesso por roles** ✨
 - [x] **Validação de roles para Artists e Spaces** ✨
 - [x] **Relacionamento N:N Space-Event Types** ✨
+- [x] **Relacionamento N:N Space-Festival Types** ✨
 - [x] Validações e tratamento de erros
 - [x] Documentação da API
 - [x] Scripts de inicialização

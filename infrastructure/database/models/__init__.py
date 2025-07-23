@@ -10,4 +10,5 @@ from .space_model import SpaceModel
 from .event_type_model import EventTypeModel
 from .space_type_model import SpaceTypeModel
 from .festival_type_model import FestivalTypeModel
-from .space_event_type_model import SpaceEventTypeModel 
+from .space_event_type_model import SpaceEventTypeModel
+from .space_festival_type_model import SpaceFestivalTypeModel 
