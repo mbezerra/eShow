@@ -1,8 +1,22 @@
 # Resumo da Implementação - eShow API
 
-## 🚀 Versão Atual: 0.10.0
+## 🚀 Versão Atual: 0.10.3+
 
-### ✨ Funcionalidades Implementadas na v0.10.0
+### ✨ Funcionalidades Implementadas na v0.10.3
+
+#### **Sistema de Avaliações/Reviews Completo:**
+
+- **Reviews**: Sistema completo de avaliações com notas de 1 a 5 estrelas
+  - 11 endpoints REST funcionais
+  - Relacionamento com profiles, space_event_types e space_festival_types
+  - Validações robustas (nota entre 1-5, depoimento mínimo 10 caracteres)
+  - Cálculo de média de avaliações por profile
+  - Filtros avançados por profile, nota, período, tipo de evento/festival
+  - Parâmetro `include_relations=true` para carregar dados relacionados
+  - Migração de banco de dados aplicada
+  - Dados de exemplo populados (6 reviews iniciais)
+
+### ✨ Funcionalidades Implementadas na v0.10.0-0.10.2
 
 #### **Relacionamentos N:N Implementados:**
 
@@ -137,6 +151,33 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - ✅ Padrão consistente com outros endpoints
 - ✅ Script de inicialização automática
 
+### 12. Sistema de Avaliações/Reviews ✨ **[v0.10.3]**
+- ✅ **CRUD completo de reviews**
+  - Criar, ler, atualizar e deletar avaliações
+  - 11 endpoints REST funcionais
+- ✅ **Sistema de notas de 1 a 5 estrelas**
+  - Validação rigorosa de notas inteiras entre 1-5
+  - Cálculo automático de média por profile
+- ✅ **Validações robustas**
+  - Depoimento mínimo 10 caracteres, máximo 1000
+  - Relacionamento exclusivo: OU space_event_type OU space_festival_type
+  - Profile_id imutável após criação
+- ✅ **Filtros avançados**
+  - Por profile avaliado
+  - Por nota específica (1-5 estrelas)
+  - Por período (data_inicio até data_fim)
+  - Por tipo de evento ou festival
+- ✅ **Relacionamentos incluídos**
+  - Profile avaliado com dados completos
+  - Space_event_type ou space_festival_type relacionados
+  - Parâmetro `include_relations=true` disponível
+- ✅ **Dados de exemplo**
+  - 6 reviews iniciais com distribuição de notas
+  - Relacionamentos com profiles, eventos e festivais existentes
+- ✅ **Endpoint de estatísticas**
+  - Média de avaliações por profile
+  - Contagem total de reviews por profile
+
 ## Estrutura do Banco de Dados
 
 ### Tabelas Principais
@@ -149,15 +190,19 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 7. **artist_musical_style**: Relacionamento N:N entre artistas e estilos
 8. **space_types**: Tipos de espaço (Bar, Restaurante, Clube, etc.)
 9. **event_types**: Tipos de evento (Aniversário, Casamento, Formatura, etc.)
-10. **festival_types**: Tipos de festival (Aniversário de Emancipação Política, Festa Religiosa, etc.)
-11. **spaces**: Espaços para apresentações com relacionamentos para profiles, space_types, event_types e festival_types
-12. **space_event_types**: Relacionamento N:N entre espaços e tipos de evento com dados específicos
+10. **festival_types**: Tipos de festival (Festa Religiosa, Festival de Música, etc.)
+11. **spaces**: Espaços para apresentações com dados detalhados
+12. **space_event_types**: Relacionamento N:N entre espaços e tipos de evento
+13. **space_festival_types**: Relacionamento N:N entre espaços e tipos de festival
+14. **bookings**: Agendamentos/reservas entre profiles
+15. **reviews**: Avaliações/reviews com notas de 1-5 estrelas
 
 ### Relacionamentos
 - **users** ↔ **profiles**: 1:1
 - **roles** ↔ **profiles**: 1:N
 - **profiles** ↔ **artists**: 1:1
 - **profiles** ↔ **spaces**: 1:N
+- **profiles** ↔ **reviews**: 1:N (profile avaliado)
 - **artist_types** ↔ **artists**: 1:N
 - **space_types** ↔ **spaces**: 1:N
 - **event_types** ↔ **spaces**: 1:N (opcional)
@@ -165,6 +210,8 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - **artists** ↔ **musical_styles**: N:N (via artist_musical_style)
 - **spaces** ↔ **event_types**: N:N (via space_event_types)
 - **spaces** ↔ **festival_types**: N:N (via space_festival_types)
+- **space_event_types** ↔ **reviews**: 1:N (opcional, mutuamente exclusivo)
+- **space_festival_types** ↔ **reviews**: 1:N (opcional, mutuamente exclusivo)
 
 ## Endpoints Disponíveis
 
@@ -308,6 +355,11 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - `init_space_types.py` - Tipos de espaço (15 tipos pré-cadastrados)
 - `init_event_types.py` - Tipos de evento (7 tipos pré-cadastrados)
 - `init_festival_types.py` - Tipos de festival (14 tipos pré-cadastrados)
+- `init_spaces.py` - Espaços de exemplo
+- `init_space_event_types.py` - Relacionamentos espaço-evento
+- `init_space_festival_types.py` - Relacionamentos espaço-festival
+- `init_bookings.py` - Agendamentos de exemplo
+- `init_reviews.py` - Avaliações de exemplo (6 reviews com notas variadas)
 - `start_server.sh` - Script de inicialização automática do servidor
 
 ### Testes
@@ -386,7 +438,8 @@ python test_artist_musical_styles.py
 - [x] **Validação de roles para Artists e Spaces** ✨
 - [x] **Relacionamento N:N Space-Event Types** ✨
 - [x] **Relacionamento N:N Space-Festival Types** ✨ **[v0.9.0]**
-- [x] **Sistema de Bookings Completo** ✨ **[v0.10.0]**
+- [x] **Sistema de Bookings Completo** ✨ **[v0.10.0-0.10.2]**
+- [x] **Sistema de Avaliações/Reviews** ✨ **[v0.10.3]**
 - [x] Validações e tratamento de erros
 - [x] Documentação da API
 - [x] Scripts de inicialização
@@ -394,12 +447,13 @@ python test_artist_musical_styles.py
 
 ### 🔄 Próximos Passos
 - [ ] Gerenciamento de eventos
-- [ ] Sistema de agendamento
-- [ ] Notificações
-- [ ] Upload de arquivos
+- [ ] Sistema de notificações
+- [ ] Upload de arquivos e mídias
+- [ ] Sistema de pagamentos
 - [ ] Cache Redis
 - [ ] Logs estruturados
 - [ ] Métricas e monitoramento
+- [ ] Sistema de relatórios
 
 ## Contribuição
 

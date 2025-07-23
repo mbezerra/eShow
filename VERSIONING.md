@@ -1,7 +1,33 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.10.1** (2025-07-23) - Sistema de Bookings Completo e Testes da API
+**v0.10.3** (2025-07-23) - Sistema de Avaliações/Reviews Completo
+
+- **SISTEMA DE REVIEWS**: Implementação completa do sistema de avaliações
+  - 11 endpoints REST: CRUD completo + filtros avançados + estatísticas
+  - Avaliações com notas de 1-5 estrelas e depoimento obrigatório (10-1000 caracteres)
+  - Relacionamentos com profiles, space_event_types e space_festival_types
+  - Regra de negócio: relacionamento exclusivo (OU evento OU festival, nunca ambos)
+  - Cálculo automático de média de avaliações por profile
+  - Filtros por profile, nota, período, tipo de evento/festival
+  - Parâmetro `include_relations=true` para dados relacionados
+  - Migração do banco aplicada (tabela reviews criada)
+  - Dados de exemplo: 6 reviews com distribuição de notas variadas
+- **ARQUITETURA HEXAGONAL**: Seguindo os padrões estabelecidos
+  - Entidade Review com validações de domínio
+  - ReviewRepository interface + ReviewRepositoryImpl
+  - ReviewService com regras de negócio
+  - Schemas Pydantic robustos com validações
+  - Endpoints com tratamento completo de erros
+- **DOCUMENTAÇÃO**: Todas as documentações .md atualizadas
+  - README.md: Nova seção de Reviews com todos os endpoints
+  - ARCHITECTURE.md: Entidades, repositórios e relacionamentos atualizados
+  - IMPLEMENTATION_SUMMARY.md: Seção detalhada v0.10.3 adicionada
+  - DATABASE_STRATEGY.md: Estrutura da tabela reviews e consultas úteis
+  - API_USAGE.md: Guia completo com exemplos práticos de uso
+  - Estatísticas atualizadas: 106 endpoints, 15 entidades, 55+ schemas
+
+### v0.10.1 (2025-07-23) - Sistema de Bookings Completo e Testes da API
 
 - **SISTEMA DE BOOKINGS**: Implementação completa do sistema de agendamentos
   - 4 tipos de booking: Artista→Espaço, Espaço→Artista, Evento Específico, Festival Específico

@@ -1,6 +1,7 @@
 # Guia de Uso da API
 
 - [Sistema de Agendamentos (Bookings)](#sistema-de-agendamentos-bookings)
+- [Sistema de Avaliações/Reviews](#sistema-de-avaliaçõesreviews)
 
 ## Endpoints de Autenticação
 
@@ -445,6 +446,137 @@ curl -X POST "http://localhost:8000/api/v1/bookings/" \
     }
   ]
 }
+```
+
+---
+
+## Sistema de Avaliações/Reviews
+
+### Visão Geral
+O sistema de reviews permite criar avaliações com notas de 1 a 5 estrelas para profiles, associadas a eventos ou festivais específicos.
+
+**🆕 Novo:** Todos os endpoints de consulta suportam o parâmetro `include_relations=true` para obter dados relacionados (profile, space_event_type, space_festival_type) em uma única requisição.
+
+### Estrutura da Avaliação
+```json
+{
+  "id": 1,
+  "profile_id": 1,
+  "space_event_type_id": 3,
+  "space_festival_type_id": null,
+  "data_hora": "2025-07-23T20:30:00",
+  "nota": 5,
+  "depoimento": "Excelente apresentação! Muito profissional e pontual.",
+  "created_at": "2025-07-23T20:29:31",
+  "updated_at": "2025-07-23T20:29:31"
+}
+```
+
+### Endpoints Disponíveis
+
+#### CRUD Básico
+```bash
+# Listar todas as avaliações (opcional: ?include_relations=true)
+GET /api/v1/reviews/
+Authorization: Bearer {token}
+
+# Obter avaliação por ID (opcional: ?include_relations=true)
+GET /api/v1/reviews/{id}
+Authorization: Bearer {token}
+
+# Criar nova avaliação
+POST /api/v1/reviews/
+Authorization: Bearer {token}
+Content-Type: application/json
+{
+  "profile_id": 1,
+  "space_event_type_id": 3,
+  "data_hora": "2025-07-23T20:30:00",
+  "nota": 5,
+  "depoimento": "Excelente apresentação! Muito profissional e pontual."
+}
+
+# Atualizar avaliação
+PUT /api/v1/reviews/{id}
+Authorization: Bearer {token}
+Content-Type: application/json
+{
+  "nota": 4,
+  "depoimento": "Muito boa apresentação, com pequenos pontos de melhoria."
+}
+
+# Deletar avaliação
+DELETE /api/v1/reviews/{id}
+Authorization: Bearer {token}
+```
+
+#### Filtros e Estatísticas
+```bash
+# Avaliações de um profile específico (opcional: ?include_relations=true)
+GET /api/v1/reviews/profile/{profile_id}
+Authorization: Bearer {token}
+
+# Média de avaliações de um profile
+GET /api/v1/reviews/profile/{profile_id}/average
+Authorization: Bearer {token}
+# Resposta: {"profile_id": 1, "average_rating": 4.5, "total_reviews": 10}
+
+# Avaliações por nota específica (opcional: ?include_relations=true)
+GET /api/v1/reviews/rating/{nota}
+Authorization: Bearer {token}
+# Exemplo: /api/v1/reviews/rating/5 (todas as avaliações 5 estrelas)
+
+# Avaliações por tipo de evento (opcional: ?include_relations=true)
+GET /api/v1/reviews/space-event-type/{space_event_type_id}
+Authorization: Bearer {token}
+
+# Avaliações por tipo de festival (opcional: ?include_relations=true)
+GET /api/v1/reviews/space-festival-type/{space_festival_type_id}
+Authorization: Bearer {token}
+
+# Avaliações por período
+GET /api/v1/reviews/date-range/?data_inicio=2025-01-01T00:00:00&data_fim=2025-12-31T23:59:59&include_relations=true
+Authorization: Bearer {token}
+```
+
+### Regras de Negócio
+- **Notas**: Apenas valores inteiros de 1 a 5
+- **Depoimento**: Mínimo 10 caracteres, máximo 1000 caracteres
+- **Relacionamento exclusivo**: Cada review deve ter OU `space_event_type_id` OU `space_festival_type_id` (nunca ambos)
+- **Profile imutável**: O `profile_id` não pode ser alterado após a criação
+- **Autenticação obrigatória**: Todos os endpoints requerem token JWT válido
+
+### Exemplo Prático - Criação e Consulta
+```bash
+# 1. Fazer login e obter token
+TOKEN=$(curl -s -X POST "http://localhost:8000/api/v1/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"email": "admin@eshow.com", "password": "admin123"}' | \
+  jq -r '.access_token')
+
+# 2. Criar uma nova avaliação
+curl -X POST "http://localhost:8000/api/v1/reviews/" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "profile_id": 1,
+    "space_event_type_id": 3,
+    "data_hora": "2025-07-23T20:30:00",
+    "nota": 5,
+    "depoimento": "Apresentação excepcional! Superou todas as expectativas."
+  }'
+
+# 3. Consultar avaliações de um profile com relacionamentos
+curl -X GET "http://localhost:8000/api/v1/reviews/profile/1?include_relations=true" \
+  -H "Authorization: Bearer $TOKEN" | jq
+
+# 4. Obter média de avaliações
+curl -X GET "http://localhost:8000/api/v1/reviews/profile/1/average" \
+  -H "Authorization: Bearer $TOKEN" | jq
+
+# 5. Filtrar avaliações 5 estrelas
+curl -X GET "http://localhost:8000/api/v1/reviews/rating/5" \
+  -H "Authorization: Bearer $TOKEN" | jq
 ```
 
 ---

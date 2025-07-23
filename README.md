@@ -9,17 +9,18 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Gerenciamento de Artistas** e estilos musicais
 - **Administração de Espaços** e tipos de evento
 - **Sistema de Agendamentos/Reservas** (Bookings)
+- **Sistema de Avaliações/Reviews** com notas de 1 a 5 estrelas
 - **Relacionamentos N:N** entre entidades
 - **API REST** completa com documentação automática
 - **Arquitetura Hexagonal** para facilitar manutenção
 
 ## 📊 **Estatísticas do Projeto**
 
-- **Total de Endpoints:** 95
-- **Entidades de Domínio:** 14
+- **Total de Endpoints:** 106 (+11 endpoints Reviews)
+- **Entidades de Domínio:** 15 (incluindo Review)
 - **Relacionamentos N:N:** 3
-- **Tabelas no Banco:** 14
-- **Schemas Pydantic:** 47+
+- **Tabelas no Banco:** 15 (incluindo reviews)
+- **Schemas Pydantic:** 55+ (incluindo schemas de Reviews)
 - **Cobertura de Testes:** Em desenvolvimento
 
 ## 📁 **Estrutura do Projeto**
@@ -209,6 +210,27 @@ O sistema implementa controle de acesso baseado em roles para garantir que apena
 - `DELETE /{space_festival_type_id}` - Deletar relacionamento específico
 - `DELETE /space/{space_id}` - Deletar todos os relacionamentos de um espaço
 - `DELETE /festival-type/{festival_type_id}` - Deletar todos os relacionamentos de um tipo de festival
+
+### Reviews (`/api/v1/reviews/`) - Requer autenticação
+- `POST /` - Criar nova avaliação/review
+- `GET /` - Listar todas as avaliações
+- `GET /{review_id}` - Obter avaliação por ID
+- `PUT /{review_id}` - Atualizar avaliação
+- `DELETE /{review_id}` - Deletar avaliação
+- `GET /profile/{profile_id}` - Obter avaliações de um profile específico
+- `GET /profile/{profile_id}/average` - Obter média de avaliações de um profile
+- `GET /space-event-type/{space_event_type_id}` - Avaliações por tipo de evento
+- `GET /space-festival-type/{space_festival_type_id}` - Avaliações por tipo de festival
+- `GET /rating/{nota}` - Filtrar avaliações por nota (1-5 estrelas)
+- `GET /date-range/` - Filtrar avaliações por período (query params: data_inicio, data_fim)
+
+**Parâmetro `include_relations`**: Use `?include_relations=true` nos endpoints GET para incluir dados relacionados (profile, space_event_type, space_festival_type).
+
+**⚠️ REGRAS DE NEGÓCIO**:
+- Notas devem ser entre 1 e 5 (números inteiros)
+- Depoimento deve ter no mínimo 10 caracteres e máximo 1000
+- Cada review deve estar associado a UM space_event_type_id OU UM space_festival_type_id (não ambos)
+- Profile_id não pode ser alterado após criação do review
 
 A API estará disponível em `http://localhost:8000`
 A documentação automática estará em `http://localhost:8000/docs` 

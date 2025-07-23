@@ -22,6 +22,7 @@ O domínio contém as regras de negócio e é independente de qualquer tecnologi
 - **FestivalType**: Entidade que representa um tipo de festival
 - **Space**: Entidade que representa um espaço para apresentações
 - **Booking**: Entidade que representa um agendamento/reserva
+- **Review**: Entidade que representa uma avaliação/review com nota de 1-5 estrelas
 
 #### Repositórios (`domain/repositories/`)
 - **UserRepository**: Interface para operações de usuários
@@ -35,6 +36,7 @@ O domínio contém as regras de negócio e é independente de qualquer tecnologi
 - **FestivalTypeRepository**: Interface para operações de tipos de festival
 - **SpaceRepository**: Interface para operações de espaços
 - **BookingRepository**: Interface para operações de agendamentos/reservas
+- **ReviewRepository**: Interface para operações de avaliações/reviews
 
 ### 2. Aplicação (`app/`)
 
@@ -56,11 +58,7 @@ A camada de aplicação contém os casos de uso e adaptadores de entrada.
 - **FestivalTypeService**: Orquestra as operações de tipos de festival
 - **SpaceService**: Orquestra as operações de espaços
 - **BookingService**: Orquestra as operações de agendamentos/reservas
-- **MusicalStyleService**: Orquestra as operações de estilos musicais
-- **SpaceTypeService**: Orquestra as operações de tipos de espaço
-- **EventTypeService**: Orquestra as operações de tipos de evento
-- **FestivalTypeService**: Orquestra as operações de tipos de festival
-- **SpaceService**: Orquestra as operações de espaços
+- **ReviewService**: Orquestra as operações de avaliações/reviews
 
 ### 3. Infraestrutura (`infrastructure/`)
 
@@ -81,6 +79,8 @@ A camada de infraestrutura contém os adaptadores de saída.
 - **EventTypeRepositoryImpl**: Implementação concreta do repositório de tipos de evento
 - **FestivalTypeRepositoryImpl**: Implementação concreta do repositório de tipos de festival
 - **SpaceRepositoryImpl**: Implementação concreta do repositório de espaços
+- **BookingRepositoryImpl**: Implementação concreta do repositório de agendamentos/reservas
+- **ReviewRepositoryImpl**: Implementação concreta do repositório de avaliações/reviews
 
 ## Fluxo de Dados
 
@@ -171,7 +171,7 @@ alembic upgrade head
 
 ### Parâmetro `include_relations`
 
-Implementado nos endpoints GET de Artists e Spaces para otimizar o carregamento de dados relacionados:
+Implementado nos endpoints GET de Artists, Spaces, Bookings e Reviews para otimizar o carregamento de dados relacionados:
 
 #### Como Funciona
 - **Sem `include_relations`**: Retorna apenas a entidade principal com IDs dos relacionamentos
@@ -194,6 +194,8 @@ GET /api/v1/spaces/1?include_relations=true
 #### Relacionamentos Incluídos
 - **Artists**: profile, artist_type
 - **Spaces**: profile, space_type, event_type, festival_type
+- **Bookings**: profile, space, artist, space_event_type, space_festival_type
+- **Reviews**: profile, space_event_type, space_festival_type
 
 #### Benefícios
 - **Performance**: Evita N+1 queries

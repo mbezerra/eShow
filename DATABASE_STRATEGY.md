@@ -151,6 +151,55 @@ SELECT schemaname, tablename, n_tup_ins, n_tup_upd, n_tup_del
 FROM pg_stat_user_tables;
 ```
 
+## 📋 Estrutura de Dados - Reviews
+
+### **Tabela Reviews:**
+```sql
+CREATE TABLE reviews (
+    id INTEGER PRIMARY KEY,
+    profile_id INTEGER NOT NULL REFERENCES profiles(id),
+    space_event_type_id INTEGER REFERENCES space_event_types(id),
+    space_festival_type_id INTEGER REFERENCES space_festival_types(id),
+    data_hora TIMESTAMP NOT NULL,
+    nota INTEGER NOT NULL CHECK (nota >= 1 AND nota <= 5),
+    depoimento TEXT NOT NULL CHECK (LENGTH(depoimento) >= 10),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CHECK (
+        (space_event_type_id IS NOT NULL AND space_festival_type_id IS NULL) OR
+        (space_event_type_id IS NULL AND space_festival_type_id IS NOT NULL)
+    )
+);
+```
+
+### **Características:**
+- ✅ **Notas**: Apenas valores inteiros de 1 a 5
+- ✅ **Relacionamento exclusivo**: OU evento OU festival, nunca ambos
+- ✅ **Depoimento obrigatório**: Mínimo 10 caracteres
+- ✅ **Auditoria**: Campos created_at e updated_at automáticos
+- ✅ **Integridade**: Foreign keys para profiles e tipos
+
+### **Consultas Úteis:**
+```sql
+-- Média de avaliações por profile
+SELECT profile_id, AVG(nota::float) as media, COUNT(*) as total
+FROM reviews 
+GROUP BY profile_id;
+
+-- Distribuição de notas
+SELECT nota, COUNT(*) as quantidade
+FROM reviews 
+GROUP BY nota 
+ORDER BY nota;
+
+-- Reviews por período
+SELECT DATE(data_hora) as data, COUNT(*) as total
+FROM reviews 
+WHERE data_hora >= '2025-01-01'
+GROUP BY DATE(data_hora)
+ORDER BY data;
+```
+
 ## 🎯 Próximos Passos
 
 1. **Desenvolvimento**: Continuar com SQLite
@@ -173,6 +222,12 @@ psql -U eshow_user eshow < eshow_backup_20250719.sql
 # Verificar dados
 sqlite3 eshow.db "SELECT COUNT(*) FROM users;"
 sqlite3 eshow.db "SELECT COUNT(*) FROM artists;"
+sqlite3 eshow.db "SELECT COUNT(*) FROM reviews;"
 psql -U eshow_user -d eshow -c "SELECT COUNT(*) FROM users;"
 psql -U eshow_user -d eshow -c "SELECT COUNT(*) FROM artists;"
+psql -U eshow_user -d eshow -c "SELECT COUNT(*) FROM reviews;"
+
+# Verificar médias de avaliação
+sqlite3 eshow.db "SELECT profile_id, AVG(nota) as media FROM reviews GROUP BY profile_id;"
+psql -U eshow_user -d eshow -c "SELECT profile_id, AVG(nota::float) as media FROM reviews GROUP BY profile_id;"
 ``` 
