@@ -38,7 +38,7 @@ def init_financials_data():
             financials_data = [
                 {
                     "profile_id": profiles[0].id,
-                    "banco": 341,  # Itaú
+                    "banco": "341",  # Itaú
                     "agencia": "1234",
                     "conta": "12345-6",
                     "tipo_conta": "Corrente",
@@ -49,7 +49,7 @@ def init_financials_data():
                 },
                 {
                     "profile_id": profiles[1].id,
-                    "banco": 237,  # Bradesco
+                    "banco": "237",  # Bradesco
                     "agencia": "5678",
                     "conta": "67890-1",
                     "tipo_conta": "Poupança",
@@ -60,7 +60,7 @@ def init_financials_data():
                 },
                 {
                     "profile_id": profiles[2].id,
-                    "banco": 104,  # Caixa
+                    "banco": "104",  # Caixa
                     "agencia": "9012",
                     "conta": "34567-8",
                     "tipo_conta": "Corrente",
@@ -76,7 +76,7 @@ def init_financials_data():
                 additional_data = [
                     {
                         "profile_id": profiles[3].id,
-                        "banco": 1,  # Banco do Brasil
+                        "banco": "001",  # Banco do Brasil
                         "agencia": "3456",
                         "conta": "78901-2",
                         "tipo_conta": "Poupança",
@@ -87,7 +87,7 @@ def init_financials_data():
                     },
                     {
                         "profile_id": profiles[4].id if len(profiles) > 4 else profiles[0].id,
-                        "banco": 33,  # Santander
+                        "banco": "033",  # Santander
                         "agencia": "7890",
                         "conta": "23456-7",
                         "tipo_conta": "Corrente",
@@ -98,7 +98,7 @@ def init_financials_data():
                     },
                     {
                         "profile_id": profiles[5].id if len(profiles) > 5 else profiles[1].id,
-                        "banco": 260,  # Nu Pagamentos
+                        "banco": "260",  # Nu Pagamentos
                         "agencia": "0001",
                         "conta": "89012-3",
                         "tipo_conta": "Corrente",
@@ -147,12 +147,12 @@ def init_financials_data():
             
             print("📈 Distribuição por banco:")
             bank_names = {
-                1: "Banco do Brasil",
-                33: "Santander",
-                104: "Caixa",
-                237: "Bradesco",
-                260: "Nu Pagamentos",
-                341: "Itaú"
+                "001": "Banco do Brasil",
+                "033": "Santander",
+                "104": "Caixa",
+                "237": "Bradesco",
+                "260": "Nu Pagamentos",
+                "341": "Itaú"
             }
             
             for banco, count in bancos_count.items():

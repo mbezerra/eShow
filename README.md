@@ -253,7 +253,7 @@ O sistema implementa controle de acesso baseado em roles para garantir que apena
 **Parâmetro `include_relations`**: Use `?include_relations=true` nos endpoints GET para incluir dados relacionados (profile).
 
 **⚠️ REGRAS DE NEGÓCIO**:
-- Código do banco deve estar entre 1 e 999
+- Código do banco deve ser uma string com 3 dígitos (001 a 999)
 - Chave PIX deve ser única no sistema
 - Validação específica por tipo de chave PIX (CPF: 11 dígitos, CNPJ: 14 dígitos, etc.)
 - CPF/CNPJ deve ter formato válido (11 ou 14 dígitos respectivamente)

@@ -8,17 +8,18 @@
 
 - **Financial**: Sistema completo de dados financeiros/bancários com suporte a PIX
   - 13 endpoints REST funcionais com autenticação JWT
-  - Gestão de dados bancários (banco, agência, conta, tipo de conta)
+  - Gestão de dados bancários (código banco string 3 dígitos, agência, conta, tipo)
   - Sistema completo de chaves PIX com 5 tipos: CPF, CNPJ, Celular, E-mail, Aleatória
   - Validações robustas específicas por tipo de chave PIX
+  - Código do banco como string 3 dígitos (001-999) seguindo padrão brasileiro
   - Garantia de unicidade de chaves PIX no sistema
   - Preferências de transferência (PIX/TED)
   - Relacionamento com profiles existentes
   - Estatísticas em tempo real por banco e tipo de chave PIX
   - Parâmetro `include_relations=true` para carregar dados relacionados
   - Endpoint de verificação de disponibilidade de chave PIX
-  - Migração de banco de dados aplicada
-  - Dados de exemplo populados (6 registros financeiros com bancos reais)
+  - Migração de banco aplicada (tabela financials com banco VARCHAR(3))
+  - Dados de exemplo populados (6 registros com bancos "341", "237", "104", "001", "033", "260")
 
 ### ✨ Funcionalidades Implementadas na v0.10.3
 

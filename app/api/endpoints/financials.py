@@ -81,15 +81,20 @@ async def get_financials_by_profile(
 
 @router.get("/banco/{banco}", response_model=Union[FinancialListResponse, FinancialListWithRelations])
 async def get_financials_by_banco(
-    banco: int,
+    banco: str,
     include_relations: bool = Query(False, description="Incluir dados relacionados"),
     current_user: UserResponse = Depends(get_current_active_user),
     service: FinancialService = Depends(get_financial_service)
 ):
     """Obter todos os registros financeiros de um banco específico"""
     try:
-        if banco < 1 or banco > 999:
-            raise HTTPException(status_code=400, detail="Código do banco deve estar entre 1 e 999")
+        # Validar formato do código do banco
+        if not banco.isdigit() or len(banco) != 3:
+            raise HTTPException(status_code=400, detail="Código do banco deve ser uma string com 3 dígitos (001-999)")
+        
+        banco_num = int(banco)
+        if banco_num < 1 or banco_num > 999:
+            raise HTTPException(status_code=400, detail="Código do banco deve estar entre 001 e 999")
         
         financials = service.get_financials_by_banco(banco, include_relations)
         return {"items": financials}

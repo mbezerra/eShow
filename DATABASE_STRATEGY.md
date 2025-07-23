@@ -207,7 +207,7 @@ ORDER BY data;
 CREATE TABLE financials (
     id INTEGER PRIMARY KEY,
     profile_id INTEGER NOT NULL REFERENCES profiles(id),
-    banco INTEGER NOT NULL CHECK (banco >= 1 AND banco <= 999),
+    banco VARCHAR(3) NOT NULL CHECK (LENGTH(banco) = 3 AND banco GLOB '[0-9][0-9][0-9]' AND CAST(banco AS INTEGER) >= 1 AND CAST(banco AS INTEGER) <= 999),
     agencia VARCHAR(10) NOT NULL,
     conta VARCHAR(15) NOT NULL,
     tipo_conta VARCHAR(20) NOT NULL CHECK (tipo_conta IN ('Poupança', 'Corrente')),
@@ -222,7 +222,7 @@ CREATE TABLE financials (
 
 ### **Características:**
 - ✅ **Chave PIX única**: Constraint de unicidade para evitar duplicações
-- ✅ **Validação de banco**: Códigos de 1 a 999 (padrão brasileiro)
+- ✅ **Código do banco**: String com 3 dígitos (001 a 999) seguindo padrão brasileiro
 - ✅ **Tipos de conta**: Apenas "Poupança" ou "Corrente"
 - ✅ **Tipos de chave PIX**: 5 tipos suportados (CPF, CNPJ, Celular, E-mail, Aleatória)
 - ✅ **Preferências**: PIX ou TED para transferências
@@ -231,11 +231,11 @@ CREATE TABLE financials (
 
 ### **Consultas Úteis:**
 ```sql
--- Distribuição por banco
+-- Distribuição por banco (string com 3 dígitos)
 SELECT banco, COUNT(*) as quantidade
 FROM financials 
 GROUP BY banco 
-ORDER BY quantidade DESC;
+ORDER BY banco;
 
 -- Distribuição por tipo de chave PIX
 SELECT tipo_chave_pix, COUNT(*) as quantidade
@@ -255,6 +255,23 @@ SELECT chave_pix, COUNT(*) as total
 FROM financials
 GROUP BY chave_pix
 HAVING COUNT(*) > 1;
+
+-- Bancos mais utilizados com nomes
+SELECT 
+    CASE banco
+        WHEN '001' THEN 'Banco do Brasil'
+        WHEN '033' THEN 'Santander'
+        WHEN '104' THEN 'Caixa'
+        WHEN '237' THEN 'Bradesco'
+        WHEN '260' THEN 'Nu Pagamentos'
+        WHEN '341' THEN 'Itaú'
+        ELSE 'Banco ' || banco
+    END as nome_banco,
+    banco,
+    COUNT(*) as total
+FROM financials
+GROUP BY banco
+ORDER BY total DESC;
 ```
 
 ## 🎯 Próximos Passos
@@ -287,4 +304,14 @@ psql -U eshow_user -d eshow -c "SELECT COUNT(*) FROM reviews;"
 # Verificar médias de avaliação
 sqlite3 eshow.db "SELECT profile_id, AVG(nota) as media FROM reviews GROUP BY profile_id;"
 psql -U eshow_user -d eshow -c "SELECT profile_id, AVG(nota::float) as media FROM reviews GROUP BY profile_id;"
+
+# Verificar dados financeiros
+sqlite3 eshow.db "SELECT COUNT(*) FROM financials;"
+sqlite3 eshow.db "SELECT banco, COUNT(*) FROM financials GROUP BY banco ORDER BY banco;"
+psql -U eshow_user -d eshow -c "SELECT COUNT(*) FROM financials;"
+psql -U eshow_user -d eshow -c "SELECT banco, COUNT(*) FROM financials GROUP BY banco ORDER BY banco;"
+
+# Verificar estrutura da coluna banco (deve ser VARCHAR(3))
+sqlite3 eshow.db "PRAGMA table_info(financials);" | grep banco
+psql -U eshow_user -d eshow -c "\d financials" | grep banco
 ``` 

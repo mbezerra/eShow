@@ -72,7 +72,7 @@ class FinancialRepositoryImpl(FinancialRepository):
             return financials  # Retorna modelos com relacionamentos carregados
         return [self._to_entity(financial) for financial in financials]
     
-    def get_by_banco(self, banco: int, include_relations: bool = False) -> List[Union[Financial, FinancialModel]]:
+    def get_by_banco(self, banco: str, include_relations: bool = False) -> List[Union[Financial, FinancialModel]]:
         """Obter todos os registros financeiros de um banco específico"""
         query = self.db.query(FinancialModel).filter(FinancialModel.banco == banco)
         query = self._configure_relations(query, include_relations)

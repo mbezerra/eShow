@@ -36,7 +36,7 @@ class FinancialService:
         """Obter todos os registros financeiros de um profile"""
         return self.repository.get_by_profile_id(profile_id, include_relations)
     
-    def get_financials_by_banco(self, banco: int, include_relations: bool = False) -> List[Union[Financial, Any]]:
+    def get_financials_by_banco(self, banco: str, include_relations: bool = False) -> List[Union[Financial, Any]]:
         """Obter todos os registros financeiros de um banco específico"""
         return self.repository.get_by_banco(banco, include_relations)
     

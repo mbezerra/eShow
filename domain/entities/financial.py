@@ -24,10 +24,17 @@ class PreferenciaTransferencia(Enum):
 class Financial:
     """Entidade de domínio para dados financeiros/bancários"""
     
+    @staticmethod
+    def format_banco_code(banco_code: int) -> str:
+        """Formatar código do banco para string com 3 dígitos"""
+        if not isinstance(banco_code, int) or banco_code < 1 or banco_code > 999:
+            raise ValueError("Código do banco deve ser um número entre 1 e 999")
+        return str(banco_code).zfill(3)
+    
     def __init__(
         self,
         profile_id: int,
-        banco: int,
+        banco: str,
         agencia: str,
         conta: str,
         tipo_conta: TipoConta,
@@ -66,9 +73,19 @@ class Financial:
             raise ValueError("ID do profile deve ser um número inteiro positivo")
     
     def _validate_banco(self):
-        """Validar código do banco (3 dígitos)"""
-        if not isinstance(self.banco, int) or self.banco < 1 or self.banco > 999:
-            raise ValueError("Código do banco deve ser um número entre 1 e 999")
+        """Validar código do banco (string com 3 dígitos)"""
+        if not isinstance(self.banco, str):
+            raise ValueError("Código do banco deve ser uma string")
+        
+        if not self.banco.isdigit():
+            raise ValueError("Código do banco deve conter apenas dígitos")
+        
+        if len(self.banco) != 3:
+            raise ValueError("Código do banco deve ter exatamente 3 dígitos")
+        
+        banco_num = int(self.banco)
+        if banco_num < 1 or banco_num > 999:
+            raise ValueError("Código do banco deve estar entre 001 e 999")
     
     def _validate_agencia(self):
         """Validar agência bancária"""
@@ -142,7 +159,7 @@ class Financial:
             if len(chave_clean) < 32 or len(chave_clean) > 36:
                 raise ValueError("Chave PIX aleatória deve ter entre 32 e 36 caracteres")
     
-    def update_banco(self, novo_banco: int):
+    def update_banco(self, novo_banco: str):
         """Atualizar código do banco"""
         old_banco = self.banco
         self.banco = novo_banco

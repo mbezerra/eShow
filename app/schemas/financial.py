@@ -27,7 +27,7 @@ class PreferenciaTransferenciaEnum(str, Enum):
 
 class FinancialBase(BaseModel):
     profile_id: int
-    banco: int
+    banco: str
     agencia: str
     conta: str
     tipo_conta: TipoContaEnum
@@ -44,8 +44,19 @@ class FinancialBase(BaseModel):
 
     @validator('banco')
     def validate_banco(cls, v):
-        if not isinstance(v, int) or v < 1 or v > 999:
-            raise ValueError("Código do banco deve ser um número entre 1 e 999")
+        if not isinstance(v, str):
+            raise ValueError("Código do banco deve ser uma string")
+        
+        if not v.isdigit():
+            raise ValueError("Código do banco deve conter apenas dígitos")
+        
+        if len(v) != 3:
+            raise ValueError("Código do banco deve ter exatamente 3 dígitos")
+        
+        banco_num = int(v)
+        if banco_num < 1 or banco_num > 999:
+            raise ValueError("Código do banco deve estar entre 001 e 999")
+        
         return v
 
     @validator('agencia')
@@ -134,7 +145,7 @@ class FinancialCreate(FinancialBase):
     pass
 
 class FinancialUpdate(BaseModel):
-    banco: Optional[int] = None
+    banco: Optional[str] = None
     agencia: Optional[str] = None
     conta: Optional[str] = None
     tipo_conta: Optional[TipoContaEnum] = None
@@ -145,8 +156,20 @@ class FinancialUpdate(BaseModel):
 
     @validator('banco')
     def validate_banco(cls, v):
-        if v is not None and (not isinstance(v, int) or v < 1 or v > 999):
-            raise ValueError("Código do banco deve ser um número entre 1 e 999")
+        if v is not None:
+            if not isinstance(v, str):
+                raise ValueError("Código do banco deve ser uma string")
+            
+            if not v.isdigit():
+                raise ValueError("Código do banco deve conter apenas dígitos")
+            
+            if len(v) != 3:
+                raise ValueError("Código do banco deve ter exatamente 3 dígitos")
+            
+            banco_num = int(v)
+            if banco_num < 1 or banco_num > 999:
+                raise ValueError("Código do banco deve estar entre 001 e 999")
+        
         return v
 
     @validator('agencia')

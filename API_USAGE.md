@@ -630,7 +630,7 @@ curl -X POST "http://localhost:8000/api/v1/financials/" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{
     "profile_id": 1,
-    "banco": 341,
+    "banco": "341",
     "agencia": "1234",
     "conta": "12345-6",
     "tipo_conta": "Corrente",
@@ -713,7 +713,7 @@ curl -X PUT "http://localhost:8000/api/v1/financials/1" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{
-    "banco": 237,
+    "banco": "237",
     "agencia": "5678",
     "conta": "98765-4",
     "tipo_conta": "Poupança",
@@ -725,7 +725,7 @@ curl -X PUT "http://localhost:8000/api/v1/financials/1" \
 
 ### **Regras de Negócio**
 
-- **Código do banco:** Entre 1 e 999 (padrão brasileiro)
+- **Código do banco:** String com 3 dígitos (001 a 999) seguindo padrão brasileiro
 - **Chave PIX única:** Não pode haver duplicatas no sistema
 - **Validação por tipo:**
   - CPF: 11 dígitos
@@ -751,7 +751,7 @@ curl -X POST "http://localhost:8000/api/v1/financials/" \
   -H "Authorization: Bearer $TOKEN" \
   -d '{
     "profile_id": 1,
-    "banco": 104,
+    "banco": "104",
     "agencia": "0001",
     "conta": "12345-6",
     "tipo_conta": "Corrente",

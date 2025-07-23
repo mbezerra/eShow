@@ -21,7 +21,7 @@ class FinancialRepository(ABC):
         pass
     
     @abstractmethod
-    def get_by_banco(self, banco: int, include_relations: bool = False) -> List[Union[Financial, Any]]:
+    def get_by_banco(self, banco: str, include_relations: bool = False) -> List[Union[Financial, Any]]:
         """Obter todos os registros financeiros de um banco específico"""
         pass
     

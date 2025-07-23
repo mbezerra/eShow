@@ -3,19 +3,22 @@
 ## Versão Atual
 **v0.11.0** (2025-07-23) - Sistema Financial Implementado e Documentação Atualizada
 
+> **Atualização Recente:** Coluna `banco` ajustada para string com 3 dígitos (ex: "001", "341") seguindo padrão brasileiro. Migração aplicada automaticamente convertendo dados existentes.
+
 - **SISTEMA FINANCIAL COMPLETO**: Sistema financeiro/bancário implementado
   - ✅ 13 endpoints REST funcionais com autenticação JWT
-  - ✅ Gestão completa de dados bancários (banco, agência, conta, tipo)
+  - ✅ Gestão completa de dados bancários (código banco string 3 dígitos, agência, conta, tipo)
   - ✅ Sistema robusto de chaves PIX com 5 tipos: CPF, CNPJ, Celular, E-mail, Aleatória
   - ✅ Validações específicas por tipo de chave PIX (formatos corretos)
+  - ✅ Código do banco como string 3 dígitos (001-999) seguindo padrão brasileiro
   - ✅ Garantia de unicidade de chaves PIX no sistema
   - ✅ Preferências de transferência (PIX/TED)
   - ✅ Relacionamento com profiles existentes
   - ✅ Estatísticas em tempo real por banco e tipo de chave PIX
   - ✅ Endpoint de verificação de disponibilidade de chave PIX
   - ✅ Parâmetro `include_relations=true` para dados relacionados
-  - ✅ Migração de banco aplicada (tabela financials)
-  - ✅ 6 registros de exemplo com bancos reais (Itaú, Bradesco, Caixa, etc.)
+  - ✅ Migração de banco aplicada (tabela financials com banco VARCHAR(3))
+  - ✅ 6 registros de exemplo com bancos "341", "237", "104", "001", "033", "260"
 - **DOCUMENTAÇÃO ATUALIZADA**: Todos os 6 arquivos .md sincronizados
   - README.md: Seção Financial completa com 13 endpoints e regras de negócio
   - ARCHITECTURE.md: Entidade Financial, repositórios e relacionamentos incluídos

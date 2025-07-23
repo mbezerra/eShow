@@ -9,7 +9,7 @@ class FinancialModel(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     profile_id = Column(Integer, ForeignKey("profiles.id"), nullable=False)
-    banco = Column(Integer, nullable=False)  # Código do banco (1-999)
+    banco = Column(String(3), nullable=False)  # Código do banco (001-999)
     agencia = Column(String(10), nullable=False)
     conta = Column(String(15), nullable=False)
     tipo_conta = Column(String(20), nullable=False)  # "Poupança" ou "Corrente"
