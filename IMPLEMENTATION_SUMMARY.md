@@ -1,8 +1,8 @@
 # Resumo da Implementação - eShow API
 
-## 🚀 Versão Atual: 0.11.0+
+## 🚀 Versão Atual: 0.11.1+
 
-### ✨ Funcionalidades Implementadas na v0.11.0
+### ✨ Funcionalidades Implementadas na v0.11.1
 
 #### **Sistema Financeiro/Bancário Completo:**
 

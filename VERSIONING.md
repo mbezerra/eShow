@@ -1,7 +1,7 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.11.0** (2025-07-23) - Sistema Financial Implementado e Documentação Atualizada
+**v0.11.1** (2025-01-23) - Refinamentos no Sistema de Bookings e Documentação Atualizada
 
 > **Atualização Recente:** Coluna `banco` ajustada para string com 3 dígitos (ex: "001", "341") seguindo padrão brasileiro. Migração aplicada automaticamente convertendo dados existentes.
 
@@ -36,6 +36,25 @@
   - Tratamento de erros padronizado e informativo
 
 > **Marco de Desenvolvimento:** A v0.11.0 marca a implementação completa do sistema Financial com dados bancários e chaves PIX. O projeto agora possui 119 endpoints funcionais, 16 entidades de domínio e documentação técnica totalmente sincronizada.
+
+### v0.11.1 (2025-01-23) - Refinamentos no Sistema de Bookings e Documentação Atualizada
+
+- **MELHORIAS NO SISTEMA DE BOOKINGS**: Refinamentos e otimizações implementadas
+  - ✅ Aprimoramentos no serviço de bookings (booking_service.py)
+  - ✅ Otimizações nas dependências da aplicação (dependencies.py)
+  - ✅ Script de inicialização de bookings atualizado (init_bookings.py)
+- **DOCUMENTAÇÃO SINCRONIZADA**: Arquivos de documentação atualizados
+  - API_USAGE.md: Exemplos e guias práticos atualizados
+  - IMPLEMENTATION_SUMMARY.md: Resumo técnico sincronizado com v0.11.1
+  - VERSIONING.md: Changelog atualizado com marcos v0.11.1
+- **VERSIONAMENTO AUTOMATIZADO**: Sistema de tags Git implementado
+  - Tag v0.11.1 criada e sincronizada com repositório remoto
+  - Processo automatizado de incremento de versão patch
+  - Controle de versão padronizado seguindo semver
+
+> **Atualização Técnica:** A v0.11.1 foca em refinamentos e melhorias de qualidade no sistema de bookings, mantendo a estabilidade de 119 endpoints e 16 entidades de domínio.
+
+### v0.11.0 (2025-07-23) - Sistema Financial Implementado e Documentação Atualizada [MARCO ANTERIOR]
 
 ### v0.10.3 (2025-07-23) - Sistema de Avaliações/Reviews Completo
 
