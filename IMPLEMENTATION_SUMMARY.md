@@ -69,6 +69,20 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - ✅ Deleção individual e em lote
 - ✅ Integração com endpoints de artists
 
+### 8.1. Sistema de Controle de Acesso por Roles ✨
+- ✅ **Validação de roles nos serviços**
+  - Artists: Apenas profiles com role "ARTISTA" (`role_id = 2`)
+  - Spaces: Apenas profiles com role "ESPACO" (`role_id = 3`)
+- ✅ **Validação na criação e atualização**
+  - Verificação automática do role do profile
+  - Mensagens de erro claras e específicas
+- ✅ **Integração com ProfileRepository**
+  - Dependência injetada nos serviços
+  - Validação em tempo real
+- ✅ **Dados de exemplo reestruturados**
+  - Profiles criados com roles adequados
+  - Artists e Spaces apenas com profiles válidos
+
 ### 9. Gerenciamento de Space Types
 - ✅ CRUD completo de tipos de espaço
 - ✅ 15 tipos pré-cadastrados (Bar, Restaurante, Clube, etc.)
@@ -322,13 +336,15 @@ python test_artist_musical_styles.py
 - [x] Gerenciamento de musical styles
 - [x] Gerenciamento de artists
 - [x] Relacionamento N:N Artists-Musical Styles
+- [x] **Gerenciamento de espaços** ✨
+- [x] **Sistema de controle de acesso por roles** ✨
+- [x] **Validação de roles para Artists e Spaces** ✨
 - [x] Validações e tratamento de erros
 - [x] Documentação da API
 - [x] Scripts de inicialização
 - [x] Testes automatizados
 
 ### 🔄 Próximos Passos
-- [ ] Gerenciamento de espaços
 - [ ] Gerenciamento de eventos
 - [ ] Sistema de agendamento
 - [ ] Notificações

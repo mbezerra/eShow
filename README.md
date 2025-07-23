@@ -109,6 +109,20 @@ python migrate_to_postgres.py
 alembic upgrade head
 ```
 
+## Sistema de Roles
+
+O sistema implementa controle de acesso baseado em roles para garantir que apenas usuários adequados possam cadastrar determinados tipos de entidades:
+
+### Roles Disponíveis
+- **ADMIN** (`role_id = 1`): Administradores do sistema
+- **ARTISTA** (`role_id = 2`): Artistas e músicos
+- **ESPACO** (`role_id = 3`): Estabelecimentos e espaços de eventos
+
+### Restrições por Role
+- **Artists**: Apenas profiles com role "ARTISTA" podem cadastrar artistas
+- **Spaces**: Apenas profiles com role "ESPACO" podem cadastrar espaços
+- **Profiles**: Cada usuário deve ter um profile associado a um role específico
+
 ## Endpoints
 
 ### Autenticação (`/api/v1/auth/`)
@@ -125,28 +139,32 @@ alembic upgrade head
 - `DELETE /{user_id}` - Deletar usuário
 
 ### Artists (`/api/v1/artists/`) - Requer autenticação
-- `POST /` - Criar novo artista
+- `POST /` - Criar novo artista ⚠️ **Apenas profiles com role "ARTISTA"**
 - `GET /` - Listar todos os artistas
 - `GET /{artist_id}` - Obter artista por ID
 - `GET /profile/{profile_id}` - Obter artista por profile ID
 - `GET /type/{artist_type_id}` - Listar artistas por tipo
-- `PUT /{artist_id}` - Atualizar artista
+- `PUT /{artist_id}` - Atualizar artista ⚠️ **Validação de role ao alterar profile_id**
 - `DELETE /{artist_id}` - Deletar artista
 
 **Parâmetro `include_relations`**: Use `?include_relations=true` nos endpoints GET para incluir dados relacionados (profile e artist_type).
 
+**⚠️ RESTRIÇÃO IMPORTANTE**: Apenas profiles com `role_id = 2` (role "ARTISTA") podem cadastrar artistas.
+
 ### Spaces (`/api/v1/spaces/`) - Requer autenticação
-- `POST /` - Criar novo espaço
+- `POST /` - Criar novo espaço ⚠️ **Apenas profiles com role "ESPACO"**
 - `GET /` - Listar todos os espaços
 - `GET /{space_id}` - Obter espaço por ID
 - `GET /profile/{profile_id}` - Obter espaços por profile ID
 - `GET /space-type/{space_type_id}` - Listar espaços por tipo de espaço
 - `GET /event-type/{event_type_id}` - Listar espaços por tipo de evento
 - `GET /festival-type/{festival_type_id}` - Listar espaços por tipo de festival
-- `PUT /{space_id}` - Atualizar espaço
+- `PUT /{space_id}` - Atualizar espaço ⚠️ **Validação de role ao alterar profile_id**
 - `DELETE /{space_id}` - Deletar espaço
 
 **Parâmetro `include_relations`**: Use `?include_relations=true` nos endpoints GET para incluir dados relacionados (profile, space_type, event_type, festival_type).
+
+**⚠️ RESTRIÇÃO IMPORTANTE**: Apenas profiles com `role_id = 3` (role "ESPACO") podem cadastrar espaços.
 
 A API estará disponível em `http://localhost:8000`
 A documentação automática estará em `http://localhost:8000/docs` 

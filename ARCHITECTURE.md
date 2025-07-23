@@ -192,11 +192,50 @@ GET /api/v1/spaces/1?include_relations=true
 - **Flexibilidade**: Cliente decide quando carregar relacionamentos
 - **Compatibilidade**: Mantém compatibilidade com versões anteriores
 
+## Sistema de Controle de Acesso por Roles
+
+### Implementação
+
+O sistema implementa validação de roles nos serviços de domínio para garantir que apenas usuários com o papel adequado possam cadastrar determinados tipos de entidades.
+
+#### Validação nos Serviços
+
+**ArtistService**:
+```python
+def create_artist(self, artist_data: ArtistCreate) -> Artist:
+    # Validar se o profile tem role_id = 2 (ARTISTA)
+    profile = self.profile_repository.get_by_id(artist_data.profile_id)
+    if profile.role_id != 2:
+        raise ValueError("Apenas perfis com role 'ARTISTA' podem cadastrar artistas")
+```
+
+**SpaceService**:
+```python
+def create_space(self, space_data: dict) -> Space:
+    # Validar se o profile tem role_id = 3 (ESPACO)
+    profile = self.profile_repository.get_by_id(space_data["profile_id"])
+    if profile.role_id != 3:
+        raise ValueError("Apenas perfis com role 'ESPACO' podem cadastrar espaços")
+```
+
+#### Roles e Restrições
+
+- **ADMIN** (`role_id = 1`): Administradores do sistema
+- **ARTISTA** (`role_id = 2`): Podem cadastrar artistas
+- **ESPACO** (`role_id = 3`): Podem cadastrar espaços
+
+#### Benefícios
+
+- **Segurança**: Controle de acesso granular
+- **Integridade**: Garante que apenas entidades adequadas sejam criadas
+- **Validação**: Mensagens de erro claras para tentativas inválidas
+- **Flexibilidade**: Sistema extensível para novos roles
+
 ## Próximos Passos
 
-1. Implementar autenticação JWT
-2. Adicionar validações de negócio
+1. ✅ ~~Implementar autenticação JWT~~
+2. ✅ ~~Adicionar validações de negócio~~
 3. Implementar cache Redis
 4. Adicionar logs estruturados
 5. Configurar CI/CD
-6. Implementar documentação OpenAPI 
+6. ✅ ~~Implementar documentação OpenAPI~~ 

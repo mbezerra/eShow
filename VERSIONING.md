@@ -1,9 +1,30 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.7.2** - Correção do parâmetro include_relations
+**v0.7.4** - Sistema de Controle de Acesso por Roles
 
-- **CORREÇÃO CRÍTICA**: Parâmetro `include_relations` agora funciona corretamente
+- **NOVA FUNCIONALIDADE**: Sistema de validação de roles implementado
+- **Artists**: Apenas profiles com `role_id = 2` (role "ARTISTA") podem cadastrar artistas
+- **Spaces**: Apenas profiles com `role_id = 3` (role "ESPACO") podem cadastrar espaços
+- Validação implementada nos serviços ArtistService e SpaceService
+- Integração com ProfileRepository para verificação de roles
+- Mensagens de erro claras: "Apenas perfis com role 'X' podem cadastrar Y"
+- Dados de exemplo reestruturados com profiles válidos por role
+- Novos usuários e profiles criados: 4 ARTISTA + 4 ESPACO
+- Documentação atualizada com novas restrições
+- Validação aplicada tanto na criação quanto na atualização
+
+### v0.7.3 (2024-07-23)
+- **Correção do endpoint PUT de Spaces**
+- Implementação de atualização parcial para Spaces
+- Todos os campos do SpaceUpdate agora são opcionais
+- Uso de `model_dump(exclude_none=True)` para filtrar campos None
+- Correção de validação de atualização parcial no SpaceService
+- Documentação atualizada com exemplo de resposta
+- Funcionalidade de atualização parcial totalmente operacional
+
+### v0.7.2 (2024-07-23)
+- **Correção do parâmetro include_relations**
 - `include_relations=false`: Retorna apenas campos básicos (21 campos)
 - `include_relations=true`: Retorna campos básicos + relacionamentos (25 campos)
 - Removidos response_models fixos dos endpoints GET de Spaces
