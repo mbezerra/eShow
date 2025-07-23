@@ -135,5 +135,18 @@ alembic upgrade head
 
 **Parâmetro `include_relations`**: Use `?include_relations=true` nos endpoints GET para incluir dados relacionados (profile e artist_type).
 
+### Spaces (`/api/v1/spaces/`) - Requer autenticação
+- `POST /` - Criar novo espaço
+- `GET /` - Listar todos os espaços
+- `GET /{space_id}` - Obter espaço por ID
+- `GET /profile/{profile_id}` - Obter espaços por profile ID
+- `GET /space-type/{space_type_id}` - Listar espaços por tipo de espaço
+- `GET /event-type/{event_type_id}` - Listar espaços por tipo de evento
+- `GET /festival-type/{festival_type_id}` - Listar espaços por tipo de festival
+- `PUT /{space_id}` - Atualizar espaço
+- `DELETE /{space_id}` - Deletar espaço
+
+**Parâmetro `include_relations`**: Use `?include_relations=true` nos endpoints GET para incluir dados relacionados (profile, space_type, event_type, festival_type).
+
 A API estará disponível em `http://localhost:8000`
 A documentação automática estará em `http://localhost:8000/docs` 

@@ -26,6 +26,7 @@ class ProfileModel(Base):
 
     role = relationship("RoleModel", back_populates="profiles")
     artist = relationship("ArtistModel", back_populates="profile", uselist=False)
+    spaces = relationship("SpaceModel", back_populates="profile")
 
 # Importação tardia para evitar importação circular
 from infrastructure.database.models.user_model import UserModel

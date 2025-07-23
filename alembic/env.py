@@ -18,6 +18,7 @@ from infrastructure.database.models.musical_style_model import MusicalStyleModel
 from infrastructure.database.models.space_type_model import SpaceTypeModel
 from infrastructure.database.models.event_type_model import EventTypeModel
 from infrastructure.database.models.festival_type_model import FestivalTypeModel
+from infrastructure.database.models.space_model import SpaceModel
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

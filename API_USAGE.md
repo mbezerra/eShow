@@ -1029,4 +1029,292 @@ curl -X DELETE "http://localhost:8000/api/v1/festival-types/1" \
 
 4. **Performance:**
    - O campo `type` possui índice único para busca eficiente
-   - Paginação disponível para listagens grandes 
+   - Paginação disponível para listagens grandes
+
+## Espaços (Spaces)
+
+Endpoint para gerenciar os espaços disponíveis no sistema. Os espaços representam locais onde artistas podem se apresentar.
+
+### Campos
+- `id`: Identificador único do espaço
+- `profile_id`: ID do profile associado (relacionamento obrigatório)
+- `space_type_id`: ID do tipo de espaço (relacionamento obrigatório)
+- `event_type_id`: ID do tipo de evento (relacionamento opcional - apenas para eventos)
+- `festival_type_id`: ID do tipo de festival (relacionamento opcional - apenas para festivais)
+- `acesso`: Tipo de acesso (Enum: "Público", "Privado")
+- `dias_apresentacao`: Dias da semana para apresentação (array de strings)
+- `duracao_apresentacao`: Duração da apresentação em horas
+- `valor_hora`: Valor por hora da apresentação em reais
+- `valor_couvert`: Valor padrão do couvert artístico em reais
+- `requisitos_minimos`: Requisitos mínimos para apresentação (texto livre)
+- `oferecimentos`: Oferecimentos para o artista (texto livre)
+- `estrutura_apresentacao`: Estrutura de apresentação (texto livre)
+- `publico_estimado`: Público estimado (Enum: "<50", "51-100", "101-500", "501-1000", "1001-3000", "3001-5000", "5001-10000", "> 10000")
+- `fotos_ambiente`: Array com paths das imagens salvas
+- `instagram`: Link do Instagram (opcional)
+- `tiktok`: Link do TikTok (opcional)
+- `youtube`: Link do YouTube (opcional)
+- `facebook`: Link do Facebook (opcional)
+- `created_at`: Data de criação
+- `updated_at`: Data de atualização
+
+### Relacionamentos
+A tabela `spaces` possui relacionamentos com:
+- **profiles**: Um espaço pertence a um profile (N:1)
+- **space_types**: Um espaço tem um tipo específico (N:1)
+- **event_types**: Um espaço pode ter um tipo de evento (N:1, opcional)
+- **festival_types**: Um espaço pode ter um tipo de festival (N:1, opcional)
+
+Para incluir os dados relacionados nas respostas, use o parâmetro `include_relations=true` nos endpoints GET.
+
+### 1. Criar Novo Espaço
+```bash
+curl -X POST "http://localhost:8000/api/v1/spaces/" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "profile_id": 1,
+    "space_type_id": 1,
+    "event_type_id": null,
+    "festival_type_id": null,
+    "acesso": "Público",
+    "dias_apresentacao": ["sexta", "sábado"],
+    "duracao_apresentacao": 3.0,
+    "valor_hora": 150.0,
+    "valor_couvert": 20.0,
+    "requisitos_minimos": "Equipamento de som básico, microfone, instrumentos próprios",
+    "oferecimentos": "Equipamento de som, iluminação, camarim, bebidas",
+    "estrutura_apresentacao": "Palco de 4x3 metros, sistema de som profissional, iluminação cênica",
+    "publico_estimado": "101-500",
+    "fotos_ambiente": ["/fotos/bar1.jpg", "/fotos/bar2.jpg"],
+    "instagram": "https://instagram.com/bar_exemplo",
+    "tiktok": "https://tiktok.com/@bar_exemplo",
+    "youtube": null,
+    "facebook": "https://facebook.com/barexemplo"
+  }'
+```
+
+**Campos Obrigatórios:**
+- `profile_id`: ID do profile associado (deve existir na tabela profiles)
+- `space_type_id`: ID do tipo de espaço (deve existir na tabela space_types)
+- `acesso`: Tipo de acesso ("Público" ou "Privado")
+- `dias_apresentacao`: Lista de dias da semana para apresentação
+- `duracao_apresentacao`: Duração da apresentação em horas (deve ser > 0)
+- `valor_hora`: Valor por hora em reais (deve ser >= 0)
+- `valor_couvert`: Valor do couvert artístico em reais (deve ser >= 0)
+- `requisitos_minimos`: Requisitos mínimos para apresentação (texto)
+- `oferecimentos`: Oferecimentos para o artista (texto)
+- `estrutura_apresentacao`: Estrutura de apresentação (texto)
+- `publico_estimado`: Público estimado (uma das faixas válidas)
+- `fotos_ambiente`: Array de paths das imagens
+
+**Campos Opcionais:**
+- `event_type_id`: ID do tipo de evento (apenas para eventos)
+- `festival_type_id`: ID do tipo de festival (apenas para festivais)
+- `instagram`: Link do Instagram
+- `tiktok`: Link do TikTok
+- `youtube`: Link do YouTube
+- `facebook`: Link do Facebook
+
+**Valores válidos para acesso:**
+- `"Público"`
+- `"Privado"`
+
+**Valores válidos para publico_estimado:**
+- `"<50"`
+- `"51-100"`
+- `"101-500"`
+- `"501-1000"`
+- `"1001-3000"`
+- `"3001-5000"`
+- `"5001-10000"`
+- `"> 10000"`
+
+**Dias válidos para apresentação:**
+- `"segunda"`, `"terça"`, `"quarta"`, `"quinta"`, `"sexta"`, `"sábado"`, `"domingo"`
+
+### 2. Listar Todos os Espaços
+```bash
+curl -X GET "http://localhost:8000/api/v1/spaces/" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Parâmetros:**
+- `skip`: Número de registros para pular (padrão: 0)
+- `limit`: Número máximo de registros (padrão: 100)
+- `include_relations`: Incluir dados relacionados (padrão: false)
+
+**Exemplo com relacionamentos:**
+```bash
+curl -X GET "http://localhost:8000/api/v1/spaces/?include_relations=true" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Resposta com relacionamentos:**
+```json
+[
+  {
+    "profile_id": 1,
+    "space_type_id": 1,
+    "event_type_id": null,
+    "festival_type_id": null,
+    "acesso": "Público",
+    "dias_apresentacao": ["sexta", "sábado"],
+    "duracao_apresentacao": 3.0,
+    "valor_hora": 150.0,
+    "valor_couvert": 20.0,
+    "requisitos_minimos": "Equipamento de som básico, microfone, instrumentos próprios",
+    "oferecimentos": "Equipamento de som, iluminação, camarim, bebidas",
+    "estrutura_apresentacao": "Palco de 4x3 metros, sistema de som profissional, iluminação cênica",
+    "publico_estimado": "101-500",
+    "fotos_ambiente": ["/fotos/bar1.jpg", "/fotos/bar2.jpg"],
+    "instagram": "https://instagram.com/bar_exemplo",
+    "tiktok": "https://tiktok.com/@bar_exemplo",
+    "youtube": null,
+    "facebook": "https://facebook.com/barexemplo",
+    "id": 1,
+    "created_at": "2025-07-23T00:02:19",
+    "updated_at": "2025-07-23T00:02:19",
+    "profile": {
+      "id": 1,
+      "full_name": "Alice Silva",
+      "artistic_name": "Alice Artista",
+      "bio": "Artista de música popular.",
+      "cidade": "São Paulo",
+      "uf": "SP"
+    },
+    "space_type": {
+      "id": 1,
+      "tipo": "Bar e Restaurante"
+    },
+    "event_type": null,
+    "festival_type": null
+  }
+]
+```
+
+### 3. Obter Espaço por ID
+```bash
+curl -X GET "http://localhost:8000/api/v1/spaces/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Parâmetros:**
+- `include_relations`: Incluir dados relacionados (padrão: false)
+
+**Exemplo com relacionamentos:**
+```bash
+curl -X GET "http://localhost:8000/api/v1/spaces/1?include_relations=true" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### 4. Buscar Espaços por Profile ID
+```bash
+curl -X GET "http://localhost:8000/api/v1/spaces/profile/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Parâmetros:**
+- `include_relations`: Incluir dados relacionados (padrão: false)
+
+**Exemplo com relacionamentos:**
+```bash
+curl -X GET "http://localhost:8000/api/v1/spaces/profile/1?include_relations=true" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### 5. Buscar Espaços por Tipo de Espaço
+```bash
+curl -X GET "http://localhost:8000/api/v1/spaces/space-type/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Parâmetros:**
+- `include_relations`: Incluir dados relacionados (padrão: false)
+
+**Exemplo com relacionamentos:**
+```bash
+curl -X GET "http://localhost:8000/api/v1/spaces/space-type/1?include_relations=true" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### 6. Buscar Espaços por Tipo de Evento
+```bash
+curl -X GET "http://localhost:8000/api/v1/spaces/event-type/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Parâmetros:**
+- `include_relations`: Incluir dados relacionados (padrão: false)
+
+**Exemplo com relacionamentos:**
+```bash
+curl -X GET "http://localhost:8000/api/v1/spaces/event-type/1?include_relations=true" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### 7. Buscar Espaços por Tipo de Festival
+```bash
+curl -X GET "http://localhost:8000/api/v1/spaces/festival-type/7" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Parâmetros:**
+- `include_relations`: Incluir dados relacionados (padrão: false)
+
+**Exemplo com relacionamentos:**
+```bash
+curl -X GET "http://localhost:8000/api/v1/spaces/festival-type/7?include_relations=true" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+### 8. Atualizar Espaço
+```bash
+curl -X PUT "http://localhost:8000/api/v1/spaces/1" \
+  -H "Authorization: Bearer <TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "valor_hora": 180.0,
+    "dias_apresentacao": ["sexta", "sábado", "domingo"],
+    "instagram": "https://instagram.com/bar_exemplo_atualizado"
+  }'
+```
+
+**Nota:** Todos os campos são opcionais na atualização. Apenas os campos fornecidos serão atualizados.
+
+### 9. Deletar Espaço
+```bash
+curl -X DELETE "http://localhost:8000/api/v1/spaces/1" \
+  -H "Authorization: Bearer <TOKEN>"
+```
+
+**Resposta:**
+```json
+{
+  "message": "Space com ID 1 foi deletado com sucesso"
+}
+```
+
+### Observações Importantes
+
+1. **Validações:**
+   - O profile e o space_type devem existir antes de criar o espaço
+   - Os campos event_type_id e festival_type_id são opcionais e mutuamente exclusivos na prática
+   - Valores numéricos devem ser maiores que zero para duração e não negativos para valores monetários
+   - Arrays não podem estar vazios
+
+2. **Relacionamentos:**
+   - Um espaço sempre pertence a um profile (obrigatório)
+   - Um espaço sempre tem um tipo de espaço (obrigatório)
+   - Um espaço pode ter um tipo de evento OU um tipo de festival (opcionais)
+   - Use `include_relations=true` para obter dados completos dos relacionamentos
+
+3. **Flexibilidade:**
+   - Os campos de texto livre permitem descrições detalhadas
+   - O array de fotos suporta múltiplas imagens
+   - Links de redes sociais são opcionais
+
+4. **Performance:**
+   - Paginação disponível para listagens grandes
+   - Índices nos campos de relacionamento para busca eficiente
+   - Use relacionamentos apenas quando necessário para otimizar performance

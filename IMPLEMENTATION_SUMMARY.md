@@ -106,12 +106,17 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 8. **space_types**: Tipos de espaço (Bar, Restaurante, Clube, etc.)
 9. **event_types**: Tipos de evento (Aniversário, Casamento, Formatura, etc.)
 10. **festival_types**: Tipos de festival (Aniversário de Emancipação Política, Festa Religiosa, etc.)
+11. **spaces**: Espaços para apresentações com relacionamentos para profiles, space_types, event_types e festival_types
 
 ### Relacionamentos
 - **users** ↔ **profiles**: 1:1
 - **roles** ↔ **profiles**: 1:N
 - **profiles** ↔ **artists**: 1:1
+- **profiles** ↔ **spaces**: 1:N
 - **artist_types** ↔ **artists**: 1:N
+- **space_types** ↔ **spaces**: 1:N
+- **event_types** ↔ **spaces**: 1:N (opcional)
+- **festival_types** ↔ **spaces**: 1:N (opcional)
 - **artists** ↔ **musical_styles**: N:N (via artist_musical_style)
 
 ## Endpoints Disponíveis
@@ -198,6 +203,19 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - `POST /api/v1/festival-types/` - Criar tipo de festival
 - `PUT /api/v1/festival-types/{id}` - Atualizar tipo de festival
 - `DELETE /api/v1/festival-types/{id}` - Deletar tipo de festival
+
+### Spaces (Protegidos)
+- `GET /api/v1/spaces/` - Listar espaços
+- `GET /api/v1/spaces/{id}` - Espaço por ID
+- `GET /api/v1/spaces/profile/{profile_id}` - Espaços por profile
+- `GET /api/v1/spaces/space-type/{space_type_id}` - Espaços por tipo de espaço
+- `GET /api/v1/spaces/event-type/{event_type_id}` - Espaços por tipo de evento
+- `GET /api/v1/spaces/festival-type/{festival_type_id}` - Espaços por tipo de festival
+- `POST /api/v1/spaces/` - Criar espaço
+- `PUT /api/v1/spaces/{id}` - Atualizar espaço
+- `DELETE /api/v1/spaces/{id}` - Deletar espaço
+
+**Parâmetro `include_relations`**: Disponível nos endpoints GET de Artists e Spaces para incluir dados relacionados.
 
 ### Públicos
 - `GET /health` - Health check

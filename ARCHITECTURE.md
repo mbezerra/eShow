@@ -20,6 +20,7 @@ O domínio contém as regras de negócio e é independente de qualquer tecnologi
 - **SpaceType**: Entidade que representa um tipo de espaço
 - **EventType**: Entidade que representa um tipo de evento
 - **FestivalType**: Entidade que representa um tipo de festival
+- **Space**: Entidade que representa um espaço para apresentações
 
 #### Repositórios (`domain/repositories/`)
 - **UserRepository**: Interface para operações de usuários
@@ -31,6 +32,7 @@ O domínio contém as regras de negócio e é independente de qualquer tecnologi
 - **SpaceTypeRepository**: Interface para operações de tipos de espaço
 - **EventTypeRepository**: Interface para operações de tipos de evento
 - **FestivalTypeRepository**: Interface para operações de tipos de festival
+- **SpaceRepository**: Interface para operações de espaços
 
 ### 2. Aplicação (`app/`)
 
@@ -50,6 +52,7 @@ A camada de aplicação contém os casos de uso e adaptadores de entrada.
 - **SpaceTypeService**: Orquestra as operações de tipos de espaço
 - **EventTypeService**: Orquestra as operações de tipos de evento
 - **FestivalTypeService**: Orquestra as operações de tipos de festival
+- **SpaceService**: Orquestra as operações de espaços
 
 ### 3. Infraestrutura (`infrastructure/`)
 
@@ -69,6 +72,7 @@ A camada de infraestrutura contém os adaptadores de saída.
 - **SpaceTypeRepositoryImpl**: Implementação concreta do repositório de tipos de espaço
 - **EventTypeRepositoryImpl**: Implementação concreta do repositório de tipos de evento
 - **FestivalTypeRepositoryImpl**: Implementação concreta do repositório de tipos de festival
+- **SpaceRepositoryImpl**: Implementação concreta do repositório de espaços
 
 ## Fluxo de Dados
 
@@ -154,6 +158,39 @@ alembic revision --autogenerate -m "Initial migration"
 # Aplicar migrações
 alembic upgrade head
 ```
+
+## Funcionalidades Especiais
+
+### Parâmetro `include_relations`
+
+Implementado nos endpoints GET de Artists e Spaces para otimizar o carregamento de dados relacionados:
+
+#### Como Funciona
+- **Sem `include_relations`**: Retorna apenas a entidade principal com IDs dos relacionamentos
+- **Com `include_relations=true`**: Retorna a entidade principal + dados completos dos relacionamentos
+
+#### Implementação Técnica
+1. **Repository Layer**: Usa SQLAlchemy `joinedload` para carregar relacionamentos
+2. **Service Layer**: Passa o parâmetro para o repositório
+3. **API Layer**: Expõe como query parameter opcional
+
+#### Exemplo de Uso
+```bash
+# Sem relacionamentos
+GET /api/v1/spaces/1
+
+# Com relacionamentos
+GET /api/v1/spaces/1?include_relations=true
+```
+
+#### Relacionamentos Incluídos
+- **Artists**: profile, artist_type
+- **Spaces**: profile, space_type, event_type, festival_type
+
+#### Benefícios
+- **Performance**: Evita N+1 queries
+- **Flexibilidade**: Cliente decide quando carregar relacionamentos
+- **Compatibilidade**: Mantém compatibilidade com versões anteriores
 
 ## Próximos Passos
 
