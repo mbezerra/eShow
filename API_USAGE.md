@@ -253,7 +253,7 @@ curl -X POST "http://localhost:8000/api/v1/artists/" \
   -H "Authorization: Bearer <TOKEN>" \
   -H "Content-Type: application/json" \
   -d '{
-    "profile_id": 1,
+    "profile_id": 2,
     "artist_type_id": 1,
     "dias_apresentacao": ["sexta", "sábado", "domingo"],
     "raio_atuacao": 50.0,
@@ -270,6 +270,10 @@ curl -X POST "http://localhost:8000/api/v1/artists/" \
 **Campos Obrigatórios:**
 - `profile_id`: ID do profile associado (deve existir na tabela profiles)
 - `artist_type_id`: ID do tipo de artista (deve existir na tabela artist_types)
+
+**⚠️ RESTRIÇÃO IMPORTANTE:**
+- Apenas profiles com `role_id = 2` (role "ARTISTA") podem cadastrar artistas
+- Se tentar usar um profile com role diferente, retornará erro 400: "Apenas perfis com role 'ARTISTA' podem cadastrar artistas"
 - `dias_apresentacao`: Lista de dias da semana para apresentação
 - `raio_atuacao`: Raio de atuação em km (deve ser > 0)
 - `duracao_apresentacao`: Duração da apresentação em horas (deve ser > 0)
@@ -374,6 +378,8 @@ curl -X PUT "http://localhost:8000/api/v1/artists/1" \
 ```
 
 **Nota:** Todos os campos são opcionais na atualização. Apenas os campos fornecidos serão atualizados.
+
+**⚠️ RESTRIÇÃO:** Se for alterado o `profile_id`, o novo profile deve ter `role_id = 2` (role "ARTISTA").
 
 ### 7. Deletar Artista
 ```bash

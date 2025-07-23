@@ -77,8 +77,11 @@ def get_musical_style_service(musical_style_repository: MusicalStyleRepository =
 def get_artist_repository(db=Depends(get_database_session)) -> ArtistRepository:
     return ArtistRepositoryImpl(db)
 
-def get_artist_service(artist_repository: ArtistRepository = Depends(get_artist_repository)) -> ArtistService:
-    return ArtistService(artist_repository)
+def get_artist_service(
+    artist_repository: ArtistRepository = Depends(get_artist_repository),
+    profile_repository = Depends(get_profile_repository)
+) -> ArtistService:
+    return ArtistService(artist_repository, profile_repository)
 
 def get_artist_musical_style_repository(db=Depends(get_database_session)) -> ArtistMusicalStyleRepository:
     return ArtistMusicalStyleRepositoryImpl(db)

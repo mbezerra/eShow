@@ -21,6 +21,9 @@ def main():
     bar_centro = db.query(UserModel).filter_by(email="bar.centro@example.com").first()
     casa_musical = db.query(UserModel).filter_by(email="casa.musical@example.com").first()
     pub_rock = db.query(UserModel).filter_by(email="pub.rock@example.com").first()
+    ana_costa = db.query(UserModel).filter_by(email="ana.costa@example.com").first()
+    diego_silva = db.query(UserModel).filter_by(email="diego.silva@example.com").first()
+    elena_santos = db.query(UserModel).filter_by(email="elena.santos@example.com").first()
     
     perfis = [
         {
@@ -118,6 +121,54 @@ def main():
             "telefone_fixo": "(11) 3333-6666",
             "telefone_movel": "(11) 99999-6666",
             "whatsapp": "(11) 99999-6666"
+        },
+        {
+            "user_id": ana_costa.id,
+            "role_id": artist_role.id,
+            "full_name": ana_costa.name,
+            "artistic_name": "Ana Costa Music",
+            "bio": "Cantora de MPB e bossa nova.",
+            "cep": "07007-000",
+            "logradouro": "Rua das Acácias",
+            "numero": "250",
+            "complemento": "Apto 5",
+            "cidade": "Rio de Janeiro",
+            "uf": "RJ",
+            "telefone_fixo": "(21) 3333-7777",
+            "telefone_movel": "(21) 99999-7777",
+            "whatsapp": "(21) 99999-7777"
+        },
+        {
+            "user_id": diego_silva.id,
+            "role_id": artist_role.id,
+            "full_name": diego_silva.name,
+            "artistic_name": "Diego Rock",
+            "bio": "Guitarrista e compositor de rock nacional.",
+            "cep": "08008-000",
+            "logradouro": "Av. Independência",
+            "numero": "800",
+            "complemento": "Casa 2",
+            "cidade": "Porto Alegre",
+            "uf": "RS",
+            "telefone_fixo": "(51) 3333-8888",
+            "telefone_movel": "(51) 99999-8888",
+            "whatsapp": "(51) 99999-8888"
+        },
+        {
+            "user_id": elena_santos.id,
+            "role_id": artist_role.id,
+            "full_name": elena_santos.name,
+            "artistic_name": "Elena Jazz",
+            "bio": "Vocalista de jazz e blues.",
+            "cep": "09009-000",
+            "logradouro": "Rua do Jazz",
+            "numero": "123",
+            "complemento": "Studio A",
+            "cidade": "Salvador",
+            "uf": "BA",
+            "telefone_fixo": "(71) 3333-9999",
+            "telefone_movel": "(71) 99999-9999",
+            "whatsapp": "(71) 99999-9999"
         }
     ]
     

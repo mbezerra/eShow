@@ -1,15 +1,25 @@
 from typing import List, Optional, Union
 from domain.entities.artist import Artist
 from domain.repositories.artist_repository import ArtistRepository
+from domain.repositories.profile_repository import ProfileRepository
 from app.schemas.artist import ArtistCreate, ArtistUpdate
 from infrastructure.database.models.artist_model import ArtistModel
 
 class ArtistService:
-    def __init__(self, artist_repository: ArtistRepository):
+    def __init__(self, artist_repository: ArtistRepository, profile_repository: ProfileRepository):
         self.artist_repository = artist_repository
+        self.profile_repository = profile_repository
 
     def create_artist(self, artist_data: ArtistCreate) -> Artist:
         """Criar um novo artista"""
+        # Validar se o profile tem role_id = 2 (ARTISTA)
+        profile = self.profile_repository.get_by_id(artist_data.profile_id)
+        if not profile:
+            raise ValueError(f"Profile com ID {artist_data.profile_id} não encontrado")
+        
+        if profile.role_id != 2:
+            raise ValueError("Apenas perfis com role 'ARTISTA' podem cadastrar artistas")
+        
         # Verificar se já existe um artista para este profile
         existing_artist = self.artist_repository.get_by_profile_id(artist_data.profile_id)
         if existing_artist:
@@ -60,6 +70,14 @@ class ArtistService:
 
         # Atualizar apenas os campos fornecidos
         if artist_data.profile_id is not None:
+            # Validar se o novo profile tem role_id = 2 (ARTISTA)
+            profile = self.profile_repository.get_by_id(artist_data.profile_id)
+            if not profile:
+                raise ValueError(f"Profile com ID {artist_data.profile_id} não encontrado")
+            
+            if profile.role_id != 2:
+                raise ValueError("Apenas perfis com role 'ARTISTA' podem cadastrar artistas")
+            
             # Verificar se o novo profile_id já tem um artista
             existing_artist = self.artist_repository.get_by_profile_id(artist_data.profile_id)
             if existing_artist and existing_artist.id != artist_id:
