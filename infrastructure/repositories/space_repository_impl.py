@@ -212,30 +212,6 @@ class SpaceRepositoryImpl(SpaceRepository):
             updated_at=db_space.updated_at
         )
         
-        # Adicionar relacionamentos se carregados
-        if hasattr(db_space, 'profile') and db_space.profile:
-            space.profile = {
-                'id': db_space.profile.id,
-                'full_name': db_space.profile.full_name,
-                'artistic_name': db_space.profile.artistic_name,
-                'bio': db_space.profile.bio,
-                'cidade': db_space.profile.cidade,
-                'uf': db_space.profile.uf
-            }
-        if hasattr(db_space, 'space_type') and db_space.space_type:
-            space.space_type = {
-                'id': db_space.space_type.id,
-                'tipo': db_space.space_type.tipo
-            }
-        if hasattr(db_space, 'event_type') and db_space.event_type:
-            space.event_type = {
-                'id': db_space.event_type.id,
-                'type': db_space.event_type.type
-            }
-        if hasattr(db_space, 'festival_type') and db_space.festival_type:
-            space.festival_type = {
-                'id': db_space.festival_type.id,
-                'type': db_space.festival_type.type
-            }
+        # Não adicionar relacionamentos na entidade - eles só são incluídos quando retornamos o modelo do banco
             
         return space 

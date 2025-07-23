@@ -61,10 +61,4 @@ class Space:
         self.youtube = youtube
         self.facebook = facebook
         self.created_at = created_at or datetime.now()
-        self.updated_at = updated_at or datetime.now()
-        
-        # Relacionamentos (opcionais)
-        self.profile = None
-        self.space_type = None
-        self.event_type = None
-        self.festival_type = None 
+        self.updated_at = updated_at or datetime.now() 

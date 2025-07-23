@@ -21,7 +21,7 @@ def create_space(
             detail=str(e)
         )
 
-@router.get("/", response_model=List[SpaceResponseWithRelations])
+@router.get("/")
 def get_spaces(
     skip: int = 0,
     limit: int = 100,
@@ -31,7 +31,7 @@ def get_spaces(
     """Listar todos os espaços"""
     return space_service.get_all_spaces(skip=skip, limit=limit, include_relations=include_relations)
 
-@router.get("/{space_id}", response_model=SpaceResponseWithRelations)
+@router.get("/{space_id}")
 def get_space(
     space_id: int,
     include_relations: bool = Query(False, description="Incluir dados relacionados"),
@@ -46,7 +46,7 @@ def get_space(
         )
     return space
 
-@router.get("/profile/{profile_id}", response_model=List[SpaceResponseWithRelations])
+@router.get("/profile/{profile_id}")
 def get_spaces_by_profile(
     profile_id: int,
     include_relations: bool = Query(False, description="Incluir dados relacionados"),
@@ -55,7 +55,7 @@ def get_spaces_by_profile(
     """Buscar espaços por profile ID"""
     return space_service.get_spaces_by_profile_id(profile_id, include_relations=include_relations)
 
-@router.get("/space-type/{space_type_id}", response_model=List[SpaceResponseWithRelations])
+@router.get("/space-type/{space_type_id}")
 def get_spaces_by_space_type(
     space_type_id: int,
     include_relations: bool = Query(False, description="Incluir dados relacionados"),
@@ -64,7 +64,7 @@ def get_spaces_by_space_type(
     """Buscar espaços por tipo de espaço"""
     return space_service.get_spaces_by_space_type_id(space_type_id, include_relations=include_relations)
 
-@router.get("/event-type/{event_type_id}", response_model=List[SpaceResponseWithRelations])
+@router.get("/event-type/{event_type_id}")
 def get_spaces_by_event_type(
     event_type_id: int,
     include_relations: bool = Query(False, description="Incluir dados relacionados"),
@@ -73,7 +73,7 @@ def get_spaces_by_event_type(
     """Buscar espaços por tipo de evento"""
     return space_service.get_spaces_by_event_type_id(event_type_id, include_relations=include_relations)
 
-@router.get("/festival-type/{festival_type_id}", response_model=List[SpaceResponseWithRelations])
+@router.get("/festival-type/{festival_type_id}")
 def get_spaces_by_festival_type(
     festival_type_id: int,
     include_relations: bool = Query(False, description="Incluir dados relacionados"),
