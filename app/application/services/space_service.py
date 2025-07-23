@@ -63,25 +63,43 @@ class SpaceService:
         if not space:
             raise ValueError(f"Space with id {space_id} not found")
 
-        # Atualizar campos
-        space.profile_id = space_data["profile_id"]
-        space.space_type_id = space_data["space_type_id"]
-        space.event_type_id = space_data.get("event_type_id")
-        space.festival_type_id = space_data.get("festival_type_id")
-        space.acesso = space_data["acesso"]
-        space.dias_apresentacao = space_data["dias_apresentacao"]
-        space.duracao_apresentacao = space_data["duracao_apresentacao"]
-        space.valor_hora = space_data["valor_hora"]
-        space.valor_couvert = space_data["valor_couvert"]
-        space.requisitos_minimos = space_data["requisitos_minimos"]
-        space.oferecimentos = space_data["oferecimentos"]
-        space.estrutura_apresentacao = space_data["estrutura_apresentacao"]
-        space.publico_estimado = space_data["publico_estimado"]
-        space.fotos_ambiente = space_data["fotos_ambiente"]
-        space.instagram = space_data.get("instagram")
-        space.tiktok = space_data.get("tiktok")
-        space.youtube = space_data.get("youtube")
-        space.facebook = space_data.get("facebook")
+        # Atualizar apenas os campos fornecidos (atualização parcial)
+        if "profile_id" in space_data:
+            space.profile_id = space_data["profile_id"]
+        if "space_type_id" in space_data:
+            space.space_type_id = space_data["space_type_id"]
+        if "event_type_id" in space_data:
+            space.event_type_id = space_data["event_type_id"]
+        if "festival_type_id" in space_data:
+            space.festival_type_id = space_data["festival_type_id"]
+        if "acesso" in space_data:
+            space.acesso = space_data["acesso"]
+        if "dias_apresentacao" in space_data:
+            space.dias_apresentacao = space_data["dias_apresentacao"]
+        if "duracao_apresentacao" in space_data:
+            space.duracao_apresentacao = space_data["duracao_apresentacao"]
+        if "valor_hora" in space_data:
+            space.valor_hora = space_data["valor_hora"]
+        if "valor_couvert" in space_data:
+            space.valor_couvert = space_data["valor_couvert"]
+        if "requisitos_minimos" in space_data:
+            space.requisitos_minimos = space_data["requisitos_minimos"]
+        if "oferecimentos" in space_data:
+            space.oferecimentos = space_data["oferecimentos"]
+        if "estrutura_apresentacao" in space_data:
+            space.estrutura_apresentacao = space_data["estrutura_apresentacao"]
+        if "publico_estimado" in space_data:
+            space.publico_estimado = space_data["publico_estimado"]
+        if "fotos_ambiente" in space_data:
+            space.fotos_ambiente = space_data["fotos_ambiente"]
+        if "instagram" in space_data:
+            space.instagram = space_data["instagram"]
+        if "tiktok" in space_data:
+            space.tiktok = space_data["tiktok"]
+        if "youtube" in space_data:
+            space.youtube = space_data["youtube"]
+        if "facebook" in space_data:
+            space.facebook = space_data["facebook"]
 
         return self.space_repository.update(space)
 

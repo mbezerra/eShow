@@ -90,7 +90,8 @@ def update_space(
 ):
     """Atualizar um espaço"""
     try:
-        space_data = space.dict()
+        # Usar model_dump e excluir campos None para atualização parcial
+        space_data = space.model_dump(exclude_none=True)
         return space_service.update_space(space_id, space_data)
     except ValueError as e:
         raise HTTPException(

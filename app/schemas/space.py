@@ -60,20 +60,20 @@ class SpaceCreate(SpaceBase):
     pass
 
 class SpaceUpdate(BaseModel):
-    profile_id: int
-    space_type_id: int
+    profile_id: Optional[int] = None
+    space_type_id: Optional[int] = None
     event_type_id: Optional[int] = None
     festival_type_id: Optional[int] = None
-    acesso: AcessoEnum
-    dias_apresentacao: List[str]
-    duracao_apresentacao: float
-    valor_hora: float
-    valor_couvert: float
-    requisitos_minimos: str
-    oferecimentos: str
-    estrutura_apresentacao: str
-    publico_estimado: PublicoEstimadoEnum
-    fotos_ambiente: List[str]
+    acesso: Optional[AcessoEnum] = None
+    dias_apresentacao: Optional[List[str]] = None
+    duracao_apresentacao: Optional[float] = None
+    valor_hora: Optional[float] = None
+    valor_couvert: Optional[float] = None
+    requisitos_minimos: Optional[str] = None
+    oferecimentos: Optional[str] = None
+    estrutura_apresentacao: Optional[str] = None
+    publico_estimado: Optional[PublicoEstimadoEnum] = None
+    fotos_ambiente: Optional[List[str]] = None
     instagram: Optional[str] = None
     tiktok: Optional[str] = None
     youtube: Optional[str] = None
