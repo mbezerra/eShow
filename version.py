@@ -113,8 +113,11 @@ def main():
     print(f"Versão atual: {current_version}")
     print(f"Nova versão: {new_version}")
     
-    # Confirma automaticamente para facilitar automação
-    print("Criando tag automaticamente...")
+    # Confirma com o usuário
+    response = input("Deseja criar a tag e fazer push? (y/N): ")
+    if response.lower() not in ['y', 'yes', 's', 'sim']:
+        print("Operação cancelada.")
+        return
     
     try:
         create_git_tag(new_version)
