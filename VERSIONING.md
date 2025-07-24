@@ -1,9 +1,9 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.13.0** (2025-01-23) - Versão Minor Atualizada
+**v0.13.1** (2025-01-23) - Correções no Sistema de Reviews
 
-> **Atualização Recente:** Versão minor incrementada para v0.13.0 com sistema de manifestações de interesse (Interests) totalmente implementado e documentado.
+> **Atualização Recente:** Versão patch incrementada para v0.13.1 com correções no sistema de reviews implementadas e documentadas.
 
 - **SISTEMA DE INTERESTS COMPLETO**: Sistema de manifestações de interesse implementado
   - ✅ 15 endpoints REST funcionais com autenticação JWT
@@ -36,7 +36,7 @@
   - Schemas Pydantic com validações específicas por contexto
   - Tratamento de erros padronizado e informativo
 
-> **Marco de Desenvolvimento:** A v0.13.0 marca a versão minor atualizada com o sistema de manifestações de interesse totalmente implementado e documentado. O projeto agora possui 134 endpoints funcionais, 17 entidades de domínio e documentação técnica totalmente sincronizada.
+> **Marco de Desenvolvimento:** A v0.13.1 marca a versão patch atualizada com correções no sistema de reviews implementadas e documentadas. O projeto agora possui 134 endpoints funcionais, 17 entidades de domínio e documentação técnica totalmente sincronizada.
 
 ### v0.11.1 (2025-01-23) - Refinamentos no Sistema de Bookings e Documentação Atualizada
 
@@ -290,6 +290,13 @@ git checkout v0.1.0
 - Documentação completa sincronizada
 - Versionamento automático funcionando
 
+### v0.13.1 ✅ **CONCLUÍDA**
+- Correções no sistema de reviews implementadas
+- Regras de negócio: ADMIN não pode criar reviews
+- Profile_id determinado automaticamente pelo usuário logado
+- Tabela reviews limpa e populada com 12 reviews corretos
+- Documentação atualizada em todos os arquivos .md
+
 ### v0.14.0
 - Sistema de notificações em tempo real
 - Upload de arquivos e mídias
@@ -344,12 +351,12 @@ python version.py major
 ```bash
 # Verificar versão atual
 $ python version.py show
-Versão atual: 0.13.0
+Versão atual: 0.13.1
 
 # Criar nova versão patch
 $ python version.py patch
-Versão atual: 0.13.0
-Nova versão: 0.13.1
+Versão atual: 0.13.1
+Nova versão: 0.13.2
 Deseja criar a tag e fazer push? (y/N): y
 Tag criada: v0.13.1
 Tag enviada para o repositório remoto: v0.13.1
@@ -386,7 +393,7 @@ Resposta:
     "status": "healthy",
     "architecture": "hexagonal",
     "timestamp": "2025-07-23T13:21:51.256633",
-    "version": "0.13.0",
+    "version": "0.13.1",
     "copyright": "© 2025 eShow. Todos os direitos reservados."
 }
 ```
