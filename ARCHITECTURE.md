@@ -24,6 +24,7 @@ O domínio contém as regras de negócio e é independente de qualquer tecnologi
 - **Booking**: Entidade que representa um agendamento/reserva
 - **Review**: Entidade que representa uma avaliação/review com nota de 1-5 estrelas
 - **Financial**: Entidade que representa dados financeiros/bancários com informações PIX
+- **Interest**: Entidade que representa manifestações de interesse entre artistas e espaços
 
 #### Repositórios (`domain/repositories/`)
 - **UserRepository**: Interface para operações de usuários
@@ -39,6 +40,7 @@ O domínio contém as regras de negócio e é independente de qualquer tecnologi
 - **BookingRepository**: Interface para operações de agendamentos/reservas
 - **ReviewRepository**: Interface para operações de avaliações/reviews
 - **FinancialRepository**: Interface para operações de dados financeiros/bancários
+- **InterestRepository**: Interface para operações de manifestações de interesse
 
 ### 2. Aplicação (`app/`)
 
@@ -62,6 +64,7 @@ A camada de aplicação contém os casos de uso e adaptadores de entrada.
 - **BookingService**: Orquestra as operações de agendamentos/reservas
 - **ReviewService**: Orquestra as operações de avaliações/reviews
 - **FinancialService**: Orquestra as operações de dados financeiros/bancários
+- **InterestService**: Orquestra as operações de manifestações de interesse
 
 ### 3. Infraestrutura (`infrastructure/`)
 
@@ -85,6 +88,7 @@ A camada de infraestrutura contém os adaptadores de saída.
 - **BookingRepositoryImpl**: Implementação concreta do repositório de agendamentos/reservas
 - **ReviewRepositoryImpl**: Implementação concreta do repositório de avaliações/reviews
 - **FinancialRepositoryImpl**: Implementação concreta do repositório de dados financeiros/bancários
+- **InterestRepositoryImpl**: Implementação concreta do repositório de manifestações de interesse
 
 ## Fluxo de Dados
 
@@ -201,6 +205,7 @@ GET /api/v1/spaces/1?include_relations=true
 - **Bookings**: profile, space, artist, space_event_type, space_festival_type
 - **Reviews**: profile, space_event_type, space_festival_type
 - **Financials**: profile
+- **Interests**: profile_interessado, profile_interesse, space_event_type, space_festival_type
 
 #### Benefícios
 - **Performance**: Evita N+1 queries
@@ -246,11 +251,123 @@ def create_space(self, space_data: dict) -> Space:
 - **Validação**: Mensagens de erro claras para tentativas inválidas
 - **Flexibilidade**: Sistema extensível para novos roles
 
+## Sistema de Manifestações de Interesse (Interests)
+
+### Visão Geral
+
+O sistema de **Interests** permite que artistas manifestem interesse em se apresentar em espaços específicos e vice-versa, facilitando a conexão entre profissionais e estabelecimentos.
+
+### Arquitetura da Funcionalidade
+
+#### Entidade Interest (`domain/entities/interest.py`)
+
+```python
+class Interest:
+    def __init__(self, 
+                 profile_id_interessado: int,
+                 profile_id_interesse: int,
+                 data_inicial: date,
+                 horario_inicial: time,
+                 duracao_apresentacao: float,
+                 valor_hora_ofertado: float,
+                 valor_couvert_ofertado: float,
+                 mensagem: str,
+                 status: str = "Aguardando Confirmação",
+                 resposta: str = None,
+                 id: int = None):
+```
+
+#### Regras de Negócio Implementadas
+
+1. **Validação de Roles**:
+   - Apenas **artistas** podem manifestar interesse em **espaços**
+   - Apenas **espaços** podem manifestar interesse em **artistas**
+
+2. **Prevenção de Duplicatas**:
+   - Não é possível manifestar interesse duplicado entre os mesmos profiles
+   - Validação automática no serviço
+
+3. **Estados de Status**:
+   - "Aguardando Confirmação" (padrão)
+   - "Aceito" (com resposta opcional)
+   - "Recusado" (com resposta opcional)
+
+4. **Validações de Dados**:
+   - Data inicial deve ser futura
+   - Duração entre 0.5 e 8 horas
+   - Valores monetários positivos
+   - Mensagem obrigatória (10-1000 caracteres)
+
+#### Endpoints Especializados
+
+1. **Gestão de Status**:
+   - `PATCH /interests/{id}/accept` - Aceitar manifestação
+   - `PATCH /interests/{id}/reject` - Recusar manifestação
+   - `PATCH /interests/{id}/status` - Atualizar status customizado
+
+2. **Consultas por Profile**:
+   - `GET /interests/profile/interessado/{id}` - Manifestações enviadas
+   - `GET /interests/profile/interesse/{id}` - Manifestações recebidas
+   - `GET /interests/profile/{id}/pending` - Manifestações pendentes
+   - `GET /interests/profile/{id}/statistics` - Estatísticas detalhadas
+
+3. **Filtros Avançados**:
+   - `GET /interests/status/{status}` - Por status
+   - `GET /interests/space-event-type/{id}` - Por tipo de evento
+   - `GET /interests/date-range/` - Por período
+
+#### Implementação Técnica
+
+**Service Layer** (`app/application/services/interest_service.py`):
+```python
+def create_interest(self, interest_data: InterestCreate) -> Interest:
+    # Validação de roles
+    profile_interessado = self.profile_repository.get_by_id(interest_data.profile_id_interessado)
+    profile_interesse = self.profile_repository.get_by_id(interest_data.profile_id_interesse)
+    
+    # Verificar se são roles compatíveis (artista ↔ espaço)
+    if not self._validate_interest_roles(profile_interessado, profile_interesse):
+        raise ValueError("Apenas artistas podem manifestar interesse em espaços e vice-versa")
+    
+    # Verificar duplicatas
+    if self._check_duplicate_interest(interest_data):
+        raise ValueError("Já existe uma manifestação de interesse entre estes profiles")
+    
+    # Criar entidade e persistir
+    interest = Interest(**interest_data.dict())
+    return self.interest_repository.create(interest)
+```
+
+**Repository Layer** (`infrastructure/repositories/interest_repository_impl.py`):
+```python
+def get_by_profile_interessado(self, profile_id: int, include_relations: bool = False) -> List[Interest]:
+    query = self.db.query(InterestModel).filter(InterestModel.profile_id_interessado == profile_id)
+    
+    if include_relations:
+        query = query.options(
+            joinedload(InterestModel.profile_interessado),
+            joinedload(InterestModel.profile_interesse),
+            joinedload(InterestModel.space_event_type),
+            joinedload(InterestModel.space_festival_type)
+        )
+    
+    return [self._to_entity(model) for model in query.all()]
+```
+
+#### Benefícios da Implementação
+
+1. **Flexibilidade**: Suporte a diferentes tipos de relacionamento (artista→espaço, espaço→artista)
+2. **Controle**: Estados de status bem definidos com transições controladas
+3. **Performance**: Consultas otimizadas com relacionamentos opcionais
+4. **Segurança**: Validação de roles e prevenção de duplicatas
+5. **Usabilidade**: Endpoints especializados para casos de uso comuns
+
 ## Próximos Passos
 
 1. ✅ ~~Implementar autenticação JWT~~
 2. ✅ ~~Adicionar validações de negócio~~
-3. Implementar cache Redis
-4. Adicionar logs estruturados
-5. Configurar CI/CD
-6. ✅ ~~Implementar documentação OpenAPI~~ 
+3. ✅ ~~Implementar sistema de manifestações de interesse~~
+4. Implementar cache Redis
+5. Adicionar logs estruturados
+6. Configurar CI/CD
+7. ✅ ~~Implementar documentação OpenAPI~~ 

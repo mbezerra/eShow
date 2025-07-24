@@ -11,17 +11,18 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Sistema de Agendamentos/Reservas** (Bookings)
 - **Sistema de Avaliações/Reviews** com notas de 1 a 5 estrelas
 - **Sistema Financeiro/Bancário** com dados PIX e transferências
+- **Sistema de Manifestações de Interesse** (Interests) entre artistas e espaços
 - **Relacionamentos N:N** entre entidades
 - **API REST** completa com documentação automática
 - **Arquitetura Hexagonal** para facilitar manutenção
 
 ## 📊 **Estatísticas do Projeto**
 
-- **Total de Endpoints:** 119 (+13 endpoints Financial)
-- **Entidades de Domínio:** 16 (incluindo Review e Financial)
+- **Total de Endpoints:** 134 (+15 endpoints Interests)
+- **Entidades de Domínio:** 17 (incluindo Interest)
 - **Relacionamentos N:N:** 3
-- **Tabelas no Banco:** 16 (incluindo reviews e financials)
-- **Schemas Pydantic:** 60+ (incluindo schemas de Reviews e Financial)
+- **Tabelas no Banco:** 17 (incluindo interests)
+- **Schemas Pydantic:** 75+ (incluindo schemas de Interests)
 - **Cobertura de Testes:** Em desenvolvimento
 
 ## 📁 **Estrutura do Projeto**
@@ -261,6 +262,36 @@ O sistema implementa controle de acesso baseado em roles para garantir que apena
 - Tipos de conta: "Poupança" ou "Corrente"
 - Tipos de chave PIX: "CPF", "CNPJ", "Celular", "E-mail", "Aleatória"
 - Preferências de transferência: "PIX" ou "TED"
+
+### Interests (`/api/v1/interests/`) - Requer autenticação
+- `POST /` - Criar nova manifestação de interesse
+- `GET /` - Listar todas as manifestações de interesse
+- `GET /{interest_id}` - Obter manifestação por ID
+- `PUT /{interest_id}` - Atualizar manifestação completa
+- `DELETE /{interest_id}` - Deletar manifestação
+- `PATCH /{interest_id}/status` - Atualizar status da manifestação
+- `PATCH /{interest_id}/accept` - Aceitar manifestação de interesse
+- `PATCH /{interest_id}/reject` - Recusar manifestação de interesse
+- `GET /profile/interessado/{profile_id}` - Manifestações enviadas por um profile
+- `GET /profile/interesse/{profile_id}` - Manifestações recebidas por um profile
+- `GET /profile/{profile_id}/pending` - Manifestações pendentes de um profile
+- `GET /profile/{profile_id}/statistics` - Estatísticas de manifestações por profile
+- `GET /status/{status}` - Filtrar manifestações por status
+- `GET /space-event-type/{space_event_type_id}` - Manifestações por tipo de evento
+- `GET /date-range/` - Filtrar manifestações por período (query params: data_inicio, data_fim)
+
+**Parâmetro `include_relations`**: Use `?include_relations=true` nos endpoints GET para incluir dados relacionados (profile_interessado, profile_interesse, space_event_type, space_festival_type).
+
+**⚠️ REGRAS DE NEGÓCIO**:
+- Apenas **artistas** podem manifestar interesse em **espaços**
+- Apenas **espaços** podem manifestar interesse em **artistas**
+- **Prevenção de duplicatas**: Não é possível manifestar interesse duplicado
+- **Estados de status**: "Aguardando Confirmação", "Aceito", "Recusado"
+- **Validação de data**: Data inicial deve ser futura
+- **Validação de duração**: Entre 0.5 e 8 horas
+- **Validação de valores**: Valores devem ser positivos
+- **Mensagem obrigatória**: Mínimo 10, máximo 1000 caracteres
+- **Profile_id não pode ser alterado** após criação da manifestação
 
 A API estará disponível em `http://localhost:8000`
 A documentação automática estará em `http://localhost:8000/docs` 

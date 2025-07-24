@@ -38,6 +38,9 @@ from app.application.services.space_festival_type_service import SpaceFestivalTy
 from domain.repositories.booking_repository import BookingRepository
 from infrastructure.repositories.booking_repository_impl import BookingRepositoryImpl
 from app.application.services.booking_service import BookingService
+from domain.repositories.interest_repository import InterestRepository
+from infrastructure.repositories.interest_repository_impl import InterestRepositoryImpl
+from app.application.services.interest_service import InterestService
 from fastapi import Depends
 
 def get_user_repository():
@@ -144,4 +147,13 @@ def get_booking_service(
     booking_repository: BookingRepository = Depends(get_booking_repository),
     profile_repository = Depends(get_profile_repository)
 ) -> BookingService:
-    return BookingService(booking_repository, profile_repository) 
+    return BookingService(booking_repository, profile_repository)
+
+def get_interest_repository(db=Depends(get_database_session)) -> InterestRepository:
+    return InterestRepositoryImpl(db)
+
+def get_interest_service(
+    interest_repository: InterestRepository = Depends(get_interest_repository),
+    profile_repository = Depends(get_profile_repository)
+) -> InterestService:
+    return InterestService(interest_repository, profile_repository) 

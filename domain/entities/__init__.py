@@ -4,4 +4,5 @@ from .role import Role
 from .profile import Profile
 from .artist_type import ArtistType
 from .musical_style import MusicalStyle
-from .artist import Artist 
+from .artist import Artist
+from .interest import Interest 

@@ -2,6 +2,8 @@
 
 - [Sistema de Agendamentos (Bookings)](#sistema-de-agendamentos-bookings)
 - [Sistema de Avaliações/Reviews](#sistema-de-avaliaçõesreviews)
+- [Sistema de Manifestações de Interesse (Interests)](#sistema-de-manifestações-de-interesse-interests)
+- [Sistema Financeiro/Bancário (Financials)](#-financial---dados-financeirosbancários)
 
 ## Endpoints de Autenticação
 
@@ -581,6 +583,352 @@ curl -X GET "http://localhost:8000/api/v1/reviews/rating/5" \
 
 ---
 
+## Sistema de Manifestações de Interesse (Interests)
+
+### Visão Geral
+O sistema de **Interests** permite que artistas manifestem interesse em se apresentar em espaços específicos e vice-versa, facilitando a conexão entre profissionais e estabelecimentos.
+
+**🆕 Novo:** Todos os endpoints de consulta suportam o parâmetro `include_relations=true` para obter dados relacionados (profile_interessado, profile_interesse, space_event_type, space_festival_type) em uma única requisição.
+
+### Estrutura da Manifestação de Interesse
+```json
+{
+  "id": 1,
+  "profile_id_interessado": 2,
+  "profile_id_interesse": 3,
+  "data_inicial": "2025-08-07",
+  "horario_inicial": "18:00",
+  "duracao_apresentacao": 2.5,
+  "valor_hora_ofertado": 150.0,
+  "valor_couvert_ofertado": 20.0,
+  "mensagem": "Gostaria de manifestar interesse em uma apresentação no seu espaço. Tenho experiência com o público do local.",
+  "status": "Aguardando Confirmação",
+  "resposta": null,
+  "space_event_type_id": 3,
+  "space_festival_type_id": null,
+  "created_at": "2025-07-23T20:30:00",
+  "updated_at": "2025-07-23T20:30:00"
+}
+```
+
+### Endpoints Disponíveis
+
+#### CRUD Básico
+```bash
+# Listar todas as manifestações (opcional: ?include_relations=true)
+GET /api/v1/interests/
+Authorization: Bearer {token}
+
+# Obter manifestação por ID (opcional: ?include_relations=true)
+GET /api/v1/interests/{id}
+Authorization: Bearer {token}
+
+# Criar nova manifestação de interesse
+POST /api/v1/interests/
+Authorization: Bearer {token}
+Content-Type: application/json
+{
+  "profile_id_interessado": 2,
+  "profile_id_interesse": 3,
+  "data_inicial": "2025-08-07",
+  "horario_inicial": "18:00",
+  "duracao_apresentacao": 2.5,
+  "valor_hora_ofertado": 150.0,
+  "valor_couvert_ofertado": 20.0,
+  "mensagem": "Gostaria de manifestar interesse em uma apresentação no seu espaço.",
+  "space_event_type_id": 3
+}
+
+# Atualizar manifestação completa
+PUT /api/v1/interests/{id}
+Authorization: Bearer {token}
+Content-Type: application/json
+{
+  "duracao_apresentacao": 3.0,
+  "valor_hora_ofertado": 180.0,
+  "mensagem": "Atualizando proposta com nova duração e valor."
+}
+
+# Deletar manifestação
+DELETE /api/v1/interests/{id}
+Authorization: Bearer {token}
+```
+
+#### Gestão de Status
+```bash
+# Atualizar status da manifestação
+PATCH /api/v1/interests/{id}/status
+Authorization: Bearer {token}
+Content-Type: application/json
+{
+  "status": "Aceito",
+  "resposta": "Aceito! Vamos combinar os detalhes da apresentação."
+}
+
+# Aceitar manifestação de interesse
+PATCH /api/v1/interests/{id}/accept?resposta=Resposta%20opcional
+Authorization: Bearer {token}
+
+# Recusar manifestação de interesse
+PATCH /api/v1/interests/{id}/reject?resposta=Motivo%20da%20recusa
+Authorization: Bearer {token}
+```
+
+#### Consultas por Profile
+```bash
+# Manifestações enviadas por um profile (opcional: ?include_relations=true)
+GET /api/v1/interests/profile/interessado/{profile_id}
+Authorization: Bearer {token}
+
+# Manifestações recebidas por um profile (opcional: ?include_relations=true)
+GET /api/v1/interests/profile/interesse/{profile_id}
+Authorization: Bearer {token}
+
+# Manifestações pendentes de um profile (opcional: ?include_relations=true)
+GET /api/v1/interests/profile/{profile_id}/pending
+Authorization: Bearer {token}
+
+# Estatísticas de manifestações por profile
+GET /api/v1/interests/profile/{profile_id}/statistics
+Authorization: Bearer {token}
+# Resposta: {"total_manifestado": 5, "total_recebido": 3, "pendentes_enviadas": 2, "pendentes_recebidas": 1}
+```
+
+#### Filtros Avançados
+```bash
+# Filtrar manifestações por status (opcional: ?include_relations=true)
+GET /api/v1/interests/status/Aguardando%20Confirmação
+Authorization: Bearer {token}
+
+# Manifestações por tipo de evento (opcional: ?include_relations=true)
+GET /api/v1/interests/space-event-type/{space_event_type_id}
+Authorization: Bearer {token}
+
+# Manifestações por período (opcional: &include_relations=true)
+GET /api/v1/interests/date-range/?data_inicio=2025-01-01&data_fim=2025-12-31
+Authorization: Bearer {token}
+```
+
+### Parâmetro `include_relations`
+
+Todos os endpoints de consulta (GET) do sistema de interests suportam o parâmetro opcional `include_relations` para incluir dados relacionados na resposta.
+
+#### Como Usar
+```bash
+# Sem relacionamentos (padrão)
+GET /api/v1/interests/?include_relations=false
+
+# Com relacionamentos
+GET /api/v1/interests/?include_relations=true
+
+# Funciona em todos os endpoints de consulta:
+GET /api/v1/interests/{id}?include_relations=true
+GET /api/v1/interests/profile/interessado/{profile_id}?include_relations=true
+GET /api/v1/interests/profile/interesse/{profile_id}?include_relations=true
+GET /api/v1/interests/profile/{profile_id}/pending?include_relations=true
+GET /api/v1/interests/status/{status}?include_relations=true
+GET /api/v1/interests/space-event-type/{space_event_type_id}?include_relations=true
+GET /api/v1/interests/date-range?data_inicio=...&data_fim=...&include_relations=true
+```
+
+#### Comparação de Respostas
+
+**Sem relacionamentos (`include_relations=false`):**
+```json
+{
+  "profile_id_interessado": 2,
+  "profile_id_interesse": 3,
+  "data_inicial": "2025-08-07",
+  "horario_inicial": "18:00",
+  "duracao_apresentacao": 2.5,
+  "valor_hora_ofertado": 150.0,
+  "valor_couvert_ofertado": 20.0,
+  "mensagem": "Gostaria de manifestar interesse...",
+  "status": "Aguardando Confirmação",
+  "resposta": null,
+  "space_event_type_id": 3,
+  "space_festival_type_id": null,
+  "id": 1,
+  "created_at": "2025-07-23T20:30:00",
+  "updated_at": "2025-07-23T20:30:00"
+}
+```
+
+**Com relacionamentos (`include_relations=true`):**
+```json
+{
+  "profile_id_interessado": 2,
+  "profile_id_interesse": 3,
+  "data_inicial": "2025-08-07",
+  "horario_inicial": "18:00",
+  "duracao_apresentacao": 2.5,
+  "valor_hora_ofertado": 150.0,
+  "valor_couvert_ofertado": 20.0,
+  "mensagem": "Gostaria de manifestar interesse...",
+  "status": "Aguardando Confirmação",
+  "resposta": null,
+  "space_event_type_id": 3,
+  "space_festival_type_id": null,
+  "id": 1,
+  "created_at": "2025-07-23T20:30:00",
+  "updated_at": "2025-07-23T20:30:00",
+  "profile_interessado": {
+    "role_id": 2,
+    "full_name": "Bruno Souza",
+    "artistic_name": "Bruno Show",
+    "bio": "Cantor sertanejo.",
+    "cep": "02002-000",
+    "logradouro": "Av. Brasil",
+    "numero": "200",
+    "complemento": "Casa",
+    "cidade": "Campinas",
+    "uf": "SP",
+    "telefone_fixo": "(19) 3333-2222",
+    "telefone_movel": "(19) 99999-2222",
+    "whatsapp": "(19) 99999-2222",
+    "id": 2,
+    "created_at": "2025-07-23T02:43:09",
+    "updated_at": "2025-07-23T02:43:09"
+  },
+  "profile_interesse": {
+    "role_id": 3,
+    "full_name": "Carla Lima",
+    "artistic_name": null,
+    "bio": "Espaço para eventos musicais.",
+    "cep": "06006-000",
+    "logradouro": "Rua das Flores",
+    "numero": "300",
+    "complemento": "Sala 101",
+    "cidade": "São Paulo",
+    "uf": "SP",
+    "telefone_fixo": "(11) 4444-3333",
+    "telefone_movel": "(11) 88888-3333",
+    "whatsapp": "(11) 88888-3333",
+    "id": 3,
+    "created_at": "2025-07-23T02:43:09",
+    "updated_at": "2025-07-23T02:43:09"
+  },
+  "space_event_type": {
+    "space_id": 1,
+    "event_type_id": 3,
+    "banner_url": "/banners/evento_aniversario.jpg",
+    "descricao": "Evento de aniversário com música ao vivo",
+    "id": 3,
+    "created_at": "2025-07-23T02:37:10",
+    "updated_at": "2025-07-23T02:37:10"
+  },
+  "space_festival_type": null
+}
+```
+
+#### Relacionamentos Incluídos
+- **profile_interessado:** Dados completos do profile que manifestou interesse
+- **profile_interesse:** Dados completos do profile que recebeu a manifestação
+- **space_event_type:** Dados do evento específico (quando `space_event_type_id` não for nulo)
+- **space_festival_type:** Dados do festival específico (quando `space_festival_type_id` não for nulo)
+
+### Regras de Negócio
+- **Validação de roles:** Apenas **artistas** podem manifestar interesse em **espaços** e vice-versa
+- **Prevenção de duplicatas:** Não é possível manifestar interesse duplicado entre os mesmos profiles
+- **Estados de status:** "Aguardando Confirmação" (padrão), "Aceito", "Recusado"
+- **Validação de data:** Data inicial deve ser futura
+- **Validação de duração:** Entre 0.5 e 8 horas
+- **Validação de valores:** Valores monetários devem ser positivos
+- **Mensagem obrigatória:** Entre 10 e 1000 caracteres
+- **Profile_id imutável:** Os IDs de profile não podem ser alterados após criação
+- **Relacionamento opcional:** Evento OU festival OU nenhum (nunca ambos)
+
+### Exemplo Prático - Fluxo Completo
+
+```bash
+# 1. Fazer login e obter token
+TOKEN=$(curl -s -X POST "http://localhost:8000/api/v1/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"email": "admin@eshow.com", "password": "admin123"}' | \
+  jq -r '.access_token')
+
+# 2. Artista manifesta interesse em espaço
+curl -X POST "http://localhost:8000/api/v1/interests/" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "profile_id_interessado": 2,
+    "profile_id_interesse": 3,
+    "data_inicial": "2025-08-15",
+    "horario_inicial": "20:00",
+    "duracao_apresentacao": 3.0,
+    "valor_hora_ofertado": 200.0,
+    "valor_couvert_ofertado": 25.0,
+    "mensagem": "Gostaria de manifestar interesse em uma apresentação no seu espaço. Tenho experiência com o público do local e posso oferecer um repertório variado.",
+    "space_event_type_id": 3
+  }' | jq
+
+# 3. Consultar manifestações pendentes do espaço
+curl -X GET "http://localhost:8000/api/v1/interests/profile/3/pending?include_relations=true" \
+  -H "Authorization: Bearer $TOKEN" | jq
+
+# 4. Espaço aceita a manifestação
+curl -X PATCH "http://localhost:8000/api/v1/interests/1/accept?resposta=Aceito!%20Vamos%20combinar%20os%20detalhes%20da%20apresentação." \
+  -H "Authorization: Bearer $TOKEN" | jq
+
+# 5. Consultar estatísticas do artista
+curl -X GET "http://localhost:8000/api/v1/interests/profile/2/statistics" \
+  -H "Authorization: Bearer $TOKEN" | jq
+
+# 6. Filtrar manifestações aceitas
+curl -X GET "http://localhost:8000/api/v1/interests/status/Aceito?include_relations=true" \
+  -H "Authorization: Bearer $TOKEN" | jq
+```
+
+### Respostas de Erro Comuns
+
+```json
+// Tentativa de manifestação duplicada
+{
+  "detail": "Já existe uma manifestação de interesse entre estes profiles"
+}
+
+// Roles incompatíveis
+{
+  "detail": "Apenas artistas podem manifestar interesse em espaços e vice-versa"
+}
+
+// Data no passado
+{
+  "detail": [
+    {
+      "type": "value_error",
+      "loc": ["body", "data_inicial"],
+      "msg": "Value error, Data inicial deve ser futura"
+    }
+  ]
+}
+
+// Duração inválida
+{
+  "detail": [
+    {
+      "type": "value_error",
+      "loc": ["body", "duracao_apresentacao"],
+      "msg": "Value error, Duração deve ser entre 0.5 e 8 horas"
+    }
+  ]
+}
+
+// Mensagem muito curta
+{
+  "detail": [
+    {
+      "type": "value_error",
+      "loc": ["body", "mensagem"],
+      "msg": "Value error, Mensagem deve ter entre 10 e 1000 caracteres"
+    }
+  ]
+}
+```
+
+---
+
 ## 🧪 Teste Rápido da Funcionalidade `include_relations`
 
 ### Exemplo Prático
@@ -797,3 +1145,4 @@ curl -s -X GET "http://localhost:8000/api/v1/financials/1?include_relations=true
 ## 🔧 Configuração de Desenvolvimento
 
 ```API_USAGE.md
+```

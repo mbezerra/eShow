@@ -1,32 +1,33 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.11.1** (2025-01-23) - Refinamentos no Sistema de Bookings e Documentação Atualizada
+**v0.12.0** (2025-01-23) - Sistema de Manifestações de Interesse (Interests) Implementado
 
-> **Atualização Recente:** Coluna `banco` ajustada para string com 3 dígitos (ex: "001", "341") seguindo padrão brasileiro. Migração aplicada automaticamente convertendo dados existentes.
+> **Atualização Recente:** Sistema completo de manifestações de interesse entre artistas e espaços implementado com 15 endpoints REST, validações de roles, prevenção de duplicatas e gestão de status.
 
-- **SISTEMA FINANCIAL COMPLETO**: Sistema financeiro/bancário implementado
-  - ✅ 13 endpoints REST funcionais com autenticação JWT
-  - ✅ Gestão completa de dados bancários (código banco string 3 dígitos, agência, conta, tipo)
-  - ✅ Sistema robusto de chaves PIX com 5 tipos: CPF, CNPJ, Celular, E-mail, Aleatória
-  - ✅ Validações específicas por tipo de chave PIX (formatos corretos)
-  - ✅ Código do banco como string 3 dígitos (001-999) seguindo padrão brasileiro
-  - ✅ Garantia de unicidade de chaves PIX no sistema
-  - ✅ Preferências de transferência (PIX/TED)
-  - ✅ Relacionamento com profiles existentes
-  - ✅ Estatísticas em tempo real por banco e tipo de chave PIX
-  - ✅ Endpoint de verificação de disponibilidade de chave PIX
+- **SISTEMA DE INTERESTS COMPLETO**: Sistema de manifestações de interesse implementado
+  - ✅ 15 endpoints REST funcionais com autenticação JWT
+  - ✅ Gestão de manifestações bidirecionais (artista→espaço, espaço→artista)
+  - ✅ Sistema de status com 3 estados: "Aguardando Confirmação", "Aceito", "Recusado"
+  - ✅ Validação de roles: apenas artistas podem manifestar interesse em espaços e vice-versa
+  - ✅ Prevenção de duplicatas: constraint UNIQUE para evitar manifestações duplicadas
+  - ✅ Validações robustas: data futura, duração 0.5-8h, valores positivos, mensagem obrigatória
+  - ✅ Endpoints especializados para aceitar/rejeitar manifestações
+  - ✅ Consultas por profile (enviadas, recebidas, pendentes)
+  - ✅ Estatísticas detalhadas por profile
+  - ✅ Filtros avançados por status, tipo de evento e período
+  - ✅ Relacionamentos com profiles, space_event_types e space_festival_types
   - ✅ Parâmetro `include_relations=true` para dados relacionados
-  - ✅ Migração de banco aplicada (tabela financials com banco VARCHAR(3))
-  - ✅ 6 registros de exemplo com bancos "341", "237", "104", "001", "033", "260"
+  - ✅ Migração de banco aplicada (tabela interests)
+  - ✅ 17 manifestações de exemplo com diferentes status
 - **DOCUMENTAÇÃO ATUALIZADA**: Todos os 6 arquivos .md sincronizados
-  - README.md: Seção Financial completa com 13 endpoints e regras de negócio
-  - ARCHITECTURE.md: Entidade Financial, repositórios e relacionamentos incluídos
-  - IMPLEMENTATION_SUMMARY.md: Seção v0.11.0 detalhada com sistema Financial
-  - DATABASE_STRATEGY.md: DDL da tabela financials, consultas SQL e validações
-  - API_USAGE.md: Guia prático completo com exemplos curl para Financial
-  - VERSIONING.md: Changelog atualizado com marcos v0.11.0
-  - Estatísticas atualizadas: **119 endpoints**, **16 entidades**, **60+ schemas**
+  - README.md: Seção Interests completa com 15 endpoints e regras de negócio
+  - ARCHITECTURE.md: Entidade Interest, repositórios e relacionamentos incluídos
+  - IMPLEMENTATION_SUMMARY.md: Seção v0.12.0 detalhada com sistema Interests
+  - DATABASE_STRATEGY.md: DDL da tabela interests, consultas SQL e validações
+  - API_USAGE.md: Guia prático completo com exemplos curl para Interests
+  - VERSIONING.md: Changelog atualizado com marcos v0.12.0
+  - Estatísticas atualizadas: **134 endpoints**, **17 entidades**, **75+ schemas**
 - **ARQUITETURA HEXAGONAL MADURA**: Padrões estabelecidos seguidos fielmente
   - Separação clara de responsabilidades (Domain, Application, Infrastructure)
   - Validações de negócio robustas na camada de domínio
@@ -35,7 +36,7 @@
   - Schemas Pydantic com validações específicas por contexto
   - Tratamento de erros padronizado e informativo
 
-> **Marco de Desenvolvimento:** A v0.11.0 marca a implementação completa do sistema Financial com dados bancários e chaves PIX. O projeto agora possui 119 endpoints funcionais, 16 entidades de domínio e documentação técnica totalmente sincronizada.
+> **Marco de Desenvolvimento:** A v0.12.0 marca a implementação completa do sistema de manifestações de interesse, facilitando a conexão entre artistas e espaços. O projeto agora possui 134 endpoints funcionais, 17 entidades de domínio e documentação técnica totalmente sincronizada.
 
 ### v0.11.1 (2025-01-23) - Refinamentos no Sistema de Bookings e Documentação Atualizada
 
@@ -277,23 +278,29 @@ git checkout v0.1.0
 
 ## Próximas Versões Planejadas
 
-### v0.11.0
-- Migração para PostgreSQL
-- Sistema de logs estruturado
-- Rate limiting para endpoints
-- Melhorias de performance nos bookings
+### v0.12.0 ✅ **CONCLUÍDA**
+- Sistema de manifestações de interesse (Interests)
+- Conexão entre artistas e espaços
+- Gestão de status e respostas
+- Filtros e estatísticas avançadas
 
-### v0.12.0
+### v0.13.0
+- Sistema de notificações em tempo real
+- Upload de arquivos e mídias
+- Sistema de pagamentos integrado
+- Cache Redis para performance
+
+### v0.14.0
 - Interface web de administração
-- Relatórios de agendamentos
-- Sistema de notificações
+- Relatórios avançados
+- Sistema de métricas e analytics
 - Backup automático de dados
 
 ### v1.0.0
 - API estável para produção
 - Documentação completa
 - Performance otimizada
-- Monitoramento e métricas
+- Monitoramento e métricas 
 - Certificação de qualidade para produção 
 
 # Sistema de Versionamento Automático

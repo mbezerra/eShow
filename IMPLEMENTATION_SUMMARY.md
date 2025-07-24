@@ -1,6 +1,26 @@
 # Resumo da Implementação - eShow API
 
-## 🚀 Versão Atual: 0.11.1+
+## 🚀 Versão Atual: 0.12.0+
+
+### ✨ Funcionalidades Implementadas na v0.12.0
+
+#### **Sistema de Manifestações de Interesse (Interests) Completo:**
+
+- **Interest**: Sistema completo de manifestações de interesse entre artistas e espaços
+  - 15 endpoints REST funcionais com autenticação JWT
+  - Gestão de manifestações de interesse bidirecionais (artista→espaço, espaço→artista)
+  - Sistema de status com 3 estados: "Aguardando Confirmação", "Aceito", "Recusado"
+  - Validação de roles: apenas artistas podem manifestar interesse em espaços e vice-versa
+  - Prevenção de duplicatas: não é possível manifestar interesse duplicado
+  - Validações robustas: data futura, duração 0.5-8h, valores positivos, mensagem obrigatória
+  - Endpoints especializados para aceitar/rejeitar manifestações
+  - Consultas por profile (enviadas, recebidas, pendentes)
+  - Estatísticas detalhadas por profile
+  - Filtros avançados por status, tipo de evento e período
+  - Relacionamentos com profiles, space_event_types e space_festival_types
+  - Parâmetro `include_relations=true` para carregar dados relacionados
+  - Migração de banco aplicada (tabela interests)
+  - Dados de exemplo populados (17 manifestações com diferentes status)
 
 ### ✨ Funcionalidades Implementadas na v0.11.1
 
@@ -216,6 +236,7 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 14. **bookings**: Agendamentos/reservas entre profiles
 15. **reviews**: Avaliações/reviews com notas de 1-5 estrelas
 16. **financials**: Dados financeiros/bancários com chaves PIX
+17. **interests**: Manifestações de interesse entre artistas e espaços
 
 ### Relacionamentos
 - **users** ↔ **profiles**: 1:1
@@ -223,6 +244,7 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - **profiles** ↔ **artists**: 1:1
 - **profiles** ↔ **spaces**: 1:N
 - **profiles** ↔ **reviews**: 1:N (profile avaliado)
+- **profiles** ↔ **interests**: 1:N (profile interessado e profile interesse)
 - **artist_types** ↔ **artists**: 1:N
 - **space_types** ↔ **spaces**: 1:N
 - **event_types** ↔ **spaces**: 1:N (opcional)
@@ -232,6 +254,8 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - **spaces** ↔ **festival_types**: N:N (via space_festival_types)
 - **space_event_types** ↔ **reviews**: 1:N (opcional, mutuamente exclusivo)
 - **space_festival_types** ↔ **reviews**: 1:N (opcional, mutuamente exclusivo)
+- **space_event_types** ↔ **interests**: 1:N (opcional)
+- **space_festival_types** ↔ **interests**: 1:N (opcional)
 - **profiles** ↔ **financials**: 1:N
 
 ## Endpoints Disponíveis
@@ -344,6 +368,36 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 
 **Parâmetro `include_relations`**: Disponível nos endpoints GET de Artists e Spaces para incluir dados relacionados.
 
+### Interests (Protegidos)
+- `GET /api/v1/interests/` - Listar manifestações de interesse
+- `GET /api/v1/interests/{id}` - Manifestação por ID
+- `POST /api/v1/interests/` - Criar manifestação de interesse
+- `PUT /api/v1/interests/{id}` - Atualizar manifestação completa
+- `DELETE /api/v1/interests/{id}` - Deletar manifestação
+- `PATCH /api/v1/interests/{id}/status` - Atualizar status da manifestação
+- `PATCH /api/v1/interests/{id}/accept` - Aceitar manifestação de interesse
+- `PATCH /api/v1/interests/{id}/reject` - Recusar manifestação de interesse
+- `GET /api/v1/interests/profile/interessado/{profile_id}` - Manifestações enviadas por um profile
+- `GET /api/v1/interests/profile/interesse/{profile_id}` - Manifestações recebidas por um profile
+- `GET /api/v1/interests/profile/{profile_id}/pending` - Manifestações pendentes de um profile
+- `GET /api/v1/interests/profile/{profile_id}/statistics` - Estatísticas de manifestações por profile
+- `GET /api/v1/interests/status/{status}` - Filtrar manifestações por status
+- `GET /api/v1/interests/space-event-type/{space_event_type_id}` - Manifestações por tipo de evento
+- `GET /api/v1/interests/date-range/` - Filtrar manifestações por período
+
+**Parâmetro `include_relations`**: Disponível nos endpoints GET para incluir dados relacionados (profile_interessado, profile_interesse, space_event_type, space_festival_type).
+
+**⚠️ REGRAS DE NEGÓCIO**:
+- Apenas **artistas** podem manifestar interesse em **espaços**
+- Apenas **espaços** podem manifestar interesse em **artistas**
+- **Prevenção de duplicatas**: Não é possível manifestar interesse duplicado
+- **Estados de status**: "Aguardando Confirmação", "Aceito", "Recusado"
+- **Validação de data**: Data inicial deve ser futura
+- **Validação de duração**: Entre 0.5 e 8 horas
+- **Validação de valores**: Valores devem ser positivos
+- **Mensagem obrigatória**: Mínimo 10, máximo 1000 caracteres
+- **Profile_id não pode ser alterado** após criação da manifestação
+
 ### Públicos
 - `GET /health` - Health check
 
@@ -382,6 +436,7 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - `init_bookings.py` - Agendamentos de exemplo
 - `init_reviews.py` - Avaliações de exemplo (6 reviews com notas variadas)
 - `init_financials.py` - Dados financeiros de exemplo (6 registros com bancos reais)
+- `init_interests.py` - Manifestações de interesse de exemplo (17 manifestações com diferentes status)
 - `start_server.sh` - Script de inicialização automática do servidor
 
 ### Testes
@@ -462,6 +517,8 @@ python test_artist_musical_styles.py
 - [x] **Relacionamento N:N Space-Festival Types** ✨ **[v0.9.0]**
 - [x] **Sistema de Bookings Completo** ✨ **[v0.10.0-0.10.2]**
 - [x] **Sistema de Avaliações/Reviews** ✨ **[v0.10.3]**
+- [x] **Sistema Financeiro/Bancário** ✨ **[v0.11.1]**
+- [x] **Sistema de Manifestações de Interesse** ✨ **[v0.12.0]**
 - [x] Validações e tratamento de erros
 - [x] Documentação da API
 - [x] Scripts de inicialização

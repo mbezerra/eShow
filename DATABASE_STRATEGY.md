@@ -151,6 +151,123 @@ SELECT schemaname, tablename, n_tup_ins, n_tup_upd, n_tup_del
 FROM pg_stat_user_tables;
 ```
 
+## 📋 Estrutura de Dados - Interests
+
+### **Tabela Interests:**
+```sql
+CREATE TABLE interests (
+    id INTEGER PRIMARY KEY,
+    profile_id_interessado INTEGER NOT NULL REFERENCES profiles(id),
+    profile_id_interesse INTEGER NOT NULL REFERENCES profiles(id),
+    data_inicial DATE NOT NULL,
+    horario_inicial TIME NOT NULL,
+    duracao_apresentacao DECIMAL(3,1) NOT NULL CHECK (duracao_apresentacao >= 0.5 AND duracao_apresentacao <= 8.0),
+    valor_hora_ofertado DECIMAL(10,2) NOT NULL CHECK (valor_hora_ofertado > 0),
+    valor_couvert_ofertado DECIMAL(10,2) NOT NULL CHECK (valor_couvert_ofertado > 0),
+    mensagem TEXT NOT NULL CHECK (LENGTH(mensagem) >= 10 AND LENGTH(mensagem) <= 1000),
+    status VARCHAR(50) NOT NULL DEFAULT 'Aguardando Confirmação' CHECK (status IN ('Aguardando Confirmação', 'Aceito', 'Recusado')),
+    resposta TEXT,
+    space_event_type_id INTEGER REFERENCES space_event_types(id),
+    space_festival_type_id INTEGER REFERENCES space_festival_types(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CHECK (
+        (space_event_type_id IS NOT NULL AND space_festival_type_id IS NULL) OR
+        (space_event_type_id IS NULL AND space_festival_type_id IS NOT NULL) OR
+        (space_event_type_id IS NULL AND space_festival_type_id IS NULL)
+    ),
+    UNIQUE(profile_id_interessado, profile_id_interesse)
+);
+```
+
+### **Características:**
+- ✅ **Relacionamento bidirecional**: Profile interessado ↔ Profile interesse
+- ✅ **Prevenção de duplicatas**: Constraint UNIQUE para evitar manifestações duplicadas
+- ✅ **Validação de duração**: Entre 0.5 e 8.0 horas
+- ✅ **Valores monetários**: Positivos com precisão decimal
+- ✅ **Mensagem obrigatória**: Entre 10 e 1000 caracteres
+- ✅ **Estados de status**: 3 estados predefinidos com constraint
+- ✅ **Relacionamento opcional**: Evento OU festival OU nenhum
+- ✅ **Auditoria**: Campos created_at e updated_at automáticos
+- ✅ **Integridade**: Foreign keys para profiles e tipos
+
+### **Consultas Úteis:**
+```sql
+-- Distribuição por status
+SELECT status, COUNT(*) as quantidade
+FROM interests 
+GROUP BY status 
+ORDER BY quantidade DESC;
+
+-- Manifestações por profile interessado
+SELECT p.name, COUNT(i.id) as manifestacoes_enviadas
+FROM profiles p
+LEFT JOIN interests i ON p.id = i.profile_id_interessado
+GROUP BY p.id, p.name
+ORDER BY manifestacoes_enviadas DESC;
+
+-- Manifestações por profile de interesse
+SELECT p.name, COUNT(i.id) as manifestacoes_recebidas
+FROM profiles p
+LEFT JOIN interests i ON p.id = i.profile_id_interesse
+GROUP BY p.id, p.name
+ORDER BY manifestacoes_recebidas DESC;
+
+-- Estatísticas por profile
+SELECT 
+    p.name,
+    COUNT(CASE WHEN i.profile_id_interessado = p.id THEN 1 END) as enviadas,
+    COUNT(CASE WHEN i.profile_id_interesse = p.id THEN 1 END) as recebidas,
+    COUNT(CASE WHEN i.profile_id_interessado = p.id AND i.status = 'Aguardando Confirmação' THEN 1 END) as pendentes_enviadas,
+    COUNT(CASE WHEN i.profile_id_interesse = p.id AND i.status = 'Aguardando Confirmação' THEN 1 END) as pendentes_recebidas,
+    AVG(CASE WHEN i.profile_id_interessado = p.id THEN i.valor_hora_ofertado END) as media_valor_enviado,
+    AVG(CASE WHEN i.profile_id_interesse = p.id THEN i.valor_hora_ofertado END) as media_valor_recebido
+FROM profiles p
+LEFT JOIN interests i ON p.id IN (i.profile_id_interessado, i.profile_id_interesse)
+GROUP BY p.id, p.name
+ORDER BY (enviadas + recebidas) DESC;
+
+-- Manifestações por período
+SELECT DATE(data_inicial) as data, COUNT(*) as total
+FROM interests 
+WHERE data_inicial >= '2025-01-01'
+GROUP BY DATE(data_inicial)
+ORDER BY data;
+
+-- Verificar duplicatas (não deve retornar nada)
+SELECT profile_id_interessado, profile_id_interesse, COUNT(*) as total
+FROM interests
+GROUP BY profile_id_interessado, profile_id_interesse
+HAVING COUNT(*) > 1;
+
+-- Manifestações por tipo de evento
+SELECT set.id, et.name as tipo_evento, COUNT(i.id) as total_manifestacoes
+FROM space_event_types set
+JOIN event_types et ON set.event_type_id = et.id
+LEFT JOIN interests i ON set.id = i.space_event_type_id
+GROUP BY set.id, et.name
+ORDER BY total_manifestacoes DESC;
+
+-- Manifestações por tipo de festival
+SELECT sft.id, ft.name as tipo_festival, COUNT(i.id) as total_manifestacoes
+FROM space_festival_types sft
+JOIN festival_types ft ON sft.festival_type_id = ft.id
+LEFT JOIN interests i ON sft.id = i.space_festival_type_id
+GROUP BY sft.id, ft.name
+ORDER BY total_manifestacoes DESC;
+
+-- Valores médios por status
+SELECT 
+    status,
+    COUNT(*) as total,
+    AVG(valor_hora_ofertado) as media_valor_hora,
+    AVG(valor_couvert_ofertado) as media_couvert,
+    AVG(duracao_apresentacao) as media_duracao
+FROM interests
+GROUP BY status
+ORDER BY total DESC;
+```
+
 ## 📋 Estrutura de Dados - Reviews
 
 ### **Tabela Reviews:**
@@ -297,9 +414,11 @@ psql -U eshow_user eshow < eshow_backup_20250719.sql
 sqlite3 eshow.db "SELECT COUNT(*) FROM users;"
 sqlite3 eshow.db "SELECT COUNT(*) FROM artists;"
 sqlite3 eshow.db "SELECT COUNT(*) FROM reviews;"
+sqlite3 eshow.db "SELECT COUNT(*) FROM interests;"
 psql -U eshow_user -d eshow -c "SELECT COUNT(*) FROM users;"
 psql -U eshow_user -d eshow -c "SELECT COUNT(*) FROM artists;"
 psql -U eshow_user -d eshow -c "SELECT COUNT(*) FROM reviews;"
+psql -U eshow_user -d eshow -c "SELECT COUNT(*) FROM interests;"
 
 # Verificar médias de avaliação
 sqlite3 eshow.db "SELECT profile_id, AVG(nota) as media FROM reviews GROUP BY profile_id;"
@@ -311,7 +430,17 @@ sqlite3 eshow.db "SELECT banco, COUNT(*) FROM financials GROUP BY banco ORDER BY
 psql -U eshow_user -d eshow -c "SELECT COUNT(*) FROM financials;"
 psql -U eshow_user -d eshow -c "SELECT banco, COUNT(*) FROM financials GROUP BY banco ORDER BY banco;"
 
+# Verificar manifestações de interesse
+sqlite3 eshow.db "SELECT status, COUNT(*) FROM interests GROUP BY status;"
+sqlite3 eshow.db "SELECT COUNT(*) FROM interests WHERE status = 'Aguardando Confirmação';"
+psql -U eshow_user -d eshow -c "SELECT status, COUNT(*) FROM interests GROUP BY status;"
+psql -U eshow_user -d eshow -c "SELECT COUNT(*) FROM interests WHERE status = 'Aguardando Confirmação';"
+
 # Verificar estrutura da coluna banco (deve ser VARCHAR(3))
 sqlite3 eshow.db "PRAGMA table_info(financials);" | grep banco
 psql -U eshow_user -d eshow -c "\d financials" | grep banco
+
+# Verificar estrutura da tabela interests
+sqlite3 eshow.db "PRAGMA table_info(interests);"
+psql -U eshow_user -d eshow -c "\d interests"
 ``` 
