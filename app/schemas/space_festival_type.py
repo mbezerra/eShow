@@ -1,6 +1,7 @@
 from pydantic import BaseModel, validator
 from typing import List, Optional
 from datetime import datetime
+from domain.entities.space_festival_type import StatusFestivalType
 
 # Schemas relacionados
 from .space import SpaceResponse
@@ -11,6 +12,7 @@ class SpaceFestivalTypeBase(BaseModel):
     festival_type_id: int
     tema: str
     descricao: str
+    status: StatusFestivalType = StatusFestivalType.CONTRATANDO
     data: datetime
     horario: str
     link_divulgacao: Optional[str] = None
@@ -46,12 +48,19 @@ class SpaceFestivalTypeBase(BaseModel):
             raise ValueError("Horário é obrigatório")
         return v.strip()
 
+    @validator('status')
+    def validate_status(cls, v):
+        if not isinstance(v, StatusFestivalType):
+            raise ValueError("Status deve ser um valor válido")
+        return v
+
 class SpaceFestivalTypeCreate(SpaceFestivalTypeBase):
     pass
 
 class SpaceFestivalTypeUpdate(BaseModel):
     tema: Optional[str] = None
     descricao: Optional[str] = None
+    status: Optional[StatusFestivalType] = None
     link_divulgacao: Optional[str] = None
     banner: Optional[str] = None  # Path local da imagem do banner
     data: Optional[datetime] = None
@@ -74,6 +83,22 @@ class SpaceFestivalTypeUpdate(BaseModel):
         if v is not None and (not v or not v.strip()):
             raise ValueError("Horário não pode estar vazio")
         return v.strip() if v else v
+
+    @validator('status')
+    def validate_status(cls, v):
+        if v is not None and not isinstance(v, StatusFestivalType):
+            raise ValueError("Status deve ser um valor válido")
+        return v
+
+class SpaceFestivalTypeStatusUpdate(BaseModel):
+    """Schema específico para atualização de status"""
+    status: StatusFestivalType
+
+    @validator('status')
+    def validate_status(cls, v):
+        if not isinstance(v, StatusFestivalType):
+            raise ValueError("Status deve ser um valor válido")
+        return v
 
 class SpaceFestivalTypeResponse(SpaceFestivalTypeBase):
     id: int

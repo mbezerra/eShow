@@ -15,6 +15,7 @@ from infrastructure.database.database import SessionLocal
 from infrastructure.database.models.space_festival_type_model import SpaceFestivalTypeModel
 from infrastructure.database.models.space_model import SpaceModel
 from infrastructure.database.models.festival_type_model import FestivalTypeModel
+from domain.entities.space_festival_type import StatusFestivalType
 
 def init_space_festival_types():
     """Inicializar dados de exemplo para space_festival_types"""
@@ -46,6 +47,7 @@ def init_space_festival_types():
                 "festival_type_id": festival_types[0].id,
                 "tema": "Rock Paulista dos Anos 80",
                 "descricao": "Festival dedicado ao rock nacional paulista dos anos 80, com shows de bandas clássicas e cover.",
+                "status": StatusFestivalType.CONTRATANDO,
                 "link_divulgacao": "https://rockpaulista80.com.br",
                 "banner": "static/banners/rock_paulista_80.jpg",
                 "data": datetime(2024, 7, 15, 20, 0),
@@ -56,6 +58,7 @@ def init_space_festival_types():
                 "festival_type_id": festival_types[1].id,
                 "tema": "Blues & Jazz Night",
                 "descricao": "Noite especial com apresentações de blues e jazz, drinks especiais e ambiente intimista.",
+                "status": StatusFestivalType.FECHADO,
                 "link_divulgacao": "https://bluesjazznight.com",
                 "banner": "static/banners/blues_jazz_night.jpg",
                 "data": datetime(2024, 8, 20, 19, 0),
@@ -66,6 +69,7 @@ def init_space_festival_types():
                 "festival_type_id": festival_types[2].id if len(festival_types) > 2 else festival_types[0].id,
                 "tema": "Eletrônica Underground",
                 "descricao": "Festival de música eletrônica underground com DJs nacionais e internacionais.",
+                "status": StatusFestivalType.SUSPENSO,
                 "link_divulgacao": "https://eletronica-underground.net",
                 "banner": "static/banners/eletronica_underground.jpg",
                 "data": datetime(2024, 9, 5, 22, 0),
@@ -76,6 +80,7 @@ def init_space_festival_types():
                 "festival_type_id": festival_types[0].id,
                 "tema": "Samba de Raiz Carioca",
                 "descricao": "Festival de samba tradicional carioca com roda de samba e apresentações especiais.",
+                "status": StatusFestivalType.CANCELADO,
                 "link_divulgacao": "https://sambaderaiz.rio",
                 "banner": "static/banners/samba_raiz_carioca.jpg",
                 "data": datetime(2024, 10, 12, 18, 0),
@@ -86,6 +91,7 @@ def init_space_festival_types():
                 "festival_type_id": festival_types[1].id,
                 "tema": "MPB Contemporânea",
                 "descricao": "Festival de MPB contemporânea com artistas emergentes e consagrados da música popular brasileira.",
+                "status": StatusFestivalType.CONTRATANDO,
                 "link_divulgacao": "https://mpbcontemporanea.com.br",
                 "banner": "static/banners/mpb_contemporanea.jpg",
                 "data": datetime(2024, 11, 8, 20, 30),
@@ -96,6 +102,7 @@ def init_space_festival_types():
                 "festival_type_id": festival_types[2].id if len(festival_types) > 2 else festival_types[0].id,
                 "tema": "Reggae & World Music",
                 "descricao": "Festival multicultural com reggae, world music e fusões de ritmos globais.",
+                "status": StatusFestivalType.FECHADO,
                 "link_divulgacao": "https://reggaeworldmusic.com",
                 "banner": "static/banners/reggae_world_music.jpg",
                 "data": datetime(2024, 12, 20, 19, 30),
@@ -106,6 +113,7 @@ def init_space_festival_types():
                 "festival_type_id": festival_types[0].id,
                 "tema": "Indie Rock Festival",
                 "descricao": "Festival de rock independente com bandas emergentes e alternativas do cenário nacional.",
+                "status": StatusFestivalType.CONTRATANDO,
                 "link_divulgacao": "https://indierockfest.com.br",
                 "banner": "static/banners/indie_rock_festival.jpg",
                 "data": datetime(2025, 1, 25, 21, 0),
@@ -116,6 +124,7 @@ def init_space_festival_types():
                 "festival_type_id": festival_types[1].id,
                 "tema": "Bossa Nova Experience",
                 "descricao": "Experiência única de bossa nova com músicos renomados em ambiente sofisticado.",
+                "status": StatusFestivalType.FECHADO,
                 "link_divulgacao": "https://bossanovaexp.com",
                 "banner": "static/banners/bossa_nova_experience.jpg",
                 "data": datetime(2025, 2, 14, 20, 0),
@@ -126,6 +135,7 @@ def init_space_festival_types():
                 "festival_type_id": festival_types[2].id if len(festival_types) > 2 else festival_types[1].id,
                 "tema": "Forró Universitário",
                 "descricao": "Festival de forró universitário com bandas jovens e muita animação para dançar.",
+                "status": StatusFestivalType.SUSPENSO,
                 "link_divulgacao": "https://forrouniversitario.com.br",
                 "banner": "static/banners/forro_universitario.jpg",
                 "data": datetime(2025, 3, 22, 19, 0),
@@ -136,6 +146,7 @@ def init_space_festival_types():
                 "festival_type_id": festival_types[0].id,
                 "tema": "Metal Extremo Brasil",
                 "descricao": "Festival de metal extremo com bandas nacionais de death, black e thrash metal.",
+                "status": StatusFestivalType.CANCELADO,
                 "link_divulgacao": "https://metalextremobrasil.com",
                 "banner": "static/banners/metal_extremo_brasil.jpg",
                 "data": datetime(2025, 4, 10, 21, 30),
@@ -158,9 +169,9 @@ def init_space_festival_types():
         # Mostrar alguns exemplos inseridos
         print("\n📋 EXEMPLOS DE RELACIONAMENTOS CRIADOS:")
         for i, space_festival_type in enumerate(space_festival_types[:3], 1):
-            space_name = db.query(SpaceModel).filter(SpaceModel.id == space_festival_type.space_id).first().name
-            festival_type_name = db.query(FestivalTypeModel).filter(FestivalTypeModel.id == space_festival_type.festival_type_id).first().name
-            print(f"   {i}. {space_name} - {festival_type_name}: {space_festival_type.tema}")
+            space = db.query(SpaceModel).filter(SpaceModel.id == space_festival_type.space_id).first()
+            festival_type = db.query(FestivalTypeModel).filter(FestivalTypeModel.id == space_festival_type.festival_type_id).first()
+            print(f"   {i}. Espaço {space.id} - Festival {festival_type.id}: {space_festival_type.tema} (Status: {space_festival_type.status})")
         
         if len(space_festival_types) > 3:
             print(f"   ... e mais {len(space_festival_types) - 3} relacionamentos!")

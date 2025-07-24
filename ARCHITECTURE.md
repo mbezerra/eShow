@@ -228,7 +228,9 @@ O sistema implementa relacionamentos N:N entre entidades para permitir associaç
 
 #### 2. Space Festival Types
 - **Entidade**: `SpaceFestivalType` - Relacionamento entre espaços e tipos de festivais
-- **Campos**: space_id, festival_type_id, tema, descricao, link_divulgacao, banner, data, horario
+- **Campos**: space_id, festival_type_id, tema, descricao, status, link_divulgacao, banner, data, horario
+- **Status**: Campo `status` com valores CONTRATANDO, FECHADO, SUSPENSO, CANCELADO
+- **Endpoint específico**: `PATCH /api/v1/space-festival-types/{id}/status` para atualização de status
 
 #### 3. Artist Musical Styles
 - **Entidade**: `ArtistMusicalStyle` - Relacionamento entre artistas e estilos musicais
@@ -251,6 +253,20 @@ class SpaceEventType:
                  data: datetime,
                  horario: str,
                  id: Optional[int] = None):
+
+# domain/entities/space_festival_type.py
+class SpaceFestivalType:
+    def __init__(self, 
+                 space_id: int,
+                 festival_type_id: int,
+                 tema: str,
+                 descricao: str,
+                 status: StatusFestivalType = StatusFestivalType.CONTRATANDO,
+                 link_divulgacao: Optional[str] = None,
+                 banner: Optional[str] = None,
+                 data: datetime,
+                 horario: str,
+                 id: Optional[int] = None):
 ```
 
 #### Repositórios
@@ -259,6 +275,13 @@ class SpaceEventType:
 class SpaceEventTypeRepository(ABC):
     @abstractmethod
     def update_status(self, space_event_type_id: int, status: StatusEventType) -> Optional[SpaceEventType]:
+        """Atualizar apenas o status de um relacionamento"""
+        pass
+
+# domain/repositories/space_festival_type_repository.py
+class SpaceFestivalTypeRepository(ABC):
+    @abstractmethod
+    def update_status(self, space_festival_type_id: int, status: StatusFestivalType) -> Optional[SpaceFestivalType]:
         """Atualizar apenas o status de um relacionamento"""
         pass
 ```
@@ -270,6 +293,12 @@ class SpaceEventTypeService:
     def update_space_event_type_status(self, space_event_type_id: int, status: StatusEventType) -> Optional[SpaceEventType]:
         """Atualizar apenas o status de um relacionamento"""
         return self.space_event_type_repository.update_status(space_event_type_id, status)
+
+# app/application/services/space_festival_type_service.py
+class SpaceFestivalTypeService:
+    def update_space_festival_type_status(self, space_festival_type_id: int, status: StatusFestivalType) -> Optional[SpaceFestivalType]:
+        """Atualizar apenas o status de um relacionamento"""
+        return self.space_festival_type_repository.update_status(space_festival_type_id, status)
 ```
 
 #### Endpoints
@@ -280,6 +309,16 @@ def update_space_event_type_status(
     space_event_type_id: int,
     status_data: SpaceEventTypeStatusUpdate,
     space_event_type_service: SpaceEventTypeService = Depends(get_space_event_type_service),
+    current_user: UserResponse = Depends(get_current_active_user)
+):
+    """Atualizar apenas o status de um relacionamento (requer autenticação)"""
+
+# app/api/endpoints/space_festival_types.py
+@router.patch("/{space_festival_type_id}/status", response_model=SpaceFestivalTypeResponse)
+def update_space_festival_type_status(
+    space_festival_type_id: int,
+    status_data: SpaceFestivalTypeStatusUpdate,
+    space_festival_type_service: SpaceFestivalTypeService = Depends(get_space_festival_type_service),
     current_user: UserResponse = Depends(get_current_active_user)
 ):
     """Atualizar apenas o status de um relacionamento (requer autenticação)"""

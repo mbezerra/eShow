@@ -34,10 +34,19 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Valor padrão:** CONTRATANDO para novos registros
 - **Consistência total** em todos os endpoints relacionados
 
+### Campo Status em Space Festival Types
+- **Novo campo `status`** com valores: CONTRATANDO, FECHADO, SUSPENSO, CANCELADO
+- **Endpoint específico** para atualização de status: `PATCH /api/v1/space-festival-types/{id}/status`
+- **Valor padrão:** CONTRATANDO para novos registros
+- **Consistência total** em todos os endpoints relacionados
+- **Padrão idêntico** ao Space Event Types para manter uniformidade
+
 ### Documentação Atualizada
-- **API_USAGE.md** - Nova seção completa sobre Space Event Types
+- **API_USAGE.md** - Novas seções completas sobre Space Event Types e Space Festival Types
 - **STATUS_IMPLEMENTATION.md** - Detalhes da implementação
 - **STATUS_CONSISTENCY_CHECK.md** - Verificação de consistência
+- **SPACE_FESTIVAL_STATUS_IMPLEMENTATION.md** - Implementação específica para Space Festival Types
+- **SPACE_FESTIVAL_STATUS_CONSISTENCY_CHECK.md** - Verificação de consistência para Space Festival Types
 
 ## 📁 **Estrutura do Projeto**
 

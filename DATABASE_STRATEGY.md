@@ -483,6 +483,96 @@ WHERE set.link_divulgacao IS NOT NULL AND set.link_divulgacao != ''
 ORDER BY set.data;
 ```
 
+## 📋 Estrutura de Dados - Space Festival Types
+
+### **Tabela Space Festival Types:**
+```sql
+CREATE TABLE space_festival_types (
+    id INTEGER PRIMARY KEY,
+    space_id INTEGER NOT NULL REFERENCES spaces(id),
+    festival_type_id INTEGER NOT NULL REFERENCES festival_types(id),
+    tema VARCHAR(200) NOT NULL,
+    descricao TEXT NOT NULL,
+    status VARCHAR(11) NOT NULL DEFAULT 'CONTRATANDO' CHECK (status IN ('CONTRATANDO', 'FECHADO', 'SUSPENSO', 'CANCELADO')),
+    link_divulgacao VARCHAR(500),
+    banner VARCHAR(500),
+    data DATETIME NOT NULL,
+    horario VARCHAR(50) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### **Características:**
+- ✅ **Relacionamento N:N**: Espaços ↔ Tipos de Festivais
+- ✅ **Campo status**: 4 estados predefinidos com constraint
+- ✅ **Valor padrão**: CONTRATANDO para novos registros
+- ✅ **Campos obrigatórios**: tema, descricao, data, horario
+- ✅ **Campos opcionais**: link_divulgacao, banner
+- ✅ **Integridade**: Foreign keys para spaces e festival_types
+- ✅ **Auditoria**: Campo created_at automático
+
+### **Consultas Úteis:**
+```sql
+-- Distribuição por status
+SELECT status, COUNT(*) as quantidade
+FROM space_festival_types 
+GROUP BY status 
+ORDER BY quantidade DESC;
+
+-- Festivais por espaço
+SELECT s.profile_id, COUNT(sft.id) as total_festivais
+FROM spaces s
+LEFT JOIN space_festival_types sft ON s.id = sft.space_id
+GROUP BY s.id, s.profile_id
+ORDER BY total_festivais DESC;
+
+-- Festivais por tipo
+SELECT ft.type, COUNT(sft.id) as total_festivais
+FROM festival_types ft
+LEFT JOIN space_festival_types sft ON ft.id = sft.festival_type_id
+GROUP BY ft.id, ft.type
+ORDER BY total_festivais DESC;
+
+-- Festivais futuros
+SELECT sft.tema, sft.data, sft.horario, sft.status
+FROM space_festival_types sft
+WHERE sft.data >= CURRENT_DATE
+ORDER BY sft.data, sft.horario;
+
+-- Festivais por status e período
+SELECT 
+    sft.status,
+    DATE(sft.data) as data_festival,
+    COUNT(*) as total
+FROM space_festival_types sft
+WHERE sft.data >= '2025-01-01'
+GROUP BY sft.status, DATE(sft.data)
+ORDER BY data_festival, sft.status;
+
+-- Espaços com mais festivais ativos
+SELECT 
+    s.profile_id,
+    COUNT(CASE WHEN sft.status = 'CONTRATANDO' THEN 1 END) as contratando,
+    COUNT(CASE WHEN sft.status = 'FECHADO' THEN 1 END) as fechado,
+    COUNT(CASE WHEN sft.status = 'SUSPENSO' THEN 1 END) as suspenso,
+    COUNT(CASE WHEN sft.status = 'CANCELADO' THEN 1 END) as cancelado
+FROM spaces s
+LEFT JOIN space_festival_types sft ON s.id = sft.space_id
+GROUP BY s.id, s.profile_id
+ORDER BY (contratando + fechado) DESC;
+
+-- Verificar festivais sem banner
+SELECT sft.id, sft.tema, sft.data
+FROM space_festival_types sft
+WHERE sft.banner IS NULL OR sft.banner = '';
+
+-- Festivais com links de divulgação
+SELECT sft.tema, sft.link_divulgacao, sft.status
+FROM space_festival_types sft
+WHERE sft.link_divulgacao IS NOT NULL AND sft.link_divulgacao != ''
+ORDER BY sft.data;
+```
+
 ## 🎯 Próximos Passos
 
 1. **Desenvolvimento**: Continuar com SQLite
@@ -547,6 +637,14 @@ psql -U eshow_user -d eshow -c "\d space_event_types"
 # Verificar campo status em space_event_types
 sqlite3 eshow.db "SELECT status, COUNT(*) FROM space_event_types GROUP BY status;"
 psql -U eshow_user -d eshow -c "SELECT status, COUNT(*) FROM space_event_types GROUP BY status;"
+
+# Verificar estrutura da tabela space_festival_types
+sqlite3 eshow.db "PRAGMA table_info(space_festival_types);"
+psql -U eshow_user -d eshow -c "\d space_festival_types"
+
+# Verificar campo status em space_festival_types
+sqlite3 eshow.db "SELECT status, COUNT(*) FROM space_festival_types GROUP BY status;"
+psql -U eshow_user -d eshow -c "SELECT status, COUNT(*) FROM space_festival_types GROUP BY status;"
 
 # Verificar eventos por status
 sqlite3 eshow.db "SELECT status, COUNT(*) as total FROM space_event_types GROUP BY status ORDER BY total DESC;"

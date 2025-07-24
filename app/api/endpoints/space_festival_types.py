@@ -3,6 +3,7 @@ from typing import List
 from app.schemas.space_festival_type import (
     SpaceFestivalTypeCreate, 
     SpaceFestivalTypeUpdate,
+    SpaceFestivalTypeStatusUpdate,
     SpaceFestivalTypeResponse, 
     SpaceFestivalTypeListResponse
 )
@@ -19,6 +20,7 @@ def convert_space_festival_type_to_response(space_festival_type):
         "festival_type_id": space_festival_type.festival_type_id,
         "tema": space_festival_type.tema,
         "descricao": space_festival_type.descricao,
+        "status": space_festival_type.status,
         "link_divulgacao": space_festival_type.link_divulgacao,
         "banner": space_festival_type.banner,
         "data": space_festival_type.data,
@@ -102,7 +104,7 @@ def get_space_festival_type(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Relacionamento não encontrado"
         )
-    
+
     return convert_space_festival_type_to_response(space_festival_type)
 
 @router.put("/{space_festival_type_id}", response_model=SpaceFestivalTypeResponse)
@@ -115,6 +117,28 @@ def update_space_festival_type(
     """Atualizar um relacionamento (requer autenticação)"""
     try:
         space_festival_type = space_festival_type_service.update_space_festival_type(space_festival_type_id, space_festival_type_data)
+        if not space_festival_type:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Relacionamento não encontrado"
+            )
+        return convert_space_festival_type_to_response(space_festival_type)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+
+@router.patch("/{space_festival_type_id}/status", response_model=SpaceFestivalTypeResponse)
+def update_space_festival_type_status(
+    space_festival_type_id: int,
+    status_data: SpaceFestivalTypeStatusUpdate,
+    space_festival_type_service: SpaceFestivalTypeService = Depends(get_space_festival_type_service),
+    current_user: UserResponse = Depends(get_current_active_user)
+):
+    """Atualizar apenas o status de um relacionamento (requer autenticação)"""
+    try:
+        space_festival_type = space_festival_type_service.update_space_festival_type_status(space_festival_type_id, status_data.status)
         if not space_festival_type:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -140,7 +164,7 @@ def delete_space_festival_type(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Relacionamento não encontrado"
         )
-    
+
     return {"message": f"Relacionamento {space_festival_type_id} foi deletado com sucesso"}
 
 @router.delete("/space/{space_id}", status_code=status.HTTP_200_OK)
@@ -156,7 +180,7 @@ def delete_all_space_festival_types_by_space(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Nenhum relacionamento encontrado para este espaço"
         )
-    
+
     return {"message": f"Todos os relacionamentos do espaço {space_id} foram deletados com sucesso"}
 
 @router.delete("/festival-type/{festival_type_id}", status_code=status.HTTP_200_OK)
@@ -172,5 +196,5 @@ def delete_all_space_festival_types_by_festival_type(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Nenhum relacionamento encontrado para este tipo de festival"
         )
-    
+
     return {"message": f"Todos os relacionamentos do tipo de festival {festival_type_id} foram deletados com sucesso"} 

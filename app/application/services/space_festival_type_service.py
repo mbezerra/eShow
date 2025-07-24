@@ -1,6 +1,6 @@
 from typing import List, Optional
 from domain.repositories.space_festival_type_repository import SpaceFestivalTypeRepository
-from domain.entities.space_festival_type import SpaceFestivalType
+from domain.entities.space_festival_type import SpaceFestivalType, StatusFestivalType
 from app.schemas.space_festival_type import SpaceFestivalTypeCreate, SpaceFestivalTypeUpdate
 
 class SpaceFestivalTypeService:
@@ -16,6 +16,7 @@ class SpaceFestivalTypeService:
             festival_type_id=space_festival_type_data.festival_type_id,
             tema=space_festival_type_data.tema,
             descricao=space_festival_type_data.descricao,
+            status=space_festival_type_data.status,
             link_divulgacao=space_festival_type_data.link_divulgacao,
             banner=space_festival_type_data.banner,
             data=space_festival_type_data.data,
@@ -54,6 +55,7 @@ class SpaceFestivalTypeService:
             festival_type_id=existing.festival_type_id,
             tema=space_festival_type_data.tema if space_festival_type_data.tema is not None else existing.tema,
             descricao=space_festival_type_data.descricao if space_festival_type_data.descricao is not None else existing.descricao,
+            status=space_festival_type_data.status if space_festival_type_data.status is not None else existing.status,
             link_divulgacao=space_festival_type_data.link_divulgacao if space_festival_type_data.link_divulgacao is not None else existing.link_divulgacao,
             banner=space_festival_type_data.banner if space_festival_type_data.banner is not None else existing.banner,
             data=space_festival_type_data.data if space_festival_type_data.data is not None else existing.data,
@@ -62,6 +64,10 @@ class SpaceFestivalTypeService:
         )
         
         return self.space_festival_type_repository.update(space_festival_type_id, updated_space_festival_type)
+    
+    def update_space_festival_type_status(self, space_festival_type_id: int, status: StatusFestivalType) -> Optional[SpaceFestivalType]:
+        """Atualizar apenas o status de um relacionamento"""
+        return self.space_festival_type_repository.update_status(space_festival_type_id, status)
     
     def delete_space_festival_type(self, space_festival_type_id: int) -> bool:
         """Deletar um relacionamento específico"""

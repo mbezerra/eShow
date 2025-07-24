@@ -4,6 +4,7 @@
 - [Sistema de Avaliações/Reviews](#sistema-de-avaliaçõesreviews)
 - [Sistema de Manifestações de Interesse (Interests)](#sistema-de-manifestações-de-interesse-interests)
 - [Sistema de Space Event Types](#sistema-de-space-event-types)
+- [Sistema de Space Festival Types](#sistema-de-space-festival-types)
 - [Sistema Financeiro/Bancário (Financials)](#-financial---dados-financeirosbancários)
 
 ## Endpoints de Autenticação
@@ -1314,6 +1315,178 @@ curl -X PATCH "http://localhost:8000/api/v1/space-event-types/1/status" \
 
 # 5. Verificar evento atualizado
 curl -X GET "http://localhost:8000/api/v1/space-event-types/1" \
+  -H "Authorization: Bearer $TOKEN" | jq
+```
+
+---
+
+## Sistema de Space Festival Types
+
+### Visão Geral
+O sistema de Space Festival Types gerencia relacionamentos N:N entre espaços e tipos de festivais, permitindo que espaços ofereçam diferentes tipos de festivais com informações detalhadas como tema, descrição, data, horário e status.
+
+**🆕 Novo:** Campo `status` com valores: CONTRATANDO, FECHADO, SUSPENSO, CANCELADO
+
+### Estrutura do Space Festival Type
+```json
+{
+  "id": 1,
+  "space_id": 1,
+  "festival_type_id": 1,
+  "tema": "Festival de Rock Paulista dos Anos 80",
+  "descricao": "Festival dedicado ao rock nacional paulista dos anos 80, com shows de bandas clássicas e cover.",
+  "status": "CONTRATANDO",
+  "link_divulgacao": "https://rockpaulista80.com.br",
+  "banner": "static/banners/rock_paulista_80.jpg",
+  "data": "2024-07-15T20:00:00",
+  "horario": "20:00-02:00",
+  "created_at": "2025-07-24T13:24:49"
+}
+```
+
+### Valores de Status Disponíveis
+- **CONTRATANDO** - Festival em processo de contratação
+- **FECHADO** - Festival confirmado e fechado
+- **SUSPENSO** - Festival temporariamente suspenso
+- **CANCELADO** - Festival cancelado
+
+### Endpoints Disponíveis
+
+#### CRUD Básico
+```bash
+# Listar todos os space festival types
+GET /api/v1/space-festival-types/
+
+# Obter space festival type por ID
+GET /api/v1/space-festival-types/{id}
+
+# Criar novo space festival type
+POST /api/v1/space-festival-types/
+
+# Atualizar space festival type
+PUT /api/v1/space-festival-types/{id}
+
+# Deletar space festival type
+DELETE /api/v1/space-festival-types/{id}
+```
+
+#### Endpoints Específicos
+```bash
+# Atualizar apenas o status de um space festival type
+PATCH /api/v1/space-festival-types/{id}/status
+
+# Listar festivais de um espaço específico
+GET /api/v1/space-festival-types/space/{space_id}
+
+# Listar espaços de um tipo de festival específico
+GET /api/v1/space-festival-types/festival-type/{festival_type_id}
+
+# Listar relacionamentos específicos entre espaço e tipo de festival
+GET /api/v1/space-festival-types/space/{space_id}/festival-type/{festival_type_id}
+
+# Deletar todos os relacionamentos de um espaço
+DELETE /api/v1/space-festival-types/space/{space_id}
+
+# Deletar todos os relacionamentos de um tipo de festival
+DELETE /api/v1/space-festival-types/festival-type/{festival_type_id}
+```
+
+### Exemplos de Uso
+
+#### 1. Criar Space Festival Type
+```bash
+curl -X POST "http://localhost:8000/api/v1/space-festival-types/" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "space_id": 1,
+    "festival_type_id": 1,
+    "tema": "Festival de Jazz Internacional",
+    "descricao": "Festival com artistas internacionais de jazz",
+    "status": "CONTRATANDO",
+    "link_divulgacao": "https://example.com/jazz-internacional",
+    "banner": "/static/banners/jazz-internacional.jpg",
+    "data": "2025-08-15T20:00:00",
+    "horario": "20:00-02:00"
+  }'
+```
+
+#### 2. Atualizar Status
+```bash
+curl -X PATCH "http://localhost:8000/api/v1/space-festival-types/1/status" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "status": "FECHADO"
+  }'
+```
+
+#### 3. Listar Festivais de um Espaço
+```bash
+curl -X GET "http://localhost:8000/api/v1/space-festival-types/space/1" \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+#### 4. Atualizar Space Festival Type
+```bash
+curl -X PUT "http://localhost:8000/api/v1/space-festival-types/1" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "tema": "Festival de Jazz Internacional - Atualizado",
+    "descricao": "Descrição atualizada do festival",
+    "status": "FECHADO",
+    "link_divulgacao": "https://example.com/jazz-atualizado",
+    "data": "2025-08-20T20:00:00",
+    "horario": "20:30-02:30"
+  }'
+```
+
+### Regras de Negócio
+
+- **Status obrigatório:** Todos os space festival types devem ter um status definido
+- **Status padrão:** CONTRATANDO (aplicado automaticamente em novos registros)
+- **Validação de relacionamentos:** Space ID e Festival Type ID devem existir
+- **Campos obrigatórios:** tema, descricao, data, horario
+- **Campos opcionais:** link_divulgacao, banner
+- **Autenticação:** Todos os endpoints requerem autenticação
+
+### Exemplo Prático: Gerenciar Festivais de um Espaço
+
+```bash
+# 1. Login
+TOKEN=$(curl -s -X POST "http://localhost:8000/api/v1/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"email": "admin@eshow.com", "password": "admin123"}' | jq -r '.access_token')
+
+# 2. Criar festival
+curl -X POST "http://localhost:8000/api/v1/space-festival-types/" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "space_id": 1,
+    "festival_type_id": 1,
+    "tema": "Festival de Música Eletrônica",
+    "descricao": "Festival com os melhores DJs da cidade",
+    "status": "CONTRATANDO",
+    "link_divulgacao": "https://example.com/eletronica-festival",
+    "banner": "/static/banners/electronic-festival.jpg",
+    "data": "2025-06-15T22:00:00",
+    "horario": "22:00-06:00"
+  }' | jq
+
+# 3. Listar festivais do espaço
+curl -X GET "http://localhost:8000/api/v1/space-festival-types/space/1" \
+  -H "Authorization: Bearer $TOKEN" | jq
+
+# 4. Atualizar status para FECHADO
+curl -X PATCH "http://localhost:8000/api/v1/space-festival-types/1/status" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{"status": "FECHADO"}' | jq
+
+# 5. Verificar festival atualizado
+curl -X GET "http://localhost:8000/api/v1/space-festival-types/1" \
   -H "Authorization: Bearer $TOKEN" | jq
 ```
 

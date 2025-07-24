@@ -1,7 +1,7 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session
 from domain.repositories.space_festival_type_repository import SpaceFestivalTypeRepository
-from domain.entities.space_festival_type import SpaceFestivalType
+from domain.entities.space_festival_type import SpaceFestivalType, StatusFestivalType
 from infrastructure.database.models.space_festival_type_model import SpaceFestivalTypeModel
 from infrastructure.database.models.space_model import SpaceModel
 from infrastructure.database.models.festival_type_model import FestivalTypeModel
@@ -30,6 +30,7 @@ class SpaceFestivalTypeRepositoryImpl(SpaceFestivalTypeRepository):
             festival_type_id=space_festival_type.festival_type_id,
             tema=space_festival_type.tema,
             descricao=space_festival_type.descricao,
+            status=space_festival_type.status,
             link_divulgacao=space_festival_type.link_divulgacao,
             banner=space_festival_type.banner,
             data=space_festival_type.data,
@@ -92,6 +93,8 @@ class SpaceFestivalTypeRepositoryImpl(SpaceFestivalTypeRepository):
             db_relationship.tema = space_festival_type.tema
         if space_festival_type.descricao:
             db_relationship.descricao = space_festival_type.descricao
+        if space_festival_type.status:
+            db_relationship.status = space_festival_type.status
         if space_festival_type.link_divulgacao is not None:
             db_relationship.link_divulgacao = space_festival_type.link_divulgacao
         if space_festival_type.banner is not None:
@@ -101,6 +104,21 @@ class SpaceFestivalTypeRepositoryImpl(SpaceFestivalTypeRepository):
         if space_festival_type.horario:
             db_relationship.horario = space_festival_type.horario
         
+        self.db.commit()
+        self.db.refresh(db_relationship)
+        
+        return self._to_entity(db_relationship)
+    
+    def update_status(self, space_festival_type_id: int, status: StatusFestivalType) -> Optional[SpaceFestivalType]:
+        """Atualizar apenas o status de um relacionamento"""
+        db_relationship = self.db.query(SpaceFestivalTypeModel).filter(
+            SpaceFestivalTypeModel.id == space_festival_type_id
+        ).first()
+        
+        if not db_relationship:
+            return None
+        
+        db_relationship.status = status
         self.db.commit()
         self.db.refresh(db_relationship)
         
@@ -150,6 +168,7 @@ class SpaceFestivalTypeRepositoryImpl(SpaceFestivalTypeRepository):
             festival_type_id=model.festival_type_id,
             tema=model.tema,
             descricao=model.descricao,
+            status=model.status,
             link_divulgacao=model.link_divulgacao,
             banner=model.banner,
             data=model.data,
