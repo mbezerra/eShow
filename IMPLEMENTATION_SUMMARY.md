@@ -1,6 +1,6 @@
 # Resumo da Implementação - eShow API
 
-## 🚀 Versão Atual: 0.12.0+
+## 🚀 Versão Atual: 0.13.0+
 
 ### ✨ Funcionalidades Implementadas na v0.12.0
 

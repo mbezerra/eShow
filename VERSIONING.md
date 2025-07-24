@@ -1,9 +1,9 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.12.0** (2025-01-23) - Sistema de Manifestações de Interesse (Interests) Implementado
+**v0.13.0** (2025-01-23) - Versão Minor Atualizada
 
-> **Atualização Recente:** Sistema completo de manifestações de interesse entre artistas e espaços implementado com 15 endpoints REST, validações de roles, prevenção de duplicatas e gestão de status.
+> **Atualização Recente:** Versão minor incrementada para v0.13.0 com sistema de manifestações de interesse (Interests) totalmente implementado e documentado.
 
 - **SISTEMA DE INTERESTS COMPLETO**: Sistema de manifestações de interesse implementado
   - ✅ 15 endpoints REST funcionais com autenticação JWT
@@ -36,7 +36,7 @@
   - Schemas Pydantic com validações específicas por contexto
   - Tratamento de erros padronizado e informativo
 
-> **Marco de Desenvolvimento:** A v0.12.0 marca a implementação completa do sistema de manifestações de interesse, facilitando a conexão entre artistas e espaços. O projeto agora possui 134 endpoints funcionais, 17 entidades de domínio e documentação técnica totalmente sincronizada.
+> **Marco de Desenvolvimento:** A v0.13.0 marca a versão minor atualizada com o sistema de manifestações de interesse totalmente implementado e documentado. O projeto agora possui 134 endpoints funcionais, 17 entidades de domínio e documentação técnica totalmente sincronizada.
 
 ### v0.11.1 (2025-01-23) - Refinamentos no Sistema de Bookings e Documentação Atualizada
 
@@ -284,7 +284,13 @@ git checkout v0.1.0
 - Gestão de status e respostas
 - Filtros e estatísticas avançadas
 
-### v0.13.0
+### v0.13.0 ✅ **CONCLUÍDA**
+- Versão minor atualizada
+- Sistema de manifestações de interesse totalmente implementado
+- Documentação completa sincronizada
+- Versionamento automático funcionando
+
+### v0.14.0
 - Sistema de notificações em tempo real
 - Upload de arquivos e mídias
 - Sistema de pagamentos integrado
@@ -338,17 +344,17 @@ python version.py major
 ```bash
 # Verificar versão atual
 $ python version.py show
-Versão atual: 0.10.1
+Versão atual: 0.13.0
 
 # Criar nova versão patch
 $ python version.py patch
-Versão atual: 0.10.1
-Nova versão: 0.10.2
+Versão atual: 0.13.0
+Nova versão: 0.13.1
 Deseja criar a tag e fazer push? (y/N): y
-Tag criada: v0.10.2
-Tag enviada para o repositório remoto: v0.10.2
-✅ Versão 0.10.2 criada com sucesso!
-📦 A API agora usará automaticamente a versão 0.10.2
+Tag criada: v0.13.1
+Tag enviada para o repositório remoto: v0.13.1
+✅ Versão 0.13.1 criada com sucesso!
+📦 A API agora usará automaticamente a versão 0.13.1
 ```
 
 ## Convenções de Versionamento
@@ -380,7 +386,7 @@ Resposta:
     "status": "healthy",
     "architecture": "hexagonal",
     "timestamp": "2025-07-23T13:21:51.256633",
-    "version": "0.10.1",
+    "version": "0.13.0",
     "copyright": "© 2025 eShow. Todos os direitos reservados."
 }
 ```
