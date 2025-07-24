@@ -1,6 +1,6 @@
 # Resumo da Implementação - eShow API
 
-## 🚀 Versão Atual: 0.13.1+
+## 🚀 Versão Atual: 0.13.2+
 
 ### ✨ Funcionalidades Implementadas na v0.12.0
 
@@ -57,6 +57,7 @@
   - Migração de banco de dados aplicada
   - **Dados de exemplo populados (12 reviews)** seguindo regras de negócio
 - **Versão 0.13.1**: Correções no sistema de reviews implementadas
+- **Versão 0.13.2**: Correção do parâmetro include_relations nos endpoints de reviews
 
 ### ✨ Funcionalidades Implementadas na v0.10.0-0.10.2
 

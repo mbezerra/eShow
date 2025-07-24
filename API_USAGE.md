@@ -457,7 +457,7 @@ curl -X POST "http://localhost:8000/api/v1/bookings/" \
 ### Visão Geral
 O sistema de reviews permite criar avaliações com notas de 1 a 5 estrelas para profiles, associadas a eventos ou festivais específicos.
 
-**🆕 Novo:** Todos os endpoints de consulta suportam o parâmetro `include_relations=true` para obter dados relacionados (profile, space_event_type, space_festival_type) em uma única requisição.
+**✅ Funcional:** Todos os endpoints de consulta suportam o parâmetro `include_relations=true` para obter dados relacionados (profile, space_event_type, space_festival_type) em uma única requisição.
 
 ### Estrutura da Avaliação
 ```json
@@ -478,11 +478,11 @@ O sistema de reviews permite criar avaliações com notas de 1 a 5 estrelas para
 
 #### CRUD Básico
 ```bash
-# Listar todas as avaliações (opcional: ?include_relations=true)
+# Listar todas as avaliações (com dados relacionados: ?include_relations=true)
 GET /api/v1/reviews/
 Authorization: Bearer {token}
 
-# Obter avaliação por ID (opcional: ?include_relations=true)
+# Obter avaliação por ID (com dados relacionados: ?include_relations=true)
 GET /api/v1/reviews/{id}
 Authorization: Bearer {token}
 
@@ -513,7 +513,7 @@ Authorization: Bearer {token}
 
 #### Filtros e Estatísticas
 ```bash
-# Avaliações de um profile específico (opcional: ?include_relations=true)
+# Avaliações de um profile específico (com dados relacionados: ?include_relations=true)
 GET /api/v1/reviews/profile/{profile_id}
 Authorization: Bearer {token}
 
@@ -522,16 +522,16 @@ GET /api/v1/reviews/profile/{profile_id}/average
 Authorization: Bearer {token}
 # Resposta: {"profile_id": 1, "average_rating": 4.5, "total_reviews": 10}
 
-# Avaliações por nota específica (opcional: ?include_relations=true)
+# Avaliações por nota específica (com dados relacionados: ?include_relations=true)
 GET /api/v1/reviews/rating/{nota}
 Authorization: Bearer {token}
 # Exemplo: /api/v1/reviews/rating/5 (todas as avaliações 5 estrelas)
 
-# Avaliações por tipo de evento (opcional: ?include_relations=true)
+# Avaliações por tipo de evento (com dados relacionados: ?include_relations=true)
 GET /api/v1/reviews/space-event-type/{space_event_type_id}
 Authorization: Bearer {token}
 
-# Avaliações por tipo de festival (opcional: ?include_relations=true)
+# Avaliações por tipo de festival (com dados relacionados: ?include_relations=true)
 GET /api/v1/reviews/space-festival-type/{space_festival_type_id}
 Authorization: Bearer {token}
 
