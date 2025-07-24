@@ -223,6 +223,41 @@ class BookingRepositoryImpl(BookingRepository):
             return bookings  # Retorna modelos com relacionamentos carregados
         return [self._to_entity(booking) for booking in bookings]
     
+    def get_conflicting_bookings(self, artist_id: int, data: datetime, horario: str) -> List[Union[Booking, BookingModel]]:
+        """Obter agendamentos conflitantes para um artista em uma data/horário específicos"""
+        # Buscar agendamentos do artista na mesma data
+        query = self.db.query(BookingModel).filter(
+            BookingModel.artist_id == artist_id,
+            BookingModel.data_inicio == data
+        )
+        
+        bookings = query.all()
+        conflicting_bookings = []
+        
+        for booking in bookings:
+            # Verificar se há conflito de horário
+            if self._has_time_conflict(booking.horario_inicio, booking.horario_fim, horario):
+                conflicting_bookings.append(booking)
+        
+        return conflicting_bookings
+    
+    def _has_time_conflict(self, start_time1: str, end_time1: str, time2: str) -> bool:
+        """Verificar se há conflito entre dois horários"""
+        # Converter horários para minutos para facilitar comparação
+        def time_to_minutes(time_str: str) -> int:
+            try:
+                hours, minutes = map(int, time_str.split(':'))
+                return hours * 60 + minutes
+            except:
+                return 0
+        
+        start1 = time_to_minutes(start_time1)
+        end1 = time_to_minutes(end_time1)
+        time2_minutes = time_to_minutes(time2)
+        
+        # Verificar se há sobreposição
+        return start1 <= time2_minutes <= end1
+    
     def _to_entity(self, model: BookingModel) -> Booking:
         """Converter modelo para entidade"""
         return Booking(

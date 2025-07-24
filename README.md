@@ -12,19 +12,20 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Sistema de Avaliações/Reviews** com notas de 1 a 5 estrelas
 - **Sistema Financeiro/Bancário** com dados PIX e transferências
 - **Sistema de Manifestações de Interesse** (Interests) entre artistas e espaços
+- **Sistema de Busca por Localização** com cálculo de distância geográfica
 - **Relacionamentos N:N** entre entidades
 - **API REST** completa com documentação automática
 - **Arquitetura Hexagonal** para facilitar manutenção
 
 ## 📊 **Estatísticas do Projeto**
 
-- **Total de Endpoints:** 134 (+15 endpoints Interests)
+- **Total de Endpoints:** 138 (+4 endpoints Location Search)
 - **Entidades de Domínio:** 17 (incluindo Interest)
 - **Relacionamentos N:N:** 3
 - **Tabelas no Banco:** 17 (incluindo interests)
-- **Schemas Pydantic:** 75+ (incluindo schemas de Interests)
+- **Schemas Pydantic:** 80+ (incluindo schemas de Location Search)
 - **Cobertura de Testes:** Em desenvolvimento
-- **Versão Atual:** v0.15.0
+- **Versão Atual:** v0.16.0
 
 ## 🆕 **Funcionalidades Recentes**
 
@@ -41,8 +42,17 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Consistência total** em todos os endpoints relacionados
 - **Padrão idêntico** ao Space Event Types para manter uniformidade
 
+### Sistema de Busca por Localização
+- **4 novos endpoints** para busca geográfica baseada em raio de atuação
+- **Cálculo de distância** usando fórmula de Haversine
+- **Integração com ViaCEP** para obtenção de coordenadas geográficas
+- **Validação de disponibilidade** baseada em status de eventos/festivais
+- **Verificação de conflitos** de agendamento para artistas
+- **Autenticação e autorização** por role (artista/espaço)
+
 ### Documentação Atualizada
-- **API_USAGE.md** - Novas seções completas sobre Space Event Types e Space Festival Types
+- **API_USAGE.md** - Novas seções completas sobre Location Search, Space Event Types e Space Festival Types
+- **IMPLEMENTATION_SUMMARY.md** - Resumo da implementação atualizado para v0.16.0
 - **STATUS_IMPLEMENTATION.md** - Detalhes da implementação
 - **STATUS_CONSISTENCY_CHECK.md** - Verificação de consistência
 - **SPACE_FESTIVAL_STATUS_IMPLEMENTATION.md** - Implementação específica para Space Festival Types
@@ -319,6 +329,24 @@ O sistema implementa controle de acesso baseado em roles para garantir que apena
 - **Validação de valores**: Valores devem ser positivos
 - **Mensagem obrigatória**: Mínimo 10, máximo 1000 caracteres
 - **Profile_id não pode ser alterado** após criação da manifestação
+
+### Location Search (`/api/v1/location-search/`) - Requer autenticação
+- `GET /spaces-for-artist` - Buscar espaços para artista (baseado no raio de atuação)
+- `POST /spaces-for-artist` - Versão POST da busca de espaços para artista
+- `GET /artists-for-space` - Buscar artistas para espaço (baseado no raio de atuação dos artistas)
+- `POST /artists-for-space` - Versão POST da busca de artistas para espaço
+
+**Parâmetros**: `return_full_data` (boolean), `max_results` (integer)
+**Autenticação**: JWT obrigatório com validação de role (artista/espaço)
+
+**⚠️ REGRAS DE NEGÓCIO**:
+- **Artistas (role_id = 2)** podem usar apenas endpoints de busca de espaços
+- **Espaços (role_id = 3)** podem usar apenas endpoints de busca de artistas
+- **Cálculo de distância** baseado na fórmula de Haversine com coordenadas do ViaCEP
+- **Filtro por disponibilidade**: Espaços devem ter eventos/festivais com status "CONTRATANDO"
+- **Verificação de conflitos**: Artistas não devem ter agendamentos conflitantes
+- **Raio de atuação**: Baseado no campo `raio_atuacao` do artista
+- **Fallback de coordenadas**: Sistema de coordenadas aproximadas em caso de falha da API
 
 A API estará disponível em `http://localhost:8000`
 A documentação automática estará em `http://localhost:8000/docs` 

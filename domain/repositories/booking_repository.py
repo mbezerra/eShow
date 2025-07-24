@@ -59,4 +59,9 @@ class BookingRepository(ABC):
     @abstractmethod
     def get_all(self, include_relations: bool = False) -> List[Union[Booking, Any]]:
         """Obter todos os agendamentos"""
+        pass
+    
+    @abstractmethod
+    def get_conflicting_bookings(self, artist_id: int, data: datetime, horario: str) -> List[Union[Booking, Any]]:
+        """Obter agendamentos conflitantes para um artista em uma data/horário específicos"""
         pass 

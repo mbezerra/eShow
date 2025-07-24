@@ -1,6 +1,6 @@
 # Resumo da Implementação - eShow API
 
-## 🚀 Versão Atual: 0.15.0+
+## 🚀 Versão Atual: 0.16.0+
 
 ### ✨ Funcionalidades Implementadas na v0.14.0
 
@@ -58,6 +58,55 @@
   - **Documentação completa** atualizada (API_USAGE.md, README.md, IMPLEMENTATION_SUMMARY.md)
   - **Documentação específica** criada (SPACE_FESTIVAL_STATUS_IMPLEMENTATION.md, SPACE_FESTIVAL_STATUS_CONSISTENCY_CHECK.md)
   - **Versão atualizada** para v0.15.0 com todas as documentações
+
+### ✨ Funcionalidades Implementadas na v0.16.0
+
+#### **Sistema de Busca por Localização (Completo):**
+
+- **LocationSearchService**: Sistema completo de busca geográfica baseada em raio de atuação
+  - **Endpoint 1**: Busca de espaços para artistas baseada no raio de atuação do artista
+  - **Endpoint 2**: Busca de artistas para espaços baseada no raio de atuação dos artistas
+  - **Cálculo de distância**: Implementação da fórmula de Haversine para cálculo preciso
+  - **Integração com ViaCEP**: Obtenção de coordenadas geográficas via API externa
+  - **Verificação de disponibilidade**: Filtro por status "CONTRATANDO" em eventos/festivais
+  - **Verificação de conflitos**: Detecção de agendamentos sobrepostos para artistas
+  - **Flexibilidade de resposta**: Opção de retornar dados completos ou apenas IDs
+  - **Autenticação e autorização**: Validação de roles (artista/espaço) por endpoint
+  - **Limite de resultados**: Parâmetro configurável para controle de performance
+
+- **Componentes Técnicos Implementados:**
+  - **LocationUtils**: Utilitário para cálculos de distância e integração com ViaCEP
+  - **LocationSearchService**: Serviço principal com lógica de negócio complexa
+  - **Schemas Pydantic**: Estruturas para requisições e respostas padronizadas
+  - **Endpoints REST**: 4 endpoints (GET/POST para cada funcionalidade)
+  - **Métodos de Repositório**: Extensões nos repositórios para suporte à busca
+  - **Dependência requests**: Adicionada para integração com API externa
+
+- **Endpoints Disponíveis:**
+  - `GET /api/v1/location-search/spaces-for-artist` - Busca espaços para artista
+  - `POST /api/v1/location-search/spaces-for-artist` - Versão POST da busca
+  - `GET /api/v1/location-search/artists-for-space` - Busca artistas para espaço
+  - `POST /api/v1/location-search/artists-for-space` - Versão POST da busca
+
+- **Lógica de Busca Implementada:**
+  - **Espaços para Artista**: Verifica raio de atuação, filtra por status "CONTRATANDO"
+  - **Artistas para Espaço**: Verifica disponibilidade, detecta conflitos de agendamento
+  - **Cálculo de Distância**: Fórmula de Haversine com coordenadas do ViaCEP
+  - **Validação de Roles**: Artistas só buscam espaços, espaços só buscam artistas
+
+- **Características Avançadas:**
+  - **Fallback de Coordenadas**: Sistema de coordenadas aproximadas em caso de falha da API
+  - **Verificação de Conflitos**: Lógica de sobreposição de horários para agendamentos
+  - **Metadados de Busca**: Inclusão de raio, CEP de origem e total de resultados
+  - **Tratamento de Erros**: Códigos de erro específicos e mensagens claras
+  - **Performance**: Limite configurável de resultados e otimizações de consulta
+
+- **Documentação Completa:**
+  - **API_USAGE.md**: Documentação técnica completa com exemplos práticos
+  - **IMPLEMENTATION_SUMMARY.md**: Resumo detalhado da implementação
+  - **Exemplos de Uso**: JavaScript, Python e cURL para diferentes cenários
+  - **Códigos de Erro**: Tabela completa com descrições específicas
+  - **Limitações**: Documentação de limitações e recomendações de melhoria
 
 ### ✨ Funcionalidades Implementadas na v0.12.0
 
@@ -454,6 +503,15 @@ API RESTful desenvolvida em FastAPI seguindo a arquitetura hexagonal (Clean Arch
 - `GET /api/v1/interests/date-range/` - Filtrar manifestações por período
 
 **Parâmetro `include_relations`**: Disponível nos endpoints GET para incluir dados relacionados (profile_interessado, profile_interesse, space_event_type, space_festival_type).
+
+### Location Search (Protegidos)
+- `GET /api/v1/location-search/spaces-for-artist` - Buscar espaços para artista (baseado no raio de atuação)
+- `POST /api/v1/location-search/spaces-for-artist` - Versão POST da busca de espaços para artista
+- `GET /api/v1/location-search/artists-for-space` - Buscar artistas para espaço (baseado no raio de atuação dos artistas)
+- `POST /api/v1/location-search/artists-for-space` - Versão POST da busca de artistas para espaço
+
+**Parâmetros**: `return_full_data` (boolean), `max_results` (integer)
+**Autenticação**: JWT obrigatório com validação de role (artista/espaço)
 
 **⚠️ REGRAS DE NEGÓCIO**:
 - Apenas **artistas** podem manifestar interesse em **espaços**
