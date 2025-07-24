@@ -25,6 +25,9 @@ O domínio contém as regras de negócio e é independente de qualquer tecnologi
 - **Review**: Entidade que representa uma avaliação/review com nota de 1-5 estrelas
 - **Financial**: Entidade que representa dados financeiros/bancários com informações PIX
 - **Interest**: Entidade que representa manifestações de interesse entre artistas e espaços
+- **SpaceEventType**: Entidade que representa relacionamento entre espaços e tipos de eventos
+- **SpaceFestivalType**: Entidade que representa relacionamento entre espaços e tipos de festivais
+- **ArtistMusicalStyle**: Entidade que representa relacionamento entre artistas e estilos musicais
 
 #### Repositórios (`domain/repositories/`)
 - **UserRepository**: Interface para operações de usuários
@@ -41,6 +44,9 @@ O domínio contém as regras de negócio e é independente de qualquer tecnologi
 - **ReviewRepository**: Interface para operações de avaliações/reviews
 - **FinancialRepository**: Interface para operações de dados financeiros/bancários
 - **InterestRepository**: Interface para operações de manifestações de interesse
+- **SpaceEventTypeRepository**: Interface para operações de relacionamentos espaço-evento
+- **SpaceFestivalTypeRepository**: Interface para operações de relacionamentos espaço-festival
+- **ArtistMusicalStyleRepository**: Interface para operações de relacionamentos artista-estilo
 
 ### 2. Aplicação (`app/`)
 
@@ -65,6 +71,10 @@ A camada de aplicação contém os casos de uso e adaptadores de entrada.
 - **ReviewService**: Orquestra as operações de avaliações/reviews
 - **FinancialService**: Orquestra as operações de dados financeiros/bancários
 - **InterestService**: Orquestra as operações de manifestações de interesse
+- **SpaceEventTypeService**: Orquestra as operações de relacionamentos espaço-evento
+- **SpaceFestivalTypeService**: Orquestra as operações de relacionamentos espaço-festival
+- **ArtistMusicalStyleService**: Orquestra as operações de relacionamentos artista-estilo
+- **LocationSearchService**: Orquestra as operações de busca por localização geográfica
 
 ### 3. Infraestrutura (`infrastructure/`)
 
@@ -89,6 +99,9 @@ A camada de infraestrutura contém os adaptadores de saída.
 - **ReviewRepositoryImpl**: Implementação concreta do repositório de avaliações/reviews
 - **FinancialRepositoryImpl**: Implementação concreta do repositório de dados financeiros/bancários
 - **InterestRepositoryImpl**: Implementação concreta do repositório de manifestações de interesse
+- **SpaceEventTypeRepositoryImpl**: Implementação concreta do repositório de relacionamentos espaço-evento
+- **SpaceFestivalTypeRepositoryImpl**: Implementação concreta do repositório de relacionamentos espaço-festival
+- **ArtistMusicalStyleRepositoryImpl**: Implementação concreta do repositório de relacionamentos artista-estilo
 
 ## Fluxo de Dados
 
@@ -490,4 +503,141 @@ def get_by_profile_interessado(self, profile_id: int, include_relations: bool = 
 4. Implementar cache Redis
 5. Adicionar logs estruturados
 6. Configurar CI/CD
-7. ✅ ~~Implementar documentação OpenAPI~~ 
+7. ✅ ~~Implementar documentação OpenAPI~~
+8. ✅ ~~Implementar sistema de busca por localização~~
+
+## Sistema de Busca por Localização
+
+### Visão Geral
+
+O sistema de **Location Search** permite que artistas encontrem espaços dentro do seu raio de atuação e que espaços encontrem artistas disponíveis, baseado em cálculos geográficos e disponibilidade de agenda.
+
+### Arquitetura da Funcionalidade
+
+#### Componentes Principais
+
+1. **LocationUtils** (`app/core/location_utils.py`)
+   - Cálculo de distância usando fórmula de Haversine
+   - Integração com API ViaCEP para coordenadas geográficas
+   - Sistema de fallback com coordenadas aproximadas
+   - Validação de raio de atuação
+
+2. **LocationSearchService** (`app/application/services/location_search_service.py`)
+   - Orquestração da lógica de busca
+   - Validação de disponibilidade de eventos/festivais
+   - Verificação de conflitos de agendamento
+   - Filtros por status e raio de atuação
+
+3. **Schemas de Resposta** (`app/schemas/location_search.py`)
+   - Estruturas de dados padronizadas para respostas
+   - Suporte a dados completos ou apenas IDs
+   - Metadados de busca (raio, origem, contagem)
+
+#### Fluxo de Busca
+
+**Endpoint 1: Busca de Espaços para Artista**
+```
+1. Validar autenticação e role (artista)
+2. Obter profile e dados do artista
+3. Buscar todos os profiles de espaços (role_id = 3)
+4. Para cada espaço:
+   - Calcular distância entre CEPs
+   - Verificar se está dentro do raio de atuação
+   - Verificar se tem eventos/festivais com status "CONTRATANDO"
+5. Retornar resultados ordenados por distância
+```
+
+**Endpoint 2: Busca de Artistas para Espaço**
+```
+1. Validar autenticação e role (espaço)
+2. Obter profile e dados do espaço
+3. Buscar todos os profiles de artistas (role_id = 2)
+4. Para cada artista:
+   - Calcular distância entre CEPs
+   - Verificar se está dentro do raio de atuação do artista
+   - Verificar se não tem agendamentos conflitantes
+5. Retornar resultados ordenados por distância
+```
+
+#### Implementação Técnica
+
+**LocationUtils**:
+```python
+class LocationUtils:
+    @staticmethod
+    def calculate_distance(cep1: str, cep2: str) -> float:
+        """Calcula distância entre dois CEPs usando fórmula de Haversine"""
+        
+    @staticmethod
+    def is_within_radius(cep_origin: str, cep_target: str, radius_km: float) -> bool:
+        """Verifica se CEP de destino está dentro do raio de origem"""
+        
+    @staticmethod
+    def get_coordinates_from_cep(cep: str) -> Tuple[float, float]:
+        """Obtém coordenadas geográficas de um CEP via ViaCEP API"""
+```
+
+**LocationSearchService**:
+```python
+class LocationSearchService:
+    def search_spaces_for_artist(
+        self,
+        db: Session,
+        artist_profile_id: int,
+        return_full_data: bool = True,
+        max_results: Optional[int] = 100
+    ) -> LocationSearchResponse:
+        """Busca espaços para um artista baseado no seu raio de atuação"""
+        
+    def search_artists_for_space(
+        self,
+        db: Session,
+        space_profile_id: int,
+        return_full_data: bool = True,
+        max_results: Optional[int] = 100
+    ) -> LocationSearchResponse:
+        """Busca artistas para um espaço baseado no raio de atuação dos artistas"""
+```
+
+#### Endpoints da API
+
+**GET/POST `/api/v1/location-search/spaces-for-artist`**
+- **Autenticação**: JWT obrigatório
+- **Role**: Apenas artistas (role_id = 2)
+- **Parâmetros**: `return_full_data`, `max_results`
+- **Resposta**: Lista de espaços com distância calculada
+
+**GET/POST `/api/v1/location-search/artists-for-space`**
+- **Autenticação**: JWT obrigatório
+- **Role**: Apenas espaços (role_id = 3)
+- **Parâmetros**: `return_full_data`, `max_results`
+- **Resposta**: Lista de artistas com distância calculada
+
+#### Regras de Negócio
+
+1. **Validação de Roles**:
+   - Artistas só podem buscar espaços
+   - Espaços só podem buscar artistas
+
+2. **Cálculo de Distância**:
+   - Baseado na fórmula de Haversine
+   - Coordenadas obtidas via API ViaCEP
+   - Fallback para coordenadas aproximadas
+
+3. **Filtros de Disponibilidade**:
+   - Espaços devem ter eventos/festivais com status "CONTRATANDO"
+   - Artistas não devem ter agendamentos conflitantes
+
+4. **Performance**:
+   - Limite configurável de resultados
+   - Opção de retornar dados completos ou apenas IDs
+   - Cache de coordenadas (futuro)
+
+#### Benefícios da Implementação
+
+1. **Precisão Geográfica**: Cálculos baseados em coordenadas reais
+2. **Flexibilidade**: Suporte a diferentes raios de atuação
+3. **Performance**: Filtros otimizados e limites configuráveis
+4. **Confiabilidade**: Sistema de fallback para coordenadas
+5. **Segurança**: Validação de roles e autenticação
+6. **Escalabilidade**: Arquitetura preparada para cache e otimizações 

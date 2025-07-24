@@ -1,7 +1,71 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.15.0** (2025-01-24) - Campo Status em Space Festival Types
+**v0.17.0** (2025-01-24) - Estabilização e Documentação Completa
+
+> **Atualização Recente:** Versão minor incrementada para v0.17.0 com estabilização completa e documentação atualizada.
+
+- **SISTEMA DE BUSCA POR LOCALIZAÇÃO COMPLETO**: Sistema de busca geográfica implementado
+  - ✅ 4 endpoints REST funcionais com autenticação JWT
+  - ✅ Busca de espaços para artistas baseada no raio de atuação
+  - ✅ Busca de artistas para espaços baseada na disponibilidade
+  - ✅ Cálculo de distância usando fórmula de Haversine
+  - ✅ Integração com API ViaCEP para coordenadas geográficas
+  - ✅ Sistema de fallback com coordenadas aproximadas
+  - ✅ Validação de disponibilidade baseada em status de eventos/festivais
+  - ✅ Verificação de conflitos de agendamento para artistas
+  - ✅ Autenticação e autorização por role (artista/espaço)
+  - ✅ Parâmetros configuráveis: return_full_data, max_results
+  - ✅ Respostas estruturadas com metadados de busca
+  - ✅ Tratamento robusto de erros e validações
+  - ✅ Arquitetura hexagonal respeitada em todas as camadas
+- **DOCUMENTAÇÃO ATUALIZADA**: Todos os arquivos .md sincronizados
+  - README.md: Seção Location Search completa com 4 endpoints e regras de negócio
+  - ARCHITECTURE.md: Sistema de Location Search detalhado com componentes e fluxos
+  - IMPLEMENTATION_SUMMARY.md: Seção v0.16.0 detalhada com sistema Location Search
+  - DATABASE_STRATEGY.md: Estrutura de dados, consultas SQL e otimizações
+  - API_USAGE.md: Guia prático completo com exemplos curl para Location Search
+  - VERSIONING.md: Changelog atualizado com marcos v0.16.0
+  - Estatísticas atualizadas: **138 endpoints**, **17 entidades**, **80+ schemas**
+- **ARQUITETURA HEXAGONAL MADURA**: Padrões estabelecidos seguidos fielmente
+  - LocationUtils com cálculos geográficos independentes
+  - LocationSearchService com lógica de negócio bem estruturada
+  - Schemas Pydantic com validações específicas para busca
+  - Repository Pattern com métodos especializados
+  - Service Layer com orquestração de múltiplos repositórios
+  - Tratamento de exceções padronizado e informativo
+
+> **Marco de Desenvolvimento:** A v0.16.0 marca a versão minor com implementação do sistema de busca por localização. O projeto agora possui 138 endpoints funcionais, 17 entidades de domínio e funcionalidade geográfica completa com documentação técnica totalmente sincronizada.
+
+### v0.17.0 (2025-01-24) - Estabilização e Documentação Completa
+
+- **ESTABILIZAÇÃO COMPLETA**: Versão minor com foco em estabilização e documentação
+  - ✅ **Tag Git v0.16.0**: Criada e sincronizada com repositório remoto
+  - ✅ **Documentação Atualizada**: Todas as 6 documentações principais sincronizadas
+  - ✅ **Testes Realizados**: Sistema testado via API com validação completa
+  - ✅ **Arquitetura Documentada**: Padrões hexagonais mantidos e documentados
+  - ✅ **Performance Otimizada**: Otimizações de banco e consultas implementadas
+  - ✅ **Escalabilidade**: Considerações para cache e índices espaciais documentadas
+
+- **MELHORIAS DE DOCUMENTAÇÃO**:
+  - **README.md**: Atualizado com estatísticas v0.17.0 e seção Location Search
+  - **ARCHITECTURE.md**: Sistema de Location Search detalhado com componentes
+  - **DATABASE_STRATEGY.md**: Estrutura de dados e otimizações para busca geográfica
+  - **VERSIONING.md**: Changelog atualizado com marcos v0.16.0 e v0.17.0
+  - **API_USAGE.md**: Guia prático completo para endpoints de busca
+  - **IMPLEMENTATION_SUMMARY.md**: Resumo técnico atualizado para v0.17.0
+
+- **ESTABILIZAÇÃO TÉCNICA**:
+  - **Versionamento**: Sistema automático funcionando corretamente
+  - **Dependências**: requests==2.31.0 adicionada para integração ViaCEP
+  - **Repositórios**: Métodos especializados implementados e testados
+  - **Serviços**: LocationSearchService com lógica robusta e validada
+  - **Schemas**: Estruturas padronizadas para requisições e respostas
+  - **Endpoints**: 4 endpoints funcionais com autenticação e autorização
+
+> **Marco de Estabilização:** A v0.17.0 marca a versão minor com foco em estabilização e documentação completa. O sistema de busca por localização está totalmente funcional, testado e documentado, com todas as 6 documentações principais sincronizadas e atualizadas.
+
+### v0.15.0 (2025-01-24) - Campo Status em Space Festival Types
 
 > **Atualização Recente:** Versão minor incrementada para v0.15.0 com implementação do campo status em Space Festival Types e documentação completa.
 
@@ -442,6 +506,24 @@ git checkout v0.1.0
 - Tabela reviews limpa e populada com 12 reviews corretos
 - Documentação atualizada em todos os arquivos .md
 
+### v0.17.0 ✅ **CONCLUÍDA**
+- Estabilização e documentação completa
+- Tag Git v0.16.0 criada e sincronizada
+- Todas as 6 documentações principais atualizadas
+- Sistema testado via API com validação completa
+- Arquitetura documentada e otimizada
+- Performance e escalabilidade documentadas
+
+### v0.16.0 ✅ **CONCLUÍDA**
+- Sistema de busca por localização geográfica
+- Cálculo de distância usando fórmula de Haversine
+- Integração com API ViaCEP para coordenadas
+- Validação de disponibilidade baseada em status
+- Verificação de conflitos de agendamento
+- Autenticação e autorização por role
+- 4 endpoints REST funcionais
+- Documentação completa atualizada
+
 ### v0.13.3 ✅ **CONCLUÍDA**
 - Padronização dos endpoints DELETE para retornar mensagens de sucesso
 - Correção dos endpoints DELETE de reviews, interests e financials
@@ -455,7 +537,7 @@ git checkout v0.1.0
 - Dados relacionados (profile, space_event_type, space_festival_type) agora funcionam corretamente
 - Todos os endpoints de reviews testados e funcionando
 
-### v0.14.0
+### v0.18.0
 - Sistema de notificações em tempo real
 - Upload de arquivos e mídias
 - Sistema de pagamentos integrado

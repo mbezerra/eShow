@@ -160,6 +160,15 @@ class SpaceEventTypeRepositoryImpl(SpaceEventTypeRepository):
         relationships = self.db.query(SpaceEventTypeModel).all()
         return [self._to_entity(rel) for rel in relationships]
     
+    def get_by_space_id_and_status(self, space_id: int, status: StatusEventType) -> List[SpaceEventType]:
+        """Obter eventos de um espaço com status específico"""
+        relationships = self.db.query(SpaceEventTypeModel).filter(
+            SpaceEventTypeModel.space_id == space_id,
+            SpaceEventTypeModel.status == status
+        ).all()
+        
+        return [self._to_entity(rel) for rel in relationships]
+    
     def _to_entity(self, model: SpaceEventTypeModel) -> SpaceEventType:
         """Converter modelo para entidade"""
         return SpaceEventType(

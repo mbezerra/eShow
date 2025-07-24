@@ -649,4 +649,207 @@ psql -U eshow_user -d eshow -c "SELECT status, COUNT(*) FROM space_festival_type
 # Verificar eventos por status
 sqlite3 eshow.db "SELECT status, COUNT(*) as total FROM space_event_types GROUP BY status ORDER BY total DESC;"
 psql -U eshow_user -d eshow -c "SELECT status, COUNT(*) as total FROM space_event_types GROUP BY status ORDER BY total DESC;"
-``` 
+
+# Verificar dados de busca por localização
+sqlite3 eshow.db "SELECT COUNT(*) FROM artists WHERE raio_atuacao > 0;"
+sqlite3 eshow.db "SELECT AVG(raio_atuacao) as media_raio FROM artists;"
+psql -U eshow_user -d eshow -c "SELECT COUNT(*) FROM artists WHERE raio_atuacao > 0;"
+psql -U eshow_user -d eshow -c "SELECT AVG(raio_atuacao) as media_raio FROM artists;"
+
+# Verificar CEPs válidos
+sqlite3 eshow.db "SELECT COUNT(*) FROM profiles WHERE cep IS NOT NULL AND cep != '';"
+psql -U eshow_user -d eshow -c "SELECT COUNT(*) FROM profiles WHERE cep IS NOT NULL AND cep != '';"
+```
+
+## 📋 Estrutura de Dados - Location Search
+
+### **Visão Geral:**
+O sistema de busca por localização utiliza os dados existentes das tabelas `profiles`, `artists`, `spaces`, `space_event_types`, `space_festival_types` e `bookings` para realizar cálculos geográficos e verificações de disponibilidade.
+
+### **Dados Utilizados:**
+
+#### **Tabela Profiles (CEP e Localização):**
+```sql
+-- CEPs dos profiles são usados para cálculo de distância
+SELECT id, cep, cidade, uf, role_id 
+FROM profiles 
+WHERE role_id IN (2, 3); -- Artistas e Espaços
+```
+
+#### **Tabela Artists (Raio de Atuação):**
+```sql
+-- Campo raio_atuacao define o alcance geográfico do artista
+SELECT id, profile_id, raio_atuacao 
+FROM artists;
+```
+
+#### **Tabela Spaces (Dados do Espaço):**
+```sql
+-- Dados do espaço para retorno completo
+SELECT id, profile_id, space_type_id, valor_hora, valor_couvert 
+FROM spaces;
+```
+
+#### **Tabela Space Event Types (Disponibilidade):**
+```sql
+-- Eventos com status CONTRATANDO são considerados disponíveis
+SELECT id, space_id, status, data, horario 
+FROM space_event_types 
+WHERE status = 'CONTRATANDO';
+```
+
+#### **Tabela Space Festival Types (Disponibilidade):**
+```sql
+-- Festivais com status CONTRATANDO são considerados disponíveis
+SELECT id, space_id, status, data, horario 
+FROM space_festival_types 
+WHERE status = 'CONTRATANDO';
+```
+
+#### **Tabela Bookings (Conflitos de Agenda):**
+```sql
+-- Agendamentos existentes para verificar conflitos
+SELECT id, artist_id, space_id, data_inicio, data_fim, horario_inicio, horario_fim 
+FROM bookings;
+```
+
+### **Consultas de Busca:**
+
+#### **Busca de Espaços para Artista:**
+```sql
+-- 1. Obter dados do artista
+SELECT a.id, a.raio_atuacao, p.cep as cep_artista
+FROM artists a
+JOIN profiles p ON a.profile_id = p.id
+WHERE p.id = ?;
+
+-- 2. Buscar espaços com eventos/festivais disponíveis
+SELECT DISTINCT s.id, s.profile_id, sp.cep as cep_espaco
+FROM spaces s
+JOIN profiles sp ON s.profile_id = sp.id
+WHERE sp.role_id = 3
+AND (
+    EXISTS (
+        SELECT 1 FROM space_event_types set 
+        WHERE set.space_id = s.id 
+        AND set.status = 'CONTRATANDO'
+    )
+    OR
+    EXISTS (
+        SELECT 1 FROM space_festival_types sft 
+        WHERE sft.space_id = s.id 
+        AND sft.status = 'CONTRATANDO'
+    )
+);
+```
+
+#### **Busca de Artistas para Espaço:**
+```sql
+-- 1. Obter dados do espaço
+SELECT s.id, sp.cep as cep_espaco
+FROM spaces s
+JOIN profiles sp ON s.profile_id = sp.id
+WHERE sp.id = ?;
+
+-- 2. Buscar artistas disponíveis
+SELECT a.id, a.profile_id, a.raio_atuacao, p.cep as cep_artista
+FROM artists a
+JOIN profiles p ON a.profile_id = p.id
+WHERE p.role_id = 2
+AND NOT EXISTS (
+    -- Verificar conflitos de agenda
+    SELECT 1 FROM bookings b
+    WHERE b.artist_id = a.id
+    AND b.data_inicio = ? -- Data do evento/festival
+    AND (
+        (b.horario_inicio <= ? AND b.horario_fim > ?) OR -- Conflito de horário
+        (b.horario_inicio < ? AND b.horario_fim >= ?) OR -- Conflito de horário
+        (b.horario_inicio >= ? AND b.horario_fim <= ?)   -- Conflito de horário
+    )
+);
+```
+
+### **Otimizações de Performance:**
+
+#### **Índices Recomendados:**
+```sql
+-- Para busca por role_id em profiles
+CREATE INDEX idx_profiles_role_id ON profiles(role_id);
+
+-- Para busca por status em space_event_types
+CREATE INDEX idx_space_event_types_status ON space_event_types(status);
+
+-- Para busca por status em space_festival_types
+CREATE INDEX idx_space_festival_types_status ON space_festival_types(status);
+
+-- Para busca por artist_id e data em bookings
+CREATE INDEX idx_bookings_artist_date ON bookings(artist_id, data_inicio, data_fim);
+
+-- Para busca por space_id em space_event_types
+CREATE INDEX idx_space_event_types_space_id ON space_event_types(space_id);
+
+-- Para busca por space_id em space_festival_types
+CREATE INDEX idx_space_festival_types_space_id ON space_festival_types(space_id);
+```
+
+#### **Consultas de Monitoramento:**
+```sql
+-- Verificar performance das buscas
+EXPLAIN ANALYZE
+SELECT DISTINCT s.id, s.profile_id
+FROM spaces s
+JOIN profiles sp ON s.profile_id = sp.id
+WHERE sp.role_id = 3
+AND EXISTS (
+    SELECT 1 FROM space_event_types set 
+    WHERE set.space_id = s.id 
+    AND set.status = 'CONTRATANDO'
+);
+
+-- Estatísticas de uso
+SELECT 
+    'Artistas' as tipo,
+    COUNT(*) as total,
+    AVG(raio_atuacao) as media_raio
+FROM artists
+UNION ALL
+SELECT 
+    'Espaços' as tipo,
+    COUNT(*) as total,
+    NULL as media_raio
+FROM spaces;
+
+-- Distribuição de raios de atuação
+SELECT 
+    CASE 
+        WHEN raio_atuacao <= 10 THEN '0-10km'
+        WHEN raio_atuacao <= 25 THEN '11-25km'
+        WHEN raio_atuacao <= 50 THEN '26-50km'
+        WHEN raio_atuacao <= 100 THEN '51-100km'
+        ELSE '100+km'
+    END as faixa_raio,
+    COUNT(*) as quantidade
+FROM artists
+GROUP BY faixa_raio
+ORDER BY quantidade DESC;
+
+-- Eventos/festivais disponíveis por região
+SELECT 
+    p.uf,
+    COUNT(CASE WHEN set.status = 'CONTRATANDO' THEN 1 END) as eventos_disponiveis,
+    COUNT(CASE WHEN sft.status = 'CONTRATANDO' THEN 1 END) as festivais_disponiveis
+FROM profiles p
+LEFT JOIN spaces s ON p.id = s.profile_id
+LEFT JOIN space_event_types set ON s.id = set.space_id
+LEFT JOIN space_festival_types sft ON s.id = sft.space_id
+WHERE p.role_id = 3
+GROUP BY p.uf
+ORDER BY (eventos_disponiveis + festivais_disponiveis) DESC;
+```
+
+### **Considerações de Escalabilidade:**
+
+1. **Cache de Coordenadas**: Implementar cache Redis para coordenadas geográficas
+2. **Índices Espaciais**: Considerar índices espaciais para PostgreSQL com PostGIS
+3. **Particionamento**: Particionar por região geográfica em grandes volumes
+4. **CDN**: Cache de resultados de busca frequentes 

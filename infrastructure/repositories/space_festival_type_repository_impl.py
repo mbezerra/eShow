@@ -160,6 +160,15 @@ class SpaceFestivalTypeRepositoryImpl(SpaceFestivalTypeRepository):
         relationships = self.db.query(SpaceFestivalTypeModel).all()
         return [self._to_entity(rel) for rel in relationships]
     
+    def get_by_space_id_and_status(self, space_id: int, status: StatusFestivalType) -> List[SpaceFestivalType]:
+        """Obter festivais de um espaço com status específico"""
+        relationships = self.db.query(SpaceFestivalTypeModel).filter(
+            SpaceFestivalTypeModel.space_id == space_id,
+            SpaceFestivalTypeModel.status == status
+        ).all()
+        
+        return [self._to_entity(rel) for rel in relationships]
+    
     def _to_entity(self, model: SpaceFestivalTypeModel) -> SpaceFestivalType:
         """Converter modelo para entidade"""
         return SpaceFestivalType(

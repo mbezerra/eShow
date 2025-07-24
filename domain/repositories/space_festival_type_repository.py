@@ -58,4 +58,9 @@ class SpaceFestivalTypeRepository(ABC):
     @abstractmethod
     def get_all(self) -> List[SpaceFestivalType]:
         """Obter todos os relacionamentos"""
+        pass
+    
+    @abstractmethod
+    def get_by_space_id_and_status(self, space_id: int, status: StatusFestivalType) -> List[SpaceFestivalType]:
+        """Obter festivais de um espaço com status específico"""
         pass 
