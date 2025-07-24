@@ -606,7 +606,7 @@ O sistema de **Interests** permite que artistas manifestem interesse em se apres
   "valor_hora_ofertado": 150.0,
   "valor_couvert_ofertado": 20.0,
   "mensagem": "Gostaria de manifestar interesse em uma apresentação no seu espaço. Tenho experiência com o público do local.",
-  "status": "Aguardando Confirmação",
+  "status": "AGUARDANDO_CONFIRMACAO",
   "resposta": null,
   "space_event_type_id": 3,
   "space_festival_type_id": null,
@@ -665,7 +665,7 @@ PATCH /api/v1/interests/{id}/status
 Authorization: Bearer {token}
 Content-Type: application/json
 {
-  "status": "Aceito",
+  "status": "ACEITO",
   "resposta": "Aceito! Vamos combinar os detalhes da apresentação."
 }
 
@@ -701,7 +701,7 @@ Authorization: Bearer {token}
 #### Filtros Avançados
 ```bash
 # Filtrar manifestações por status (opcional: ?include_relations=true)
-GET /api/v1/interests/status/Aguardando%20Confirmação
+GET /api/v1/interests/status/AGUARDANDO_CONFIRMACAO
 Authorization: Bearer {token}
 
 # Manifestações por tipo de evento (opcional: ?include_relations=true)
@@ -748,7 +748,7 @@ GET /api/v1/interests/date-range?data_inicio=...&data_fim=...&include_relations=
   "valor_hora_ofertado": 150.0,
   "valor_couvert_ofertado": 20.0,
   "mensagem": "Gostaria de manifestar interesse...",
-  "status": "Aguardando Confirmação",
+  "status": "AGUARDANDO_CONFIRMACAO",
   "resposta": null,
   "space_event_type_id": 3,
   "space_festival_type_id": null,
@@ -769,7 +769,7 @@ GET /api/v1/interests/date-range?data_inicio=...&data_fim=...&include_relations=
   "valor_hora_ofertado": 150.0,
   "valor_couvert_ofertado": 20.0,
   "mensagem": "Gostaria de manifestar interesse...",
-  "status": "Aguardando Confirmação",
+  "status": "AGUARDANDO_CONFIRMACAO",
   "resposta": null,
   "space_event_type_id": 3,
   "space_festival_type_id": null,
@@ -834,7 +834,7 @@ GET /api/v1/interests/date-range?data_inicio=...&data_fim=...&include_relations=
 ### Regras de Negócio
 - **Validação de roles:** Apenas **artistas** podem manifestar interesse em **espaços** e vice-versa
 - **Prevenção de duplicatas:** Não é possível manifestar interesse duplicado entre os mesmos profiles
-- **Estados de status:** "Aguardando Confirmação" (padrão), "Aceito", "Recusado"
+- **Estados de status:** "AGUARDANDO_CONFIRMACAO" (padrão), "ACEITO", "RECUSADO"
 - **Validação de data:** Data inicial deve ser futura
 - **Validação de duração:** Entre 0.5 e 8 horas
 - **Validação de valores:** Valores monetários devem ser positivos
@@ -880,7 +880,7 @@ curl -X GET "http://localhost:8000/api/v1/interests/profile/2/statistics" \
   -H "Authorization: Bearer $TOKEN" | jq
 
 # 6. Filtrar manifestações aceitas
-curl -X GET "http://localhost:8000/api/v1/interests/status/Aceito?include_relations=true" \
+curl -X GET "http://localhost:8000/api/v1/interests/status/ACEITO?include_relations=true" \
   -H "Authorization: Bearer $TOKEN" | jq
 ```
 

@@ -4,9 +4,9 @@ from enum import Enum
 
 class StatusInterest(Enum):
     """Enum para status de interesse"""
-    AGUARDANDO_CONFIRMACAO = "Aguardando Confirmação"
-    ACEITO = "Aceito"
-    RECUSADO = "Recusado"
+    AGUARDANDO_CONFIRMACAO = "AGUARDANDO_CONFIRMACAO"
+    ACEITO = "ACEITO"
+    RECUSADO = "RECUSADO"
 
 class Interest:
     """Entidade de domínio para manifestações de interesse entre profiles"""
@@ -121,7 +121,7 @@ class Interest:
         """Validar consistência entre resposta e status"""
         if self.status == StatusInterest.AGUARDANDO_CONFIRMACAO:
             if self.resposta is not None and self.resposta.strip():
-                raise ValueError("Resposta não deve estar presente quando status é 'Aguardando Confirmação'")
+                raise ValueError("Resposta não deve estar presente quando status é 'AGUARDANDO_CONFIRMACAO'")
         else:
             # Para status ACEITO ou RECUSADO, resposta pode existir ou não (é opcional)
             if self.resposta is not None and len(self.resposta.strip()) > 1000:
@@ -146,7 +146,7 @@ class Interest:
     def update_mensagem(self, nova_mensagem: str):
         """Atualizar mensagem (apenas se ainda estiver aguardando confirmação)"""
         if self.status != StatusInterest.AGUARDANDO_CONFIRMACAO:
-            raise ValueError("Mensagem só pode ser alterada quando status é 'Aguardando Confirmação'")
+            raise ValueError("Mensagem só pode ser alterada quando status é 'AGUARDANDO_CONFIRMACAO'")
         
         old_mensagem = self.mensagem
         self.mensagem = nova_mensagem
@@ -160,7 +160,7 @@ class Interest:
     def update_valores(self, novo_valor_hora: Optional[float] = None, novo_valor_couvert: Optional[float] = None):
         """Atualizar valores oferecidos (apenas se ainda estiver aguardando confirmação)"""
         if self.status != StatusInterest.AGUARDANDO_CONFIRMACAO:
-            raise ValueError("Valores só podem ser alterados quando status é 'Aguardando Confirmação'")
+            raise ValueError("Valores só podem ser alterados quando status é 'AGUARDANDO_CONFIRMACAO'")
         
         old_valor_hora = self.valor_hora_ofertado
         old_valor_couvert = self.valor_couvert_ofertado

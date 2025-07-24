@@ -10,9 +10,9 @@ from .space_festival_type import SpaceFestivalTypeResponse
 
 # Enum para status
 class StatusInterestEnum(str, Enum):
-    AGUARDANDO_CONFIRMACAO = "Aguardando Confirmação"
-    ACEITO = "Aceito"
-    RECUSADO = "Recusado"
+    AGUARDANDO_CONFIRMACAO = "AGUARDANDO_CONFIRMACAO"
+    ACEITO = "ACEITO"
+    RECUSADO = "RECUSADO"
 
 class InterestBase(BaseModel):
     profile_id_interessado: int
@@ -119,7 +119,7 @@ class InterestBase(BaseModel):
         status = values.get('status')
         if status == StatusInterestEnum.AGUARDANDO_CONFIRMACAO:
             if v is not None and v.strip():
-                raise ValueError("Resposta não deve estar presente quando status é 'Aguardando Confirmação'")
+                raise ValueError("Resposta não deve estar presente quando status é 'AGUARDANDO_CONFIRMACAO'")
         
         return v.strip() if v else v
 

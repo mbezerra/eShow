@@ -121,7 +121,7 @@ class InterestService:
         
         # Verificar se o interesse ainda pode ser alterado
         if hasattr(existing, 'status') and existing.status != StatusInterest.AGUARDANDO_CONFIRMACAO:
-            raise ValueError("Apenas interesses com status 'Aguardando Confirmação' podem ser alterados")
+            raise ValueError("Apenas interesses com status 'AGUARDANDO_CONFIRMACAO' podem ser alterados")
         
         # Criar entidade com os dados atualizados
         updated_interest = Interest(
@@ -157,7 +157,7 @@ class InterestService:
         
         # Verificar se o status atual permite alteração
         if hasattr(existing, 'status') and existing.status != StatusInterest.AGUARDANDO_CONFIRMACAO:
-            raise ValueError("Apenas interesses com status 'Aguardando Confirmação' podem ser aceitos ou recusados")
+            raise ValueError("Apenas interesses com status 'AGUARDANDO_CONFIRMACAO' podem ser aceitos ou recusados")
         
         # Criar entidade com status atualizado
         updated_interest = Interest(
@@ -209,7 +209,7 @@ class InterestService:
         
         # Verificar se o status permite deleção (apenas pendentes)
         if hasattr(existing, 'status') and existing.status != StatusInterest.AGUARDANDO_CONFIRMACAO:
-            raise ValueError("Apenas interesses com status 'Aguardando Confirmação' podem ser deletados")
+            raise ValueError("Apenas interesses com status 'AGUARDANDO_CONFIRMACAO' podem ser deletados")
         
         return self.interest_repository.delete(interest_id)
     
