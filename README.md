@@ -19,28 +19,20 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 
 ## 📊 **Estatísticas do Projeto**
 
-- **Total de Endpoints:** 138 (+4 endpoints Location Search)
-- **Entidades de Domínio:** 17 (incluindo Interest)
-- **Relacionamentos N:N:** 3
-- **Tabelas no Banco:** 17 (incluindo interests)
-- **Schemas Pydantic:** 80+ (incluindo schemas de Location Search)
+- **Total de Endpoints:** 151
+- **Entidades de Domínio:** 18
+- **Tabelas no Banco:** 18
+- **Schemas Pydantic:** 20 arquivos principais
 - **Cobertura de Testes:** Em desenvolvimento
 - **Versão Atual:** v0.17.0
 
 ## 🆕 **Funcionalidades Recentes**
 
-### Campo Status em Space Event Types
+### Campo Status em Space Event Types e Space Festival Types
 - **Novo campo `status`** com valores: CONTRATANDO, FECHADO, SUSPENSO, CANCELADO
-- **Endpoint específico** para atualização de status: `PATCH /api/v1/space-event-types/{id}/status`
+- **Endpoint específico** para atualização de status: `PATCH /api/v1/space-event-types/{id}/status` e `PATCH /api/v1/space-festival-types/{id}/status`
 - **Valor padrão:** CONTRATANDO para novos registros
 - **Consistência total** em todos os endpoints relacionados
-
-### Campo Status em Space Festival Types
-- **Novo campo `status`** com valores: CONTRATANDO, FECHADO, SUSPENSO, CANCELADO
-- **Endpoint específico** para atualização de status: `PATCH /api/v1/space-festival-types/{id}/status`
-- **Valor padrão:** CONTRATANDO para novos registros
-- **Consistência total** em todos os endpoints relacionados
-- **Padrão idêntico** ao Space Event Types para manter uniformidade
 
 ### Sistema de Busca por Localização ✅ **CONCLUÍDO**
 - **4 novos endpoints** para busca geográfica baseada em raio de atuação
@@ -51,12 +43,11 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Autenticação e autorização** por role (artista/espaço)
 
 ### Documentação Atualizada
-- **API_USAGE.md** - Novas seções completas sobre Location Search, Space Event Types e Space Festival Types
-- **IMPLEMENTATION_SUMMARY.md** - Resumo da implementação atualizado para v0.17.0
-- **STATUS_IMPLEMENTATION.md** - Detalhes da implementação
-- **STATUS_CONSISTENCY_CHECK.md** - Verificação de consistência
-- **SPACE_FESTIVAL_STATUS_IMPLEMENTATION.md** - Implementação específica para Space Festival Types
-- **SPACE_FESTIVAL_STATUS_CONSISTENCY_CHECK.md** - Verificação de consistência para Space Festival Types
+- **API_USAGE.md** - Exemplos de uso detalhados
+- **IMPLEMENTATION_SUMMARY.md** - Resumo técnico completo
+- **ARCHITECTURE.md** - Arquitetura detalhada
+- **DATABASE_STRATEGY.md** - Estratégia de banco de dados
+- **VERSIONING.md** - Estratégia de versionamento
 
 ## 📁 **Estrutura do Projeto**
 
@@ -73,9 +64,10 @@ eShow/
 ├── infrastructure/       # Camada de infraestrutura
 │   ├── database/         # Modelos e configuração do banco
 │   ├── repositories/     # Implementação dos repositórios
-│   └── external/          # Serviços externos
-├── tests/                 # Testes unitários e de integração
-└── alembic/               # Migrações do banco de dados
+├── tests/                # Testes unitários e de integração
+├── alembic/              # Migrações do banco de dados
+├── *.md                  # Documentação principal
+├── *.py                  # Scripts utilitários e inicialização
 ```
 
 ## Princípios da Arquitetura Hexagonal
@@ -101,7 +93,6 @@ python version.py patch  # ou minor/major
 
 **Opção 1: Usando script de inicialização (Recomendado)**
 ```bash
-# Executar script que ativa ambiente virtual automaticamente
 ./start_server.sh
 ```
 
@@ -139,7 +130,6 @@ python run.py
 
 1. Instalar PostgreSQL e criar banco:
 ```bash
-# Ubuntu/Debian
 sudo apt-get install postgresql postgresql-contrib
 
 # Criar banco e usuário
@@ -181,172 +171,32 @@ O sistema implementa controle de acesso baseado em roles para garantir que apena
 
 ## Endpoints
 
-### Autenticação (`/api/v1/auth/`)
-- `POST /register` - Registrar novo usuário
-- `POST /login` - Fazer login
-- `POST /refresh` - Renovar token de acesso
+A API possui 151 endpoints RESTful cobrindo autenticação, usuários, perfis, artistas, espaços, tipos, agendamentos, avaliações, interesses, busca por localização, entre outros. Veja [API_USAGE.md](API_USAGE.md) para exemplos detalhados de uso e respostas.
 
-### Usuários (`/api/v1/users/`) - Requer autenticação
-- `GET /me` - Obter informações do usuário atual
-- `POST /` - Criar usuário
-- `GET /` - Listar usuários
-- `GET /{user_id}` - Obter usuário por ID
-- `PUT /{user_id}` - Atualizar usuário
-- `DELETE /{user_id}` - Deletar usuário
+## Scripts de Inicialização e Utilitários
 
-### Artists (`/api/v1/artists/`) - Requer autenticação
-- `POST /` - Criar novo artista ⚠️ **Apenas profiles com role "ARTISTA"**
-- `GET /` - Listar todos os artistas
-- `GET /{artist_id}` - Obter artista por ID
-- `GET /profile/{profile_id}` - Obter artista por profile ID
-- `GET /type/{artist_type_id}` - Listar artistas por tipo
-- `PUT /{artist_id}` - Atualizar artista ⚠️ **Validação de role ao alterar profile_id**
-- `DELETE /{artist_id}` - Deletar artista
+- **start_server.sh**: Inicializa o ambiente virtual, instala dependências e executa o servidor.
+- **init_db.py**: Inicializa o banco de dados.
+- **migrate_to_postgres.py**: Migra dados do SQLite para PostgreSQL.
+- **init_*.py**: Scripts para popular tabelas com dados iniciais (roles, tipos, artistas, etc).
+- **version.py**: Gerencia versionamento automático via Git tags.
 
-**Parâmetro `include_relations`**: Use `?include_relations=true` nos endpoints GET para incluir dados relacionados (profile e artist_type).
+## Documentação
 
-**⚠️ RESTRIÇÃO IMPORTANTE**: Apenas profiles com `role_id = 2` (role "ARTISTA") podem cadastrar artistas.
+- [API_USAGE.md](API_USAGE.md): Exemplos de uso dos endpoints
+- [IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md): Resumo técnico e histórico de versões
+- [ARCHITECTURE.md](ARCHITECTURE.md): Detalhes da arquitetura hexagonal
+- [DATABASE_STRATEGY.md](DATABASE_STRATEGY.md): Estratégia e estrutura do banco de dados
+- [VERSIONING.md](VERSIONING.md): Estratégia e comandos de versionamento
 
-### Spaces (`/api/v1/spaces/`) - Requer autenticação
-- `POST /` - Criar novo espaço ⚠️ **Apenas profiles com role "ESPACO"**
-- `GET /` - Listar todos os espaços
-- `GET /{space_id}` - Obter espaço por ID
-- `GET /profile/{profile_id}` - Obter espaços por profile ID
-- `GET /space-type/{space_type_id}` - Listar espaços por tipo de espaço
-- `GET /event-type/{event_type_id}` - Listar espaços por tipo de evento
-- `GET /festival-type/{festival_type_id}` - Listar espaços por tipo de festival
-- `PUT /{space_id}` - Atualizar espaço ⚠️ **Validação de role ao alterar profile_id**
-- `DELETE /{space_id}` - Deletar espaço
+## Observações
 
-**Parâmetro `include_relations`**: Use `?include_relations=true` nos endpoints GET para incluir dados relacionados (profile, space_type, event_type, festival_type).
+- O projeto está em desenvolvimento ativo.
+- Para dúvidas sobre uso da API, consulte a documentação automática em `http://localhost:8000/docs`.
+- Para detalhes de implementação, consulte os arquivos `.md` na raiz do projeto.
+- Scripts de inicialização populam as tabelas com valores esperados (roles, tipos, etc).
 
-**⚠️ RESTRIÇÃO IMPORTANTE**: Apenas profiles com `role_id = 3` (role "ESPACO") podem cadastrar espaços.
-
-### Space-Event Types (`/api/v1/space-event-types/`) - Requer autenticação
-- `POST /` - Criar novo relacionamento entre espaço e tipo de evento
-- `GET /` - Listar todos os relacionamentos
-- `GET /{space_event_type_id}` - Obter relacionamento por ID
-- `GET /space/{space_id}` - Obter todos os eventos de um espaço
-- `GET /event-type/{event_type_id}` - Obter todos os espaços de um tipo de evento
-- `GET /space/{space_id}/event-type/{event_type_id}` - Obter relacionamentos específicos
-- `PUT /{space_event_type_id}` - Atualizar relacionamento
-- `DELETE /{space_event_type_id}` - Deletar relacionamento específico
-- `DELETE /space/{space_id}` - Deletar todos os relacionamentos de um espaço
-- `DELETE /event-type/{event_type_id}` - Deletar todos os relacionamentos de um tipo de evento
-
-### Space-Festival Types (`/api/v1/space-festival-types/`) - Requer autenticação
-- `POST /` - Criar novo relacionamento entre espaço e tipo de festival
-- `GET /` - Listar todos os relacionamentos
-- `GET /{space_festival_type_id}` - Obter relacionamento por ID
-- `GET /space/{space_id}` - Obter todos os festivais de um espaço
-- `GET /festival-type/{festival_type_id}` - Obter todos os espaços de um tipo de festival
-- `GET /space/{space_id}/festival-type/{festival_type_id}` - Obter relacionamentos específicos
-- `PUT /{space_festival_type_id}` - Atualizar relacionamento
-- `DELETE /{space_festival_type_id}` - Deletar relacionamento específico
-- `DELETE /space/{space_id}` - Deletar todos os relacionamentos de um espaço
-- `DELETE /festival-type/{festival_type_id}` - Deletar todos os relacionamentos de um tipo de festival
-
-### Reviews (`/api/v1/reviews/`) - Requer autenticação
-- `POST /` - Criar nova avaliação/review
-- `GET /` - Listar todas as avaliações
-- `GET /{review_id}` - Obter avaliação por ID
-- `PUT /{review_id}` - Atualizar avaliação
-- `DELETE /{review_id}` - Deletar avaliação
-- `GET /profile/{profile_id}` - Obter avaliações de um profile específico
-- `GET /profile/{profile_id}/average` - Obter média de avaliações de um profile
-- `GET /space-event-type/{space_event_type_id}` - Avaliações por tipo de evento
-- `GET /space-festival-type/{space_festival_type_id}` - Avaliações por tipo de festival
-- `GET /rating/{nota}` - Filtrar avaliações por nota (1-5 estrelas)
-- `GET /date-range/` - Filtrar avaliações por período (query params: data_inicio, data_fim)
-
-**Parâmetro `include_relations`**: Use `?include_relations=true` nos endpoints GET para incluir dados relacionados (profile, space_event_type, space_festival_type).
-
-**⚠️ REGRAS DE NEGÓCIO**:
-- **Usuários ADMIN (role_id = 1) NUNCA avaliam ou são avaliados** - Papel apenas administrativo
-- **Usuários ARTISTA (role_id = 2) podem criar reviews normalmente**
-- **Usuários ESPAÇO (role_id = 3) podem criar reviews normalmente**
-- **Profile_id determinado automaticamente** pelo usuário logado
-- Notas devem ser entre 1 e 5 (números inteiros)
-- Depoimento deve ter no mínimo 10 caracteres e máximo 1000
-- Cada review deve estar associado a UM space_event_type_id OU UM space_festival_type_id (não ambos)
-- Profile_id não pode ser alterado após criação do review
-
-### Financial (`/api/v1/financials/`) - Requer autenticação
-- `POST /` - Criar novo registro financeiro/bancário
-- `GET /` - Listar todos os registros financeiros
-- `GET /{financial_id}` - Obter registro financeiro por ID
-- `PUT /{financial_id}` - Atualizar registro financeiro
-- `DELETE /{financial_id}` - Deletar registro financeiro
-- `GET /profile/{profile_id}` - Obter registros financeiros de um profile
-- `GET /banco/{banco}` - Obter registros por código do banco (1-999)
-- `GET /tipo-conta/{tipo_conta}` - Filtrar por tipo de conta (Poupança/Corrente)
-- `GET /tipo-chave-pix/{tipo_chave_pix}` - Filtrar por tipo de chave PIX
-- `GET /chave-pix/{chave_pix}` - Buscar por chave PIX específica
-- `GET /preferencia/{preferencia}` - Filtrar por preferência (PIX/TED)
-- `GET /cpf-cnpj/{cpf_cnpj}` - Buscar por CPF ou CNPJ
-- `GET /check-chave-pix/{chave_pix}` - Verificar disponibilidade de chave PIX
-- `GET /statistics/banks` - Estatísticas de registros por banco
-- `GET /statistics/pix-types` - Estatísticas por tipo de chave PIX
-
-**Parâmetro `include_relations`**: Use `?include_relations=true` nos endpoints GET para incluir dados relacionados (profile).
-
-**⚠️ REGRAS DE NEGÓCIO**:
-- Código do banco deve ser uma string com 3 dígitos (001 a 999)
-- Chave PIX deve ser única no sistema
-- Validação específica por tipo de chave PIX (CPF: 11 dígitos, CNPJ: 14 dígitos, etc.)
-- CPF/CNPJ deve ter formato válido (11 ou 14 dígitos respectivamente)
-- Profile_id não pode ser alterado após criação do registro
-- Tipos de conta: "Poupança" ou "Corrente"
-- Tipos de chave PIX: "CPF", "CNPJ", "Celular", "E-mail", "Aleatória"
-- Preferências de transferência: "PIX" ou "TED"
-
-### Interests (`/api/v1/interests/`) - Requer autenticação
-- `POST /` - Criar nova manifestação de interesse
-- `GET /` - Listar todas as manifestações de interesse
-- `GET /{interest_id}` - Obter manifestação por ID
-- `PUT /{interest_id}` - Atualizar manifestação completa
-- `DELETE /{interest_id}` - Deletar manifestação
-- `PATCH /{interest_id}/status` - Atualizar status da manifestação
-- `PATCH /{interest_id}/accept` - Aceitar manifestação de interesse
-- `PATCH /{interest_id}/reject` - Recusar manifestação de interesse
-- `GET /profile/interessado/{profile_id}` - Manifestações enviadas por um profile
-- `GET /profile/interesse/{profile_id}` - Manifestações recebidas por um profile
-- `GET /profile/{profile_id}/pending` - Manifestações pendentes de um profile
-- `GET /profile/{profile_id}/statistics` - Estatísticas de manifestações por profile
-- `GET /status/{status}` - Filtrar manifestações por status
-- `GET /space-event-type/{space_event_type_id}` - Manifestações por tipo de evento
-- `GET /date-range/` - Filtrar manifestações por período (query params: data_inicio, data_fim)
-
-**Parâmetro `include_relations`**: Use `?include_relations=true` nos endpoints GET para incluir dados relacionados (profile_interessado, profile_interesse, space_event_type, space_festival_type).
-
-**⚠️ REGRAS DE NEGÓCIO**:
-- Apenas **artistas** podem manifestar interesse em **espaços**
-- Apenas **espaços** podem manifestar interesse em **artistas**
-- **Prevenção de duplicatas**: Não é possível manifestar interesse duplicado
-- **Estados de status**: "AGUARDANDO_CONFIRMACAO", "ACEITO", "RECUSADO"
-- **Validação de data**: Data inicial deve ser futura
-- **Validação de duração**: Entre 0.5 e 8 horas
-- **Validação de valores**: Valores devem ser positivos
-- **Mensagem obrigatória**: Mínimo 10, máximo 1000 caracteres
-- **Profile_id não pode ser alterado** após criação da manifestação
-
-### Location Search (`/api/v1/location-search/`) - Requer autenticação
-- `GET /spaces-for-artist` - Buscar espaços para artista (baseado no raio de atuação)
-- `POST /spaces-for-artist` - Versão POST da busca de espaços para artista
-- `GET /artists-for-space` - Buscar artistas para espaço (baseado no raio de atuação dos artistas)
-- `POST /artists-for-space` - Versão POST da busca de artistas para espaço
-
-**Parâmetros**: `return_full_data` (boolean), `max_results` (integer)
-**Autenticação**: JWT obrigatório com validação de role (artista/espaço)
-
-**⚠️ REGRAS DE NEGÓCIO**:
-- **Artistas (role_id = 2)** podem usar apenas endpoints de busca de espaços
-- **Espaços (role_id = 3)** podem usar apenas endpoints de busca de artistas
-- **Cálculo de distância** baseado na fórmula de Haversine com coordenadas do ViaCEP
-- **Filtro por disponibilidade**: Espaços devem ter eventos/festivais com status "CONTRATANDO"
-- **Verificação de conflitos**: Artistas não devem ter agendamentos conflitantes
-- **Raio de atuação**: Baseado no campo `raio_atuacao` do artista
-- **Fallback de coordenadas**: Sistema de coordenadas aproximadas em caso de falha da API
+---
 
 A API estará disponível em `http://localhost:8000`
 A documentação automática estará em `http://localhost:8000/docs` 
