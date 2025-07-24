@@ -248,7 +248,7 @@ async def update_financial(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro interno do servidor: {str(e)}")
 
-@router.delete("/{financial_id}", status_code=204)
+@router.delete("/{financial_id}", status_code=200)
 async def delete_financial(
     financial_id: int,
     current_user: UserResponse = Depends(get_current_active_user),
@@ -259,6 +259,8 @@ async def delete_financial(
         success = service.delete_financial(financial_id)
         if not success:
             raise HTTPException(status_code=404, detail="Registro financeiro não encontrado")
+        
+        return {"message": f"Registro financeiro com ID {financial_id} foi deletado com sucesso"}
     except HTTPException:
         raise
     except Exception as e:

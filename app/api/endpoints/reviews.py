@@ -209,7 +209,7 @@ async def update_review(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro interno do servidor: {str(e)}")
 
-@router.delete("/{review_id}", status_code=204)
+@router.delete("/{review_id}", status_code=200)
 async def delete_review(
     review_id: int,
     current_user: UserResponse = Depends(get_current_active_user),
@@ -220,6 +220,8 @@ async def delete_review(
         success = service.delete_review(review_id)
         if not success:
             raise HTTPException(status_code=404, detail="Avaliação não encontrada")
+        
+        return {"message": f"Avaliação com ID {review_id} foi deletada com sucesso"}
     except HTTPException:
         raise
     except Exception as e:

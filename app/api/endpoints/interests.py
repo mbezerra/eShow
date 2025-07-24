@@ -356,7 +356,7 @@ def reject_interest(
             detail=str(e)
         )
 
-@router.delete("/{interest_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{interest_id}", status_code=status.HTTP_200_OK)
 def delete_interest(
     interest_id: int,
     interest_service: InterestService = Depends(get_interest_service),
@@ -379,6 +379,8 @@ def delete_interest(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Manifestação de interesse não encontrada"
             )
+        
+        return {"message": f"Manifestação de interesse com ID {interest_id} foi deletada com sucesso"}
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
