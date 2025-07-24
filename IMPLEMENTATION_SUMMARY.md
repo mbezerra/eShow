@@ -47,13 +47,15 @@
 
 - **Reviews**: Sistema completo de avaliações com notas de 1 a 5 estrelas
   - 11 endpoints REST funcionais
+  - **Regras de negócio implementadas**: ADMIN não avalia, ARTISTA e ESPAÇO podem avaliar
+  - **Profile_id determinado automaticamente** pelo usuário logado
   - Relacionamento com profiles, space_event_types e space_festival_types
   - Validações robustas (nota entre 1-5, depoimento mínimo 10 caracteres)
   - Cálculo de média de avaliações por profile
   - Filtros avançados por profile, nota, período, tipo de evento/festival
   - Parâmetro `include_relations=true` para carregar dados relacionados
   - Migração de banco de dados aplicada
-  - Dados de exemplo populados (6 reviews iniciais)
+  - **Dados de exemplo populados (12 reviews)** seguindo regras de negócio
 
 ### ✨ Funcionalidades Implementadas na v0.10.0-0.10.2
 

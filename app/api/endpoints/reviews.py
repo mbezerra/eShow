@@ -3,6 +3,7 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from infrastructure.database.database import get_database_session
+from infrastructure.database.models.profile_model import ProfileModel
 from app.core.auth import get_current_active_user
 from app.application.services.review_service import ReviewService
 from app.schemas.review import (
@@ -20,17 +21,27 @@ def get_review_service(db: Session = Depends(get_database_session)) -> ReviewSer
 async def create_review(
     review_data: ReviewCreate,
     current_user: UserResponse = Depends(get_current_active_user),
-    service: ReviewService = Depends(get_review_service)
+    service: ReviewService = Depends(get_review_service),
+    db: Session = Depends(get_database_session)
 ):
     """Criar uma nova avaliação"""
     try:
-        # Validar regras de negócio
-        errors = service.validate_business_rules(review_data)
-        if errors:
-            raise HTTPException(status_code=400, detail={"errors": errors})
+        # Obter o profile_id do usuário logado
+        profile = db.query(ProfileModel).filter(ProfileModel.user_id == current_user.id).first()
         
-        review = service.create_review(review_data)
+        # Se não tem profile, provavelmente é ADMIN
+        if not profile:
+            raise HTTPException(status_code=400, detail="Usuários ADMIN não podem fazer avaliações. Seu papel é apenas administrativo.")
+        
+        # Teste simples - retornar erro se for ADMIN
+        if profile.role_id == 1:
+            raise HTTPException(status_code=400, detail="Usuários com role ADMIN (role_id = 1) não podem fazer avaliações. Seu papel é apenas administrativo.")
+        
+        # Criar review com o profile_id do usuário logado
+        review = service.create_review_with_profile(review_data, profile.id)
         return review
+    except HTTPException:
+        raise
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:

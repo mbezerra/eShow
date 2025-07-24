@@ -290,6 +290,8 @@ CREATE TABLE reviews (
 ```
 
 ### **Características:**
+- ✅ **Regras de role**: ADMIN não avalia, ARTISTA e ESPAÇO podem avaliar
+- ✅ **Profile_id automático**: Determinado pelo usuário logado
 - ✅ **Notas**: Apenas valores inteiros de 1 a 5
 - ✅ **Relacionamento exclusivo**: OU evento OU festival, nunca ambos
 - ✅ **Depoimento obrigatório**: Mínimo 10 caracteres
@@ -423,6 +425,10 @@ psql -U eshow_user -d eshow -c "SELECT COUNT(*) FROM interests;"
 # Verificar médias de avaliação
 sqlite3 eshow.db "SELECT profile_id, AVG(nota) as media FROM reviews GROUP BY profile_id;"
 psql -U eshow_user -d eshow -c "SELECT profile_id, AVG(nota::float) as media FROM reviews GROUP BY profile_id;"
+
+# Verificar reviews por role (deve excluir ADMIN)
+sqlite3 eshow.db "SELECT p.role_id, COUNT(r.id) as total_reviews FROM profiles p LEFT JOIN reviews r ON p.id = r.profile_id GROUP BY p.role_id ORDER BY p.role_id;"
+psql -U eshow_user -d eshow -c "SELECT p.role_id, COUNT(r.id) as total_reviews FROM profiles p LEFT JOIN reviews r ON p.id = r.profile_id GROUP BY p.role_id ORDER BY p.role_id;"
 
 # Verificar dados financeiros
 sqlite3 eshow.db "SELECT COUNT(*) FROM financials;"

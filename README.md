@@ -230,6 +230,10 @@ O sistema implementa controle de acesso baseado em roles para garantir que apena
 **Parâmetro `include_relations`**: Use `?include_relations=true` nos endpoints GET para incluir dados relacionados (profile, space_event_type, space_festival_type).
 
 **⚠️ REGRAS DE NEGÓCIO**:
+- **Usuários ADMIN (role_id = 1) NUNCA avaliam ou são avaliados** - Papel apenas administrativo
+- **Usuários ARTISTA (role_id = 2) podem criar reviews normalmente**
+- **Usuários ESPAÇO (role_id = 3) podem criar reviews normalmente**
+- **Profile_id determinado automaticamente** pelo usuário logado
 - Notas devem ser entre 1 e 5 (números inteiros)
 - Depoimento deve ter no mínimo 10 caracteres e máximo 1000
 - Cada review deve estar associado a UM space_event_type_id OU UM space_festival_type_id (não ambos)

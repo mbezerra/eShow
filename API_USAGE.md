@@ -491,7 +491,6 @@ POST /api/v1/reviews/
 Authorization: Bearer {token}
 Content-Type: application/json
 {
-  "profile_id": 1,
   "space_event_type_id": 3,
   "data_hora": "2025-07-23T20:30:00",
   "nota": 5,
@@ -542,6 +541,10 @@ Authorization: Bearer {token}
 ```
 
 ### Regras de Negócio
+- **Usuários ADMIN (role_id = 1) NUNCA avaliam ou são avaliados** - Papel apenas administrativo
+- **Usuários ARTISTA (role_id = 2) podem criar reviews normalmente**
+- **Usuários ESPAÇO (role_id = 3) podem criar reviews normalmente**
+- **Profile_id determinado automaticamente** pelo usuário logado (não enviar no request)
 - **Notas**: Apenas valores inteiros de 1 a 5
 - **Depoimento**: Mínimo 10 caracteres, máximo 1000 caracteres
 - **Relacionamento exclusivo**: Cada review deve ter OU `space_event_type_id` OU `space_festival_type_id` (nunca ambos)

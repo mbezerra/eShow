@@ -8,18 +8,11 @@ from .space_event_type import SpaceEventTypeResponse
 from .space_festival_type import SpaceFestivalTypeResponse
 
 class ReviewBase(BaseModel):
-    profile_id: int
     space_event_type_id: Optional[int] = None
     space_festival_type_id: Optional[int] = None
     data_hora: datetime
     nota: int
     depoimento: str
-
-    @validator('profile_id')
-    def validate_profile_id(cls, v):
-        if v <= 0:
-            raise ValueError("ID do profile deve ser maior que zero")
-        return v
 
     @validator('nota')
     def validate_nota(cls, v):
@@ -97,12 +90,20 @@ class ReviewUpdate(BaseModel):
         return v
 
     @validator('space_festival_type_id')
-    def validate_space_festival_type_id(cls, v):
+    def validate_space_festival_type_id(cls, v, values):
         if v is not None and v <= 0:
             raise ValueError("ID do space-festival type deve ser maior que zero")
+        
+        # Validar que apenas um relacionamento pode estar definido
+        space_event_type_id = values.get('space_event_type_id')
+        
+        if v is not None and space_event_type_id is not None:
+            raise ValueError("Apenas um tipo de relacionamento pode ser especificado por review")
+        
         return v
 
 class ReviewResponse(ReviewBase):
+    profile_id: int
     id: int
     created_at: datetime
     updated_at: datetime
@@ -116,17 +117,20 @@ class ReviewWithRelations(ReviewResponse):
     space_event_type: Optional[SpaceEventTypeResponse] = None
     space_festival_type: Optional[SpaceFestivalTypeResponse] = None
 
+    class Config:
+        from_attributes = True
+
 class ReviewListResponse(BaseModel):
     """Schema para resposta de lista de reviews"""
     items: List[ReviewResponse]
-    
+
     class Config:
         from_attributes = True
 
 class ReviewListWithRelations(BaseModel):
     """Schema para resposta de lista de reviews com dados relacionados"""
     items: List[ReviewWithRelations]
-    
+
     class Config:
         from_attributes = True
 
@@ -135,6 +139,6 @@ class ProfileAverageRating(BaseModel):
     profile_id: int
     average_rating: Optional[float]
     total_reviews: int
-    
+
     class Config:
         from_attributes = True 
