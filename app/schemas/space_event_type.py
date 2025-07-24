@@ -1,6 +1,7 @@
 from pydantic import BaseModel, validator
 from typing import List, Optional
 from datetime import datetime
+from domain.entities.space_event_type import StatusEventType
 
 # Schemas relacionados
 from .space import SpaceResponse
@@ -11,6 +12,7 @@ class SpaceEventTypeBase(BaseModel):
     event_type_id: int
     tema: str
     descricao: str
+    status: StatusEventType = StatusEventType.CONTRATANDO
     link_divulgacao: Optional[str] = None
     banner: Optional[str] = None  # Path local da imagem do banner
     data: datetime
@@ -46,12 +48,19 @@ class SpaceEventTypeBase(BaseModel):
             raise ValueError("Horário é obrigatório")
         return v.strip()
 
+    @validator('status')
+    def validate_status(cls, v):
+        if not isinstance(v, StatusEventType):
+            raise ValueError("Status deve ser um valor válido")
+        return v
+
 class SpaceEventTypeCreate(SpaceEventTypeBase):
     pass
 
 class SpaceEventTypeUpdate(BaseModel):
     tema: Optional[str] = None
     descricao: Optional[str] = None
+    status: Optional[StatusEventType] = None
     link_divulgacao: Optional[str] = None
     banner: Optional[str] = None  # Path local da imagem do banner
     data: Optional[datetime] = None
@@ -74,6 +83,22 @@ class SpaceEventTypeUpdate(BaseModel):
         if v is not None and (not v or not v.strip()):
             raise ValueError("Horário não pode estar vazio")
         return v.strip() if v else v
+
+    @validator('status')
+    def validate_status(cls, v):
+        if v is not None and not isinstance(v, StatusEventType):
+            raise ValueError("Status deve ser um valor válido")
+        return v
+
+class SpaceEventTypeStatusUpdate(BaseModel):
+    """Schema específico para atualização de status"""
+    status: StatusEventType
+
+    @validator('status')
+    def validate_status(cls, v):
+        if not isinstance(v, StatusEventType):
+            raise ValueError("Status deve ser um valor válido")
+        return v
 
 class SpaceEventTypeResponse(SpaceEventTypeBase):
     id: int

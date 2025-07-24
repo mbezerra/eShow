@@ -3,6 +3,7 @@
 - [Sistema de Agendamentos (Bookings)](#sistema-de-agendamentos-bookings)
 - [Sistema de Avaliações/Reviews](#sistema-de-avaliaçõesreviews)
 - [Sistema de Manifestações de Interesse (Interests)](#sistema-de-manifestações-de-interesse-interests)
+- [Sistema de Space Event Types](#sistema-de-space-event-types)
 - [Sistema Financeiro/Bancário (Financials)](#-financial---dados-financeirosbancários)
 
 ## Endpoints de Autenticação
@@ -1143,6 +1144,178 @@ curl -s -X GET "http://localhost:8000/api/v1/financials/1?include_relations=true
 - **Sem relacionamentos:** `profile: null`
 - **Com relacionamentos:** Objeto profile completo com name, email, address, etc.
 - **Campos extras incluídos:** `profile` (dados completos do profile associado)
+
+---
+
+## Sistema de Space Event Types
+
+### Visão Geral
+O sistema de Space Event Types gerencia relacionamentos N:N entre espaços e tipos de eventos, permitindo que espaços ofereçam diferentes tipos de eventos com informações detalhadas como tema, descrição, data, horário e status.
+
+**🆕 Novo:** Campo `status` com valores: CONTRATANDO, FECHADO, SUSPENSO, CANCELADO
+
+### Estrutura do Space Event Type
+```json
+{
+  "id": 1,
+  "space_id": 1,
+  "event_type_id": 1,
+  "tema": "Noite de Jazz Clássico",
+  "descricao": "Uma noite especial dedicada aos grandes clássicos do jazz",
+  "status": "CONTRATANDO",
+  "link_divulgacao": "https://example.com/jazz-classico",
+  "banner": "/static/banners/jazz-night.jpg",
+  "data": "2025-05-15T20:00:00",
+  "horario": "20:00",
+  "created_at": "2025-07-23T14:16:15"
+}
+```
+
+### Valores de Status Disponíveis
+- **CONTRATANDO** - Evento em processo de contratação
+- **FECHADO** - Evento confirmado e fechado
+- **SUSPENSO** - Evento temporariamente suspenso
+- **CANCELADO** - Evento cancelado
+
+### Endpoints Disponíveis
+
+#### CRUD Básico
+```bash
+# Listar todos os space event types
+GET /api/v1/space-event-types/
+
+# Obter space event type por ID
+GET /api/v1/space-event-types/{id}
+
+# Criar novo space event type
+POST /api/v1/space-event-types/
+
+# Atualizar space event type
+PUT /api/v1/space-event-types/{id}
+
+# Deletar space event type
+DELETE /api/v1/space-event-types/{id}
+```
+
+#### Endpoints Específicos
+```bash
+# Atualizar apenas o status de um space event type
+PATCH /api/v1/space-event-types/{id}/status
+
+# Listar eventos de um espaço específico
+GET /api/v1/space-event-types/space/{space_id}
+
+# Listar espaços de um tipo de evento específico
+GET /api/v1/space-event-types/event-type/{event_type_id}
+
+# Listar relacionamentos específicos entre espaço e tipo de evento
+GET /api/v1/space-event-types/space/{space_id}/event-type/{event_type_id}
+
+# Deletar todos os relacionamentos de um espaço
+DELETE /api/v1/space-event-types/space/{space_id}
+
+# Deletar todos os relacionamentos de um tipo de evento
+DELETE /api/v1/space-event-types/event-type/{event_type_id}
+```
+
+### Exemplos de Uso
+
+#### 1. Criar Space Event Type
+```bash
+curl -X POST "http://localhost:8000/api/v1/space-event-types/" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "space_id": 1,
+    "event_type_id": 1,
+    "tema": "Noite de Jazz Clássico",
+    "descricao": "Uma noite especial dedicada aos grandes clássicos do jazz",
+    "status": "CONTRATANDO",
+    "link_divulgacao": "https://example.com/jazz-classico",
+    "banner": "/static/banners/jazz-night.jpg",
+    "data": "2025-05-15T20:00:00",
+    "horario": "20:00"
+  }'
+```
+
+#### 2. Atualizar Status
+```bash
+curl -X PATCH "http://localhost:8000/api/v1/space-event-types/1/status" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "status": "FECHADO"
+  }'
+```
+
+#### 3. Listar Eventos de um Espaço
+```bash
+curl -X GET "http://localhost:8000/api/v1/space-event-types/space/1" \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+#### 4. Atualizar Space Event Type
+```bash
+curl -X PUT "http://localhost:8000/api/v1/space-event-types/1" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "tema": "Noite de Jazz Clássico - Atualizado",
+    "descricao": "Descrição atualizada do evento",
+    "status": "FECHADO",
+    "link_divulgacao": "https://example.com/jazz-atualizado",
+    "data": "2025-05-20T20:00:00",
+    "horario": "20:30"
+  }'
+```
+
+### Regras de Negócio
+
+- **Status obrigatório:** Todos os space event types devem ter um status definido
+- **Status padrão:** CONTRATANDO (aplicado automaticamente em novos registros)
+- **Validação de relacionamentos:** Space ID e Event Type ID devem existir
+- **Campos obrigatórios:** tema, descricao, data, horario
+- **Campos opcionais:** link_divulgacao, banner
+- **Autenticação:** Todos os endpoints requerem autenticação
+
+### Exemplo Prático: Gerenciar Eventos de um Espaço
+
+```bash
+# 1. Login
+TOKEN=$(curl -s -X POST "http://localhost:8000/api/v1/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"email": "admin@eshow.com", "password": "admin123"}' | jq -r '.access_token')
+
+# 2. Criar evento
+curl -X POST "http://localhost:8000/api/v1/space-event-types/" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{
+    "space_id": 1,
+    "event_type_id": 1,
+    "tema": "Festival de Música Eletrônica",
+    "descricao": "Festival com os melhores DJs da cidade",
+    "status": "CONTRATANDO",
+    "link_divulgacao": "https://example.com/eletronica-festival",
+    "banner": "/static/banners/electronic-festival.jpg",
+    "data": "2025-06-15T22:00:00",
+    "horario": "22:00"
+  }' | jq
+
+# 3. Listar eventos do espaço
+curl -X GET "http://localhost:8000/api/v1/space-event-types/space/1" \
+  -H "Authorization: Bearer $TOKEN" | jq
+
+# 4. Atualizar status para FECHADO
+curl -X PATCH "http://localhost:8000/api/v1/space-event-types/1/status" \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{"status": "FECHADO"}' | jq
+
+# 5. Verificar evento atualizado
+curl -X GET "http://localhost:8000/api/v1/space-event-types/1" \
+  -H "Authorization: Bearer $TOKEN" | jq
+```
 
 ---
 

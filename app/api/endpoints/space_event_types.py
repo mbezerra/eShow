@@ -3,6 +3,7 @@ from typing import List
 from app.schemas.space_event_type import (
     SpaceEventTypeCreate, 
     SpaceEventTypeUpdate,
+    SpaceEventTypeStatusUpdate,
     SpaceEventTypeResponse, 
     SpaceEventTypeListResponse
 )
@@ -19,6 +20,7 @@ def convert_space_event_type_to_response(space_event_type):
         "event_type_id": space_event_type.event_type_id,
         "tema": space_event_type.tema,
         "descricao": space_event_type.descricao,
+        "status": space_event_type.status,
         "link_divulgacao": space_event_type.link_divulgacao,
         "banner": space_event_type.banner,
         "data": space_event_type.data,
@@ -115,6 +117,28 @@ def update_space_event_type(
     """Atualizar um relacionamento (requer autenticação)"""
     try:
         space_event_type = space_event_type_service.update_space_event_type(space_event_type_id, space_event_type_data)
+        if not space_event_type:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Relacionamento não encontrado"
+            )
+        return convert_space_event_type_to_response(space_event_type)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
+
+@router.patch("/{space_event_type_id}/status", response_model=SpaceEventTypeResponse)
+def update_space_event_type_status(
+    space_event_type_id: int,
+    status_data: SpaceEventTypeStatusUpdate,
+    space_event_type_service: SpaceEventTypeService = Depends(get_space_event_type_service),
+    current_user: UserResponse = Depends(get_current_active_user)
+):
+    """Atualizar apenas o status de um relacionamento (requer autenticação)"""
+    try:
+        space_event_type = space_event_type_service.update_space_event_type_status(space_event_type_id, status_data.status)
         if not space_event_type:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,

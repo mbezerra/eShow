@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
-from domain.entities.space_event_type import SpaceEventType
+from domain.entities.space_event_type import SpaceEventType, StatusEventType
 
 class SpaceEventTypeRepository(ABC):
     """Interface do repositório para o relacionamento N:N entre Spaces e Event Types"""
@@ -33,6 +33,11 @@ class SpaceEventTypeRepository(ABC):
     @abstractmethod
     def update(self, space_event_type_id: int, space_event_type: SpaceEventType) -> Optional[SpaceEventType]:
         """Atualizar um relacionamento"""
+        pass
+    
+    @abstractmethod
+    def update_status(self, space_event_type_id: int, status: StatusEventType) -> Optional[SpaceEventType]:
+        """Atualizar apenas o status de um relacionamento"""
         pass
     
     @abstractmethod

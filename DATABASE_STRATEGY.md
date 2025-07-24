@@ -393,6 +393,96 @@ GROUP BY banco
 ORDER BY total DESC;
 ```
 
+## 📋 Estrutura de Dados - Space Event Types
+
+### **Tabela Space Event Types:**
+```sql
+CREATE TABLE space_event_types (
+    id INTEGER PRIMARY KEY,
+    space_id INTEGER NOT NULL REFERENCES spaces(id),
+    event_type_id INTEGER NOT NULL REFERENCES event_types(id),
+    tema VARCHAR(200) NOT NULL,
+    descricao TEXT NOT NULL,
+    status VARCHAR(11) NOT NULL DEFAULT 'CONTRATANDO' CHECK (status IN ('CONTRATANDO', 'FECHADO', 'SUSPENSO', 'CANCELADO')),
+    link_divulgacao VARCHAR(500),
+    banner VARCHAR(500),
+    data DATETIME NOT NULL,
+    horario VARCHAR(50) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### **Características:**
+- ✅ **Relacionamento N:N**: Espaços ↔ Tipos de Eventos
+- ✅ **Campo status**: 4 estados predefinidos com constraint
+- ✅ **Valor padrão**: CONTRATANDO para novos registros
+- ✅ **Campos obrigatórios**: tema, descricao, data, horario
+- ✅ **Campos opcionais**: link_divulgacao, banner
+- ✅ **Integridade**: Foreign keys para spaces e event_types
+- ✅ **Auditoria**: Campo created_at automático
+
+### **Consultas Úteis:**
+```sql
+-- Distribuição por status
+SELECT status, COUNT(*) as quantidade
+FROM space_event_types 
+GROUP BY status 
+ORDER BY quantidade DESC;
+
+-- Eventos por espaço
+SELECT s.profile_id, COUNT(set.id) as total_eventos
+FROM spaces s
+LEFT JOIN space_event_types set ON s.id = set.space_id
+GROUP BY s.id, s.profile_id
+ORDER BY total_eventos DESC;
+
+-- Eventos por tipo
+SELECT et.type, COUNT(set.id) as total_eventos
+FROM event_types et
+LEFT JOIN space_event_types set ON et.id = set.event_type_id
+GROUP BY et.id, et.type
+ORDER BY total_eventos DESC;
+
+-- Eventos futuros
+SELECT set.tema, set.data, set.horario, set.status
+FROM space_event_types set
+WHERE set.data >= CURRENT_DATE
+ORDER BY set.data, set.horario;
+
+-- Eventos por status e período
+SELECT 
+    set.status,
+    DATE(set.data) as data_evento,
+    COUNT(*) as total
+FROM space_event_types set
+WHERE set.data >= '2025-01-01'
+GROUP BY set.status, DATE(set.data)
+ORDER BY data_evento, set.status;
+
+-- Espaços com mais eventos ativos
+SELECT 
+    s.profile_id,
+    COUNT(CASE WHEN set.status = 'CONTRATANDO' THEN 1 END) as contratando,
+    COUNT(CASE WHEN set.status = 'FECHADO' THEN 1 END) as fechado,
+    COUNT(CASE WHEN set.status = 'SUSPENSO' THEN 1 END) as suspenso,
+    COUNT(CASE WHEN set.status = 'CANCELADO' THEN 1 END) as cancelado
+FROM spaces s
+LEFT JOIN space_event_types set ON s.id = set.space_id
+GROUP BY s.id, s.profile_id
+ORDER BY (contratando + fechado) DESC;
+
+-- Verificar eventos sem banner
+SELECT set.id, set.tema, set.data
+FROM space_event_types set
+WHERE set.banner IS NULL OR set.banner = '';
+
+-- Eventos com links de divulgação
+SELECT set.tema, set.link_divulgacao, set.status
+FROM space_event_types set
+WHERE set.link_divulgacao IS NOT NULL AND set.link_divulgacao != ''
+ORDER BY set.data;
+```
+
 ## 🎯 Próximos Passos
 
 1. **Desenvolvimento**: Continuar com SQLite
@@ -449,4 +539,16 @@ psql -U eshow_user -d eshow -c "\d financials" | grep banco
 # Verificar estrutura da tabela interests
 sqlite3 eshow.db "PRAGMA table_info(interests);"
 psql -U eshow_user -d eshow -c "\d interests"
+
+# Verificar estrutura da tabela space_event_types
+sqlite3 eshow.db "PRAGMA table_info(space_event_types);"
+psql -U eshow_user -d eshow -c "\d space_event_types"
+
+# Verificar campo status em space_event_types
+sqlite3 eshow.db "SELECT status, COUNT(*) FROM space_event_types GROUP BY status;"
+psql -U eshow_user -d eshow -c "SELECT status, COUNT(*) FROM space_event_types GROUP BY status;"
+
+# Verificar eventos por status
+sqlite3 eshow.db "SELECT status, COUNT(*) as total FROM space_event_types GROUP BY status ORDER BY total DESC;"
+psql -U eshow_user -d eshow -c "SELECT status, COUNT(*) as total FROM space_event_types GROUP BY status ORDER BY total DESC;"
 ``` 

@@ -1,6 +1,6 @@
 from typing import List, Optional
 from domain.repositories.space_event_type_repository import SpaceEventTypeRepository
-from domain.entities.space_event_type import SpaceEventType
+from domain.entities.space_event_type import SpaceEventType, StatusEventType
 from app.schemas.space_event_type import SpaceEventTypeCreate, SpaceEventTypeUpdate
 
 class SpaceEventTypeService:
@@ -16,6 +16,7 @@ class SpaceEventTypeService:
             event_type_id=space_event_type_data.event_type_id,
             tema=space_event_type_data.tema,
             descricao=space_event_type_data.descricao,
+            status=space_event_type_data.status,
             link_divulgacao=space_event_type_data.link_divulgacao,
             banner=space_event_type_data.banner,
             data=space_event_type_data.data,
@@ -54,6 +55,7 @@ class SpaceEventTypeService:
             event_type_id=existing.event_type_id,
             tema=space_event_type_data.tema if space_event_type_data.tema is not None else existing.tema,
             descricao=space_event_type_data.descricao if space_event_type_data.descricao is not None else existing.descricao,
+            status=space_event_type_data.status if space_event_type_data.status is not None else existing.status,
             link_divulgacao=space_event_type_data.link_divulgacao if space_event_type_data.link_divulgacao is not None else existing.link_divulgacao,
             banner=space_event_type_data.banner if space_event_type_data.banner is not None else existing.banner,
             data=space_event_type_data.data if space_event_type_data.data is not None else existing.data,
@@ -62,6 +64,10 @@ class SpaceEventTypeService:
         )
         
         return self.space_event_type_repository.update(space_event_type_id, updated_space_event_type)
+    
+    def update_space_event_type_status(self, space_event_type_id: int, status: StatusEventType) -> Optional[SpaceEventType]:
+        """Atualizar apenas o status de um relacionamento"""
+        return self.space_event_type_repository.update_status(space_event_type_id, status)
     
     def delete_space_event_type(self, space_event_type_id: int) -> bool:
         """Deletar um relacionamento específico"""

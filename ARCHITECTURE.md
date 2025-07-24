@@ -212,6 +212,87 @@ GET /api/v1/spaces/1?include_relations=true
 - **Flexibilidade**: Cliente decide quando carregar relacionamentos
 - **Compatibilidade**: Mantém compatibilidade com versões anteriores
 
+## Relacionamentos N:N
+
+### Visão Geral
+
+O sistema implementa relacionamentos N:N entre entidades para permitir associações flexíveis entre espaços e tipos de eventos/festivais.
+
+### Relacionamentos Implementados
+
+#### 1. Space Event Types
+- **Entidade**: `SpaceEventType` - Relacionamento entre espaços e tipos de eventos
+- **Campos**: space_id, event_type_id, tema, descricao, status, link_divulgacao, banner, data, horario
+- **Status**: Campo `status` com valores CONTRATANDO, FECHADO, SUSPENSO, CANCELADO
+- **Endpoint específico**: `PATCH /api/v1/space-event-types/{id}/status` para atualização de status
+
+#### 2. Space Festival Types
+- **Entidade**: `SpaceFestivalType` - Relacionamento entre espaços e tipos de festivais
+- **Campos**: space_id, festival_type_id, tema, descricao, link_divulgacao, banner, data, horario
+
+#### 3. Artist Musical Styles
+- **Entidade**: `ArtistMusicalStyle` - Relacionamento entre artistas e estilos musicais
+- **Campos**: artist_id, musical_style_id
+
+### Arquitetura dos Relacionamentos
+
+#### Entidades de Domínio
+```python
+# domain/entities/space_event_type.py
+class SpaceEventType:
+    def __init__(self, 
+                 space_id: int,
+                 event_type_id: int,
+                 tema: str,
+                 descricao: str,
+                 status: StatusEventType = StatusEventType.CONTRATANDO,
+                 link_divulgacao: Optional[str] = None,
+                 banner: Optional[str] = None,
+                 data: datetime,
+                 horario: str,
+                 id: Optional[int] = None):
+```
+
+#### Repositórios
+```python
+# domain/repositories/space_event_type_repository.py
+class SpaceEventTypeRepository(ABC):
+    @abstractmethod
+    def update_status(self, space_event_type_id: int, status: StatusEventType) -> Optional[SpaceEventType]:
+        """Atualizar apenas o status de um relacionamento"""
+        pass
+```
+
+#### Serviços
+```python
+# app/application/services/space_event_type_service.py
+class SpaceEventTypeService:
+    def update_space_event_type_status(self, space_event_type_id: int, status: StatusEventType) -> Optional[SpaceEventType]:
+        """Atualizar apenas o status de um relacionamento"""
+        return self.space_event_type_repository.update_status(space_event_type_id, status)
+```
+
+#### Endpoints
+```python
+# app/api/endpoints/space_event_types.py
+@router.patch("/{space_event_type_id}/status", response_model=SpaceEventTypeResponse)
+def update_space_event_type_status(
+    space_event_type_id: int,
+    status_data: SpaceEventTypeStatusUpdate,
+    space_event_type_service: SpaceEventTypeService = Depends(get_space_event_type_service),
+    current_user: UserResponse = Depends(get_current_active_user)
+):
+    """Atualizar apenas o status de um relacionamento (requer autenticação)"""
+```
+
+### Benefícios da Arquitetura
+
+- **Flexibilidade**: Espaços podem oferecer múltiplos tipos de eventos
+- **Status Management**: Controle granular do estado dos eventos
+- **Extensibilidade**: Fácil adição de novos relacionamentos
+- **Consistência**: Validações e regras de negócio centralizadas
+- **Performance**: Consultas otimizadas com índices apropriados
+
 ## Sistema de Controle de Acesso por Roles
 
 ### Implementação

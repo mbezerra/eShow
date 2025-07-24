@@ -1,6 +1,14 @@
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
+from enum import Enum
+
+class StatusEventType(Enum):
+    """Enum para os status possíveis de um evento"""
+    CONTRATANDO = "CONTRATANDO"
+    FECHADO = "FECHADO"
+    SUSPENSO = "SUSPENSO"
+    CANCELADO = "CANCELADO"
 
 @dataclass
 class SpaceEventType:
@@ -11,6 +19,7 @@ class SpaceEventType:
     descricao: str
     data: datetime
     horario: str
+    status: StatusEventType = StatusEventType.CONTRATANDO
     link_divulgacao: Optional[str] = None
     banner: Optional[str] = None  # Path local da imagem do banner
     id: Optional[int] = None
@@ -26,4 +35,6 @@ class SpaceEventType:
         if not self.descricao or not self.descricao.strip():
             raise ValueError("Descrição é obrigatória")
         if not self.horario or not self.horario.strip():
-            raise ValueError("Horário é obrigatório") 
+            raise ValueError("Horário é obrigatório")
+        if not isinstance(self.status, StatusEventType):
+            raise ValueError("Status deve ser um valor válido do enum StatusEventType") 

@@ -2,6 +2,24 @@
 
 ## 🚀 Versão Atual: 0.13.6+
 
+### ✨ Funcionalidades Implementadas na v0.13.7+
+
+#### **Campo Status em Space Event Types:**
+
+- **StatusEventType**: Enum com 4 valores: CONTRATANDO, FECHADO, SUSPENSO, CANCELADO
+  - Campo `status` adicionado à entidade SpaceEventType com valor padrão CONTRATANDO
+  - Validação para garantir que o status seja um valor válido do enum
+  - Coluna `status` no modelo de banco com tipo SQLAlchemyEnum e valor padrão
+  - Schemas Pydantic atualizados para incluir o campo status
+  - Schema específico `SpaceEventTypeStatusUpdate` para atualização de status
+  - Método `update_status()` no repositório para atualização específica
+  - Serviço `update_space_event_type_status()` para atualização de status
+  - Novo endpoint `PATCH /{id}/status` para atualização específica de status
+  - Migração do Alembic aplicada com sucesso
+  - Script de inicialização atualizado com diferentes status
+  - **Consistência total** em todos os endpoints relacionados (reviews, interests, bookings)
+  - **Documentação completa** atualizada (API_USAGE.md, README.md, IMPLEMENTATION_SUMMARY.md)
+
 ### ✨ Funcionalidades Implementadas na v0.12.0
 
 #### **Sistema de Manifestações de Interesse (Interests) Completo:**

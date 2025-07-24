@@ -26,6 +26,7 @@ from infrastructure.database.database import get_database_session
 from infrastructure.database.models.space_event_type_model import SpaceEventTypeModel
 from infrastructure.database.models.space_model import SpaceModel
 from infrastructure.database.models.event_type_model import EventTypeModel
+from domain.entities.space_event_type import StatusEventType
 
 def init_space_event_types():
     """Inicializar dados iniciais de Space Event Types"""
@@ -60,6 +61,7 @@ def init_space_event_types():
                 "event_type_id": event_types[0].id,
                 "tema": "Noite de Jazz Clássico",
                 "descricao": "Uma noite especial dedicada aos grandes clássicos do jazz, com apresentações de artistas locais e internacionais.",
+                "status": StatusEventType.CONTRATANDO,
                 "link_divulgacao": "https://example.com/jazz-classico",
                 "banner": "/static/banners/jazz-night.jpg",
                 "data": base_date + timedelta(days=7),
@@ -70,6 +72,7 @@ def init_space_event_types():
                 "event_type_id": event_types[1].id if len(event_types) > 1 else event_types[0].id,
                 "tema": "Festival de Música Eletrônica",
                 "descricao": "Festival com os melhores DJs da cidade apresentando diferentes estilos de música eletrônica.",
+                "status": StatusEventType.FECHADO,
                 "link_divulgacao": "https://example.com/eletronica-festival",
                 "banner": "/static/banners/electronic-festival.jpg",
                 "data": base_date + timedelta(days=14),
@@ -80,6 +83,7 @@ def init_space_event_types():
                 "event_type_id": event_types[0].id,
                 "tema": "Sarau Cultural",
                 "descricao": "Evento cultural com apresentações de música, poesia e teatro, promovendo artistas locais.",
+                "status": StatusEventType.CONTRATANDO,
                 "link_divulgacao": None,
                 "banner": None,
                 "data": base_date + timedelta(days=21),
@@ -90,6 +94,7 @@ def init_space_event_types():
                 "event_type_id": event_types[2].id if len(event_types) > 2 else event_types[0].id,
                 "tema": "Show Acústico Intimista",
                 "descricao": "Apresentação acústica em ambiente intimista, proporcionando uma experiência musical única.",
+                "status": StatusEventType.SUSPENSO,
                 "link_divulgacao": "https://example.com/acustico",
                 "banner": "/static/banners/acoustic-show.jpg",
                 "data": base_date + timedelta(days=28),
@@ -100,6 +105,7 @@ def init_space_event_types():
                 "event_type_id": event_types[0].id,
                 "tema": "Festa Junina Musical",
                 "descricao": "Celebração junina com música típica, quadrilha e apresentações folclóricas.",
+                "status": StatusEventType.CANCELADO,
                 "link_divulgacao": "https://example.com/festa-junina",
                 "banner": "/static/banners/festa-junina.jpg",
                 "data": base_date + timedelta(days=35),
@@ -123,7 +129,7 @@ def init_space_event_types():
         for rel in space_event_types:
             space = db.query(SpaceModel).filter(SpaceModel.id == rel.space_id).first()
             event_type = db.query(EventTypeModel).filter(EventTypeModel.id == rel.event_type_id).first()
-            print(f"  • {rel.tema} - Espaço: {space.profile_id if space else 'N/A'} | Tipo: {event_type.type if event_type else 'N/A'} | Data: {rel.data.strftime('%d/%m/%Y')} às {rel.horario}")
+            print(f"  • {rel.tema} - Espaço: {space.profile_id if space else 'N/A'} | Tipo: {event_type.type if event_type else 'N/A'} | Status: {rel.status.value} | Data: {rel.data.strftime('%d/%m/%Y')} às {rel.horario}")
             
     except Exception as e:
         db.rollback()

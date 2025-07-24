@@ -26,6 +26,19 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Cobertura de Testes:** Em desenvolvimento
 - **Versão Atual:** v0.13.6
 
+## 🆕 **Funcionalidades Recentes**
+
+### Campo Status em Space Event Types
+- **Novo campo `status`** com valores: CONTRATANDO, FECHADO, SUSPENSO, CANCELADO
+- **Endpoint específico** para atualização de status: `PATCH /api/v1/space-event-types/{id}/status`
+- **Valor padrão:** CONTRATANDO para novos registros
+- **Consistência total** em todos os endpoints relacionados
+
+### Documentação Atualizada
+- **API_USAGE.md** - Nova seção completa sobre Space Event Types
+- **STATUS_IMPLEMENTATION.md** - Detalhes da implementação
+- **STATUS_CONSISTENCY_CHECK.md** - Verificação de consistência
+
 ## 📁 **Estrutura do Projeto**
 
 ```
