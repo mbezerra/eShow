@@ -1,4 +1,4 @@
-# Resumo das Atualizações de Documentação - Campo Status em Space Festival Types
+# Resumo das Atualizações de Documentação - Campo Status em Space Festival Types (v0.15.0)
 
 ## 📋 Visão Geral
 
@@ -126,7 +126,7 @@ Atualização completa de todas as documentações relacionadas para incluir as 
 
 ## ✅ Status Final
 
-**TODAS AS DOCUMENTAÇÕES ATUALIZADAS COM SUCESSO**
+**TODAS AS DOCUMENTAÇÕES ATUALIZADAS COM SUCESSO - v0.15.0**
 
 A implementação do campo `status` em `SpaceFestivalType` está **100% documentada** em todas as documentações relevantes, mantendo:
 
@@ -135,5 +135,6 @@ A implementação do campo `status` em `SpaceFestivalType` está **100% document
 - ✅ **Exemplos práticos** incluídos
 - ✅ **Arquitetura hexagonal** respeitada
 - ✅ **Documentação específica** criada
+- ✅ **Versão v0.15.0** atualizada em todas as documentações
 
 O sistema está **completamente documentado** e pronto para uso em produção! 🚀 

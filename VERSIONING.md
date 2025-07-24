@@ -1,9 +1,9 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.14.0** (2025-01-24) - Campo Status em Space Event Types
+**v0.15.0** (2025-01-24) - Campo Status em Space Festival Types
 
-> **Atualização Recente:** Versão minor incrementada para v0.14.0 com implementação do campo status em Space Event Types e documentação completa.
+> **Atualização Recente:** Versão minor incrementada para v0.15.0 com implementação do campo status em Space Festival Types e documentação completa.
 
 - **SISTEMA DE INTERESTS COMPLETO**: Sistema de manifestações de interesse implementado
   - ✅ 15 endpoints REST funcionais com autenticação JWT
@@ -77,6 +77,53 @@
   - ✅ Endpoint RESTful seguindo convenções estabelecidas
 
 > **Marco de Funcionalidade:** A v0.14.0 implementa o campo status em Space Event Types com controle granular do estado dos eventos. O sistema agora permite gerenciar eventos com 4 estados diferentes, mantendo consistência total em todos os endpoints relacionados e documentação completa atualizada.
+
+### v0.15.0 (2025-01-24) - Campo Status em Space Festival Types
+
+- **NOVO CAMPO STATUS**: Implementação completa do campo status em Space Festival Types
+  - ✅ Enum StatusFestivalType com 4 valores: CONTRATANDO, FECHADO, SUSPENSO, CANCELADO
+  - ✅ Campo status adicionado à entidade SpaceFestivalType com valor padrão CONTRATANDO
+  - ✅ Validação para garantir que o status seja um valor válido do enum
+  - ✅ Coluna status no modelo de banco com tipo SQLAlchemyEnum e valor padrão
+  - ✅ Schemas Pydantic atualizados para incluir o campo status
+  - ✅ Schema específico SpaceFestivalTypeStatusUpdate para atualização de status
+  - ✅ Método update_status() no repositório para atualização específica
+  - ✅ Serviço update_space_festival_type_status() para atualização de status
+  - ✅ Novo endpoint PATCH /{id}/status para atualização específica de status
+  - ✅ Migração do Alembic aplicada com sucesso
+  - ✅ Script de inicialização atualizado com diferentes status
+- **CONSISTÊNCIA TOTAL**: Verificação completa em todos os endpoints relacionados
+  - ✅ Endpoints diretos de Space Festival Types atualizados
+  - ✅ Endpoints de Reviews com relacionamentos verificados
+  - ✅ Endpoints de Interests com relacionamentos verificados
+  - ✅ Endpoints de Bookings com relacionamentos verificados
+  - ✅ Schemas, serviços e repositórios consistentes
+  - ✅ 100% de compatibilidade mantida
+- **PADRÃO IDÊNTICO**: Mantida consistência total com Space Event Types
+  - ✅ Mesmo enum com mesmos valores (CONTRATANDO, FECHADO, SUSPENSO, CANCELADO)
+  - ✅ Mesma estrutura em todas as camadas (Domain, Application, Infrastructure)
+  - ✅ Mesmo endpoint PATCH /{id}/status para atualização de status
+  - ✅ Mesmas validações e regras de negócio
+  - ✅ Mesma migração Alembic com server_default
+  - ✅ Arquitetura hexagonal respeitada
+- **DOCUMENTAÇÃO COMPLETA**: Todas as documentações atualizadas
+  - ✅ API_USAGE.md: Nova seção completa sobre Space Festival Types
+  - ✅ README.md: Seção "Funcionalidades Recentes" atualizada
+  - ✅ IMPLEMENTATION_SUMMARY.md: Seção v0.15.0 detalhada
+  - ✅ DATABASE_STRATEGY.md: Estrutura de dados e consultas SQL
+  - ✅ ARCHITECTURE.md: Seção "Relacionamentos N:N" atualizada
+  - ✅ SPACE_FESTIVAL_STATUS_IMPLEMENTATION.md: Documentação específica da implementação
+  - ✅ SPACE_FESTIVAL_STATUS_CONSISTENCY_CHECK.md: Verificação de consistência
+  - ✅ DOCUMENTATION_UPDATE_SUMMARY_SPACE_FESTIVAL.md: Resumo das atualizações
+- **ARQUITETURA ROBUSTA**: Implementação seguindo padrões estabelecidos
+  - ✅ Separação clara de responsabilidades (Domain, Application, Infrastructure)
+  - ✅ Validações de negócio na camada de domínio
+  - ✅ Repository Pattern com método específico para status
+  - ✅ Service Layer com lógica de aplicação bem estruturada
+  - ✅ Schemas Pydantic com validações específicas
+  - ✅ Endpoint RESTful seguindo convenções estabelecidas
+
+> **Marco de Funcionalidade:** A v0.15.0 implementa o campo status em Space Festival Types com controle granular do estado dos festivais. O sistema agora permite gerenciar festivais com 4 estados diferentes, mantendo consistência total com Space Event Types e documentação completa atualizada.
 
 ### v0.13.4 (2025-01-23) - Correção do Enum StatusInterest
 

@@ -1,6 +1,6 @@
 # Resumo da Implementação - eShow API
 
-## 🚀 Versão Atual: 0.14.0+
+## 🚀 Versão Atual: 0.15.0+
 
 ### ✨ Funcionalidades Implementadas na v0.14.0
 
@@ -37,6 +37,27 @@
   - **Padrão idêntico** ao Space Event Types para manter uniformidade
   - **Documentação completa** atualizada (API_USAGE.md, README.md, IMPLEMENTATION_SUMMARY.md)
   - **Documentação específica** criada (SPACE_FESTIVAL_STATUS_IMPLEMENTATION.md, SPACE_FESTIVAL_STATUS_CONSISTENCY_CHECK.md)
+
+### ✨ Funcionalidades Implementadas na v0.15.0
+
+#### **Campo Status em Space Festival Types (Completo):**
+
+- **StatusFestivalType**: Enum com 4 valores: CONTRATANDO, FECHADO, SUSPENSO, CANCELADO
+  - Campo `status` adicionado à entidade SpaceFestivalType com valor padrão CONTRATANDO
+  - Validação para garantir que o status seja um valor válido do enum
+  - Coluna `status` no modelo de banco com tipo SQLAlchemyEnum e valor padrão
+  - Schemas Pydantic atualizados para incluir o campo status
+  - Schema específico `SpaceFestivalTypeStatusUpdate` para atualização de status
+  - Método `update_status()` no repositório para atualização específica
+  - Serviço `update_space_festival_type_status()` para atualização de status
+  - Novo endpoint `PATCH /{id}/status` para atualização específica de status
+  - Migração do Alembic aplicada com sucesso
+  - Script de inicialização atualizado com diferentes status
+  - **Consistência total** em todos os endpoints relacionados (reviews, interests, bookings)
+  - **Padrão idêntico** ao Space Event Types para manter uniformidade
+  - **Documentação completa** atualizada (API_USAGE.md, README.md, IMPLEMENTATION_SUMMARY.md)
+  - **Documentação específica** criada (SPACE_FESTIVAL_STATUS_IMPLEMENTATION.md, SPACE_FESTIVAL_STATUS_CONSISTENCY_CHECK.md)
+  - **Versão atualizada** para v0.15.0 com todas as documentações
 
 ### ✨ Funcionalidades Implementadas na v0.12.0
 
