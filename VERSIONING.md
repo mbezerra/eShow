@@ -1,9 +1,9 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.13.5** (2025-01-23) - Correção do ProfileService
+**v0.13.6** (2025-01-23) - Correção do Pool de Conexões
 
-> **Atualização Recente:** Versão patch incrementada para v0.13.5 com correção do método get_profile_by_user_id no ProfileService.
+> **Atualização Recente:** Versão patch incrementada para v0.13.6 com correção do timeout do pool de conexões do banco de dados.
 
 - **SISTEMA DE INTERESTS COMPLETO**: Sistema de manifestações de interesse implementado
   - ✅ 15 endpoints REST funcionais com autenticação JWT
@@ -36,7 +36,7 @@
   - Schemas Pydantic com validações específicas por contexto
   - Tratamento de erros padronizado e informativo
 
-> **Marco de Desenvolvimento:** A v0.13.5 marca a versão patch atualizada com correção do método get_profile_by_user_id no ProfileService. O projeto agora possui 134 endpoints funcionais, 17 entidades de domínio e documentação técnica totalmente sincronizada.
+> **Marco de Desenvolvimento:** A v0.13.6 marca a versão patch atualizada com correção do timeout do pool de conexões do banco de dados. O projeto agora possui 134 endpoints funcionais, 17 entidades de domínio e documentação técnica totalmente sincronizada.
 
 ### v0.13.4 (2025-01-23) - Correção do Enum StatusInterest
 
@@ -75,6 +75,26 @@
   - ✅ Mensagens de erro apropriadas retornadas
 
 > **Correção Técnica:** A v0.13.5 resolve um erro crítico no endpoint DELETE do sistema de interests, adicionando o método get_profile_by_user_id ao ProfileService para permitir que os endpoints obtenham o profile do usuário logado.
+
+### v0.13.6 (2025-01-23) - Correção do Pool de Conexões
+
+- **CORREÇÃO CRÍTICA**: Resolvido timeout do pool de conexões do banco de dados
+  - ✅ Aumentado pool_size de 5 para 20 conexões
+  - ✅ Aumentado max_overflow de 10 para 30 conexões
+  - ✅ Aumentado pool_timeout de 30 para 60 segundos
+  - ✅ Adicionado pool_recycle de 3600 segundos
+  - ✅ Corrigido gerenciamento de dependências para usar Depends consistentemente
+  - ✅ Adicionado rollback em caso de exceção no get_database_session
+  - ✅ Resolvido erro: QueuePool limit of size 5 overflow 10 reached, connection timed out
+  - ✅ Garantido que sessões sejam fechadas corretamente
+- **TESTES REALIZADOS**: Validação completa da correção
+  - ✅ Endpoint PATCH de interests funcionando corretamente
+  - ✅ Validação de autorização (apenas pessoa de interesse pode aceitar/recusar)
+  - ✅ Validação de status (apenas AGUARDANDO_CONFIRMACAO pode ser alterado)
+  - ✅ Mensagens de erro apropriadas retornadas
+  - ✅ Pool de conexões funcionando sem timeout
+
+> **Correção Técnica:** A v0.13.6 resolve um problema crítico de timeout no pool de conexões do SQLAlchemy, aumentando os limites de conexões e corrigindo o gerenciamento de dependências para garantir que as sessões sejam fechadas corretamente.
 
 ### v0.11.1 (2025-01-23) - Refinamentos no Sistema de Bookings e Documentação Atualizada
 

@@ -1,6 +1,6 @@
 # Resumo da Implementação - eShow API
 
-## 🚀 Versão Atual: 0.13.5+
+## 🚀 Versão Atual: 0.13.6+
 
 ### ✨ Funcionalidades Implementadas na v0.12.0
 
@@ -23,6 +23,7 @@
   - Dados de exemplo populados (17 manifestações com diferentes status)
   - **v0.13.4**: Correção do enum StatusInterest para compatibilidade com banco de dados
   - **v0.13.5**: Correção do método get_profile_by_user_id no ProfileService
+  - **v0.13.6**: Correção do timeout do pool de conexões do banco de dados
 
 ### ✨ Funcionalidades Implementadas na v0.11.1
 
@@ -63,6 +64,7 @@
 - **Versão 0.13.3**: Padronização dos endpoints DELETE para retornar mensagens de sucesso
 - **Versão 0.13.4**: Correção do enum StatusInterest para compatibilidade com banco de dados
 - **Versão 0.13.5**: Correção do método get_profile_by_user_id no ProfileService
+- **Versão 0.13.6**: Correção do timeout do pool de conexões do banco de dados
 
 ### ✨ Funcionalidades Implementadas na v0.10.0-0.10.2
 

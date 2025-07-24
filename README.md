@@ -24,7 +24,7 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Tabelas no Banco:** 17 (incluindo interests)
 - **Schemas Pydantic:** 75+ (incluindo schemas de Interests)
 - **Cobertura de Testes:** Em desenvolvimento
-- **Versão Atual:** v0.13.5
+- **Versão Atual:** v0.13.6
 
 ## 📁 **Estrutura do Projeto**
 
