@@ -1,9 +1,9 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.13.4** (2025-01-23) - Correção do Enum StatusInterest
+**v0.13.5** (2025-01-23) - Correção do ProfileService
 
-> **Atualização Recente:** Versão patch incrementada para v0.13.4 com correção do enum StatusInterest para compatibilidade com banco de dados.
+> **Atualização Recente:** Versão patch incrementada para v0.13.5 com correção do método get_profile_by_user_id no ProfileService.
 
 - **SISTEMA DE INTERESTS COMPLETO**: Sistema de manifestações de interesse implementado
   - ✅ 15 endpoints REST funcionais com autenticação JWT
@@ -36,7 +36,7 @@
   - Schemas Pydantic com validações específicas por contexto
   - Tratamento de erros padronizado e informativo
 
-> **Marco de Desenvolvimento:** A v0.13.4 marca a versão patch atualizada com correção do enum StatusInterest para compatibilidade com banco de dados. O projeto agora possui 134 endpoints funcionais, 17 entidades de domínio e documentação técnica totalmente sincronizada.
+> **Marco de Desenvolvimento:** A v0.13.5 marca a versão patch atualizada com correção do método get_profile_by_user_id no ProfileService. O projeto agora possui 134 endpoints funcionais, 17 entidades de domínio e documentação técnica totalmente sincronizada.
 
 ### v0.13.4 (2025-01-23) - Correção do Enum StatusInterest
 
@@ -58,6 +58,23 @@
   - ✅ Parâmetro include_relations funcionando corretamente
 
 > **Correção Técnica:** A v0.13.4 resolve um problema crítico de compatibilidade entre o enum StatusInterest e o banco de dados, garantindo que o sistema de interests funcione corretamente com o parâmetro include_relations.
+
+### v0.13.5 (2025-01-23) - Correção do ProfileService
+
+- **CORREÇÃO CRÍTICA**: Resolvido erro AttributeError no endpoint DELETE de interests
+  - ✅ Adicionado método get_by_user_id ao ProfileRepository interface
+  - ✅ Implementado método get_by_user_id no ProfileRepositoryImpl
+  - ✅ Adicionado método get_profile_by_user_id ao ProfileService
+  - ✅ Corrigido erro AttributeError: 'ProfileService' object has no attribute 'get_profile_by_user_id'
+  - ✅ Garantido que endpoints de interests possam obter profile do usuário logado
+  - ✅ Mantida compatibilidade com arquitetura hexagonal existente
+- **TESTES REALIZADOS**: Validação completa da correção
+  - ✅ Endpoint DELETE de interests funcionando corretamente
+  - ✅ Validação de autorização (apenas quem criou pode deletar)
+  - ✅ Validação de status (apenas AGUARDANDO_CONFIRMACAO pode ser deletado)
+  - ✅ Mensagens de erro apropriadas retornadas
+
+> **Correção Técnica:** A v0.13.5 resolve um erro crítico no endpoint DELETE do sistema de interests, adicionando o método get_profile_by_user_id ao ProfileService para permitir que os endpoints obtenham o profile do usuário logado.
 
 ### v0.11.1 (2025-01-23) - Refinamentos no Sistema de Bookings e Documentação Atualizada
 
