@@ -1,4 +1,4 @@
-# Resumo das Atualizações de Documentação - Campo Status
+# Resumo das Atualizações de Documentação - Campo Status (v0.14.0)
 
 ## 📋 Documentações Atualizadas
 
@@ -116,11 +116,12 @@
 
 - [x] API_USAGE.md - Atualizado com seção completa
 - [x] README.md - Atualizado com funcionalidades recentes
-- [x] IMPLEMENTATION_SUMMARY.md - Atualizado com v0.13.7+
+- [x] IMPLEMENTATION_SUMMARY.md - Atualizado com v0.14.0
 - [x] DATABASE_STRATEGY.md - Atualizado com estrutura de dados
 - [x] ARCHITECTURE.md - Atualizado com relacionamentos N:N
+- [x] VERSIONING.md - Atualizado com v0.14.0
 - [x] STATUS_IMPLEMENTATION.md - Criado
 - [x] STATUS_CONSISTENCY_CHECK.md - Criado
 - [x] DOCUMENTATION_UPDATE_SUMMARY.md - Criado
 
-**Todas as documentações foram atualizadas com sucesso!** 🎉 
+**Todas as documentações foram atualizadas com sucesso para a versão v0.14.0!** 🎉 

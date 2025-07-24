@@ -1,8 +1,8 @@
 # Resumo da Implementação - eShow API
 
-## 🚀 Versão Atual: 0.13.6+
+## 🚀 Versão Atual: 0.14.0+
 
-### ✨ Funcionalidades Implementadas na v0.13.7+
+### ✨ Funcionalidades Implementadas na v0.14.0
 
 #### **Campo Status em Space Event Types:**
 

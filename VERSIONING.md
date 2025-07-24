@@ -1,9 +1,9 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.13.6** (2025-01-23) - Correção do Pool de Conexões
+**v0.14.0** (2025-01-24) - Campo Status em Space Event Types
 
-> **Atualização Recente:** Versão patch incrementada para v0.13.6 com correção do timeout do pool de conexões do banco de dados.
+> **Atualização Recente:** Versão minor incrementada para v0.14.0 com implementação do campo status em Space Event Types e documentação completa.
 
 - **SISTEMA DE INTERESTS COMPLETO**: Sistema de manifestações de interesse implementado
   - ✅ 15 endpoints REST funcionais com autenticação JWT
@@ -36,7 +36,47 @@
   - Schemas Pydantic com validações específicas por contexto
   - Tratamento de erros padronizado e informativo
 
-> **Marco de Desenvolvimento:** A v0.13.6 marca a versão patch atualizada com correção do timeout do pool de conexões do banco de dados. O projeto agora possui 134 endpoints funcionais, 17 entidades de domínio e documentação técnica totalmente sincronizada.
+> **Marco de Desenvolvimento:** A v0.14.0 marca a versão minor com implementação do campo status em Space Event Types. O projeto agora possui 134 endpoints funcionais, 17 entidades de domínio e documentação técnica totalmente sincronizada.
+
+### v0.14.0 (2025-01-24) - Campo Status em Space Event Types
+
+- **NOVO CAMPO STATUS**: Implementação completa do campo status em Space Event Types
+  - ✅ Enum StatusEventType com 4 valores: CONTRATANDO, FECHADO, SUSPENSO, CANCELADO
+  - ✅ Campo status adicionado à entidade SpaceEventType com valor padrão CONTRATANDO
+  - ✅ Validação para garantir que o status seja um valor válido do enum
+  - ✅ Coluna status no modelo de banco com tipo SQLAlchemyEnum e valor padrão
+  - ✅ Schemas Pydantic atualizados para incluir o campo status
+  - ✅ Schema específico SpaceEventTypeStatusUpdate para atualização de status
+  - ✅ Método update_status() no repositório para atualização específica
+  - ✅ Serviço update_space_event_type_status() para atualização de status
+  - ✅ Novo endpoint PATCH /{id}/status para atualização específica de status
+  - ✅ Migração do Alembic aplicada com sucesso
+  - ✅ Script de inicialização atualizado com diferentes status
+- **CONSISTÊNCIA TOTAL**: Verificação completa em todos os endpoints relacionados
+  - ✅ Endpoints diretos de Space Event Types atualizados
+  - ✅ Endpoints de Reviews com relacionamentos verificados
+  - ✅ Endpoints de Interests com relacionamentos verificados
+  - ✅ Endpoints de Bookings com relacionamentos verificados
+  - ✅ Schemas, serviços e repositórios consistentes
+  - ✅ 100% de compatibilidade mantida
+- **DOCUMENTAÇÃO COMPLETA**: Todas as documentações atualizadas
+  - ✅ API_USAGE.md: Nova seção completa sobre Space Event Types
+  - ✅ README.md: Seção "Funcionalidades Recentes" adicionada
+  - ✅ IMPLEMENTATION_SUMMARY.md: Seção v0.14.0 detalhada
+  - ✅ DATABASE_STRATEGY.md: Estrutura de dados e consultas SQL
+  - ✅ ARCHITECTURE.md: Seção "Relacionamentos N:N" adicionada
+  - ✅ STATUS_IMPLEMENTATION.md: Documentação específica da implementação
+  - ✅ STATUS_CONSISTENCY_CHECK.md: Verificação de consistência
+  - ✅ DOCUMENTATION_UPDATE_SUMMARY.md: Resumo das atualizações
+- **ARQUITETURA ROBUSTA**: Implementação seguindo padrões estabelecidos
+  - ✅ Separação clara de responsabilidades (Domain, Application, Infrastructure)
+  - ✅ Validações de negócio na camada de domínio
+  - ✅ Repository Pattern com método específico para status
+  - ✅ Service Layer com lógica de aplicação bem estruturada
+  - ✅ Schemas Pydantic com validações específicas
+  - ✅ Endpoint RESTful seguindo convenções estabelecidas
+
+> **Marco de Funcionalidade:** A v0.14.0 implementa o campo status em Space Event Types com controle granular do estado dos eventos. O sistema agora permite gerenciar eventos com 4 estados diferentes, mantendo consistência total em todos os endpoints relacionados e documentação completa atualizada.
 
 ### v0.13.4 (2025-01-23) - Correção do Enum StatusInterest
 
