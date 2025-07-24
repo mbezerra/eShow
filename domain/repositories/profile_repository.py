@@ -19,6 +19,11 @@ class ProfileRepository(ABC):
         pass
     
     @abstractmethod
+    def get_by_user_id(self, user_id: int) -> Optional[Profile]:
+        """Obter profile por user_id"""
+        pass
+    
+    @abstractmethod
     def get_all(self, skip: int = 0, limit: int = 100) -> List[Profile]:
         """Listar todos os profiles com paginação"""
         pass

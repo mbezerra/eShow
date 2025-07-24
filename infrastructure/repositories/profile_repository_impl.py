@@ -98,6 +98,31 @@ class ProfileRepositoryImpl(ProfileRepository):
             for db_profile in db_profiles
         ]
 
+    def get_by_user_id(self, user_id: int) -> Optional[Profile]:
+        """Obter profile por user_id"""
+        db_profile = self.session.query(ProfileModel).filter(ProfileModel.user_id == user_id).first()
+        if not db_profile:
+            return None
+        
+        return Profile(
+            id=db_profile.id,
+            role_id=db_profile.role_id,
+            full_name=db_profile.full_name,
+            artistic_name=db_profile.artistic_name,
+            bio=db_profile.bio,
+            cep=db_profile.cep,
+            logradouro=db_profile.logradouro,
+            numero=db_profile.numero,
+            complemento=db_profile.complemento,
+            cidade=db_profile.cidade,
+            uf=db_profile.uf,
+            telefone_fixo=db_profile.telefone_fixo,
+            telefone_movel=db_profile.telefone_movel,
+            whatsapp=db_profile.whatsapp,
+            created_at=db_profile.created_at,
+            updated_at=db_profile.updated_at
+        )
+
     def get_all(self, skip: int = 0, limit: int = 100) -> List[Profile]:
         """Listar todos os profiles com paginação"""
         db_profiles = self.session.query(ProfileModel).offset(skip).limit(limit).all()

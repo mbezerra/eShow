@@ -106,6 +106,31 @@ class ProfileService:
             updated_at=profile.updated_at
         )
 
+    def get_profile_by_user_id(self, user_id: int) -> Optional[ProfileResponse]:
+        """Obter profile por user_id"""
+        profile = self.profile_repository.get_by_user_id(user_id)
+        if not profile:
+            return None
+        
+        return ProfileResponse(
+            id=profile.id,
+            role_id=profile.role_id,
+            full_name=profile.full_name,
+            artistic_name=profile.artistic_name,
+            bio=profile.bio,
+            cep=profile.cep,
+            logradouro=profile.logradouro,
+            numero=profile.numero,
+            complemento=profile.complemento,
+            cidade=profile.cidade,
+            uf=profile.uf,
+            telefone_fixo=profile.telefone_fixo,
+            telefone_movel=profile.telefone_movel,
+            whatsapp=profile.whatsapp,
+            created_at=profile.created_at,
+            updated_at=profile.updated_at
+        )
+
     def get_profiles_by_role_id(self, role_id: int) -> List[ProfileResponse]:
         """Obter profiles por role_id"""
         profiles = self.profile_repository.get_by_role_id(role_id)
