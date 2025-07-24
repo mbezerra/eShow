@@ -47,7 +47,7 @@ async def create_review(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro interno do servidor: {str(e)}")
 
-@router.get("/{review_id}", response_model=Union[ReviewResponse, ReviewWithRelations])
+@router.get("/{review_id}", response_model=ReviewWithRelations)
 async def get_review(
     review_id: int,
     include_relations: bool = Query(False, description="Incluir dados relacionados"),
@@ -63,7 +63,7 @@ async def get_review(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro interno do servidor: {str(e)}")
 
-@router.get("/", response_model=Union[ReviewListResponse, ReviewListWithRelations])
+@router.get("/", response_model=ReviewListWithRelations)
 async def get_all_reviews(
     include_relations: bool = Query(False, description="Incluir dados relacionados"),
     current_user: UserResponse = Depends(get_current_active_user),
@@ -76,7 +76,7 @@ async def get_all_reviews(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro interno do servidor: {str(e)}")
 
-@router.get("/profile/{profile_id}", response_model=Union[ReviewListResponse, ReviewListWithRelations])
+@router.get("/profile/{profile_id}", response_model=ReviewListWithRelations)
 async def get_reviews_by_profile(
     profile_id: int,
     include_relations: bool = Query(False, description="Incluir dados relacionados"),
@@ -103,7 +103,7 @@ async def get_profile_average_rating(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro interno do servidor: {str(e)}")
 
-@router.get("/space-event-type/{space_event_type_id}", response_model=Union[ReviewListResponse, ReviewListWithRelations])
+@router.get("/space-event-type/{space_event_type_id}", response_model=ReviewListWithRelations)
 async def get_reviews_by_space_event_type(
     space_event_type_id: int,
     include_relations: bool = Query(False, description="Incluir dados relacionados"),
@@ -117,7 +117,7 @@ async def get_reviews_by_space_event_type(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro interno do servidor: {str(e)}")
 
-@router.get("/space-festival-type/{space_festival_type_id}", response_model=Union[ReviewListResponse, ReviewListWithRelations])
+@router.get("/space-festival-type/{space_festival_type_id}", response_model=ReviewListWithRelations)
 async def get_reviews_by_space_festival_type(
     space_festival_type_id: int,
     include_relations: bool = Query(False, description="Incluir dados relacionados"),
@@ -131,7 +131,7 @@ async def get_reviews_by_space_festival_type(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro interno do servidor: {str(e)}")
 
-@router.get("/rating/{nota}", response_model=Union[ReviewListResponse, ReviewListWithRelations])
+@router.get("/rating/{nota}", response_model=ReviewListWithRelations)
 async def get_reviews_by_rating(
     nota: int,
     include_relations: bool = Query(False, description="Incluir dados relacionados"),
@@ -150,7 +150,7 @@ async def get_reviews_by_rating(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro interno do servidor: {str(e)}")
 
-@router.get("/date-range/", response_model=Union[ReviewListResponse, ReviewListWithRelations])
+@router.get("/date-range/", response_model=ReviewListWithRelations)
 async def get_reviews_by_date_range(
     data_inicio: datetime = Query(..., description="Data de início (YYYY-MM-DD HH:MM:SS)"),
     data_fim: datetime = Query(..., description="Data de fim (YYYY-MM-DD HH:MM:SS)"),
