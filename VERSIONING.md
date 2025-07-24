@@ -1,9 +1,9 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.13.2** (2025-01-23) - Correção do Include_Relations nos Reviews
+**v0.13.3** (2025-01-23) - Padronização dos Endpoints DELETE
 
-> **Atualização Recente:** Versão patch incrementada para v0.13.2 com correção do parâmetro include_relations nos endpoints de reviews.
+> **Atualização Recente:** Versão patch incrementada para v0.13.3 com padronização dos endpoints DELETE para retornar mensagens de sucesso.
 
 - **SISTEMA DE INTERESTS COMPLETO**: Sistema de manifestações de interesse implementado
   - ✅ 15 endpoints REST funcionais com autenticação JWT
@@ -36,7 +36,7 @@
   - Schemas Pydantic com validações específicas por contexto
   - Tratamento de erros padronizado e informativo
 
-> **Marco de Desenvolvimento:** A v0.13.2 marca a versão patch atualizada com correção do parâmetro include_relations nos endpoints de reviews. O projeto agora possui 134 endpoints funcionais, 17 entidades de domínio e documentação técnica totalmente sincronizada.
+> **Marco de Desenvolvimento:** A v0.13.3 marca a versão patch atualizada com padronização dos endpoints DELETE para retornar mensagens de sucesso. O projeto agora possui 134 endpoints funcionais, 17 entidades de domínio e documentação técnica totalmente sincronizada.
 
 ### v0.11.1 (2025-01-23) - Refinamentos no Sistema de Bookings e Documentação Atualizada
 
@@ -297,6 +297,13 @@ git checkout v0.1.0
 - Tabela reviews limpa e populada com 12 reviews corretos
 - Documentação atualizada em todos os arquivos .md
 
+### v0.13.3 ✅ **CONCLUÍDA**
+- Padronização dos endpoints DELETE para retornar mensagens de sucesso
+- Correção dos endpoints DELETE de reviews, interests e financials
+- Status code padronizado para 200 OK com mensagem informativa
+- Melhoria na experiência do usuário com feedback claro sobre operações de exclusão
+- Todos os endpoints DELETE agora seguem o mesmo padrão de resposta
+
 ### v0.13.2 ✅ **CONCLUÍDA**
 - Correção do parâmetro include_relations nos endpoints de reviews
 - Remoção de Union de response_model que causava problemas de serialização
@@ -357,12 +364,12 @@ python version.py major
 ```bash
 # Verificar versão atual
 $ python version.py show
-Versão atual: 0.13.2
+Versão atual: 0.13.3
 
 # Criar nova versão patch
 $ python version.py patch
-Versão atual: 0.13.2
-Nova versão: 0.13.3
+Versão atual: 0.13.3
+Nova versão: 0.13.4
 Deseja criar a tag e fazer push? (y/N): y
 Tag criada: v0.13.1
 Tag enviada para o repositório remoto: v0.13.1
@@ -399,7 +406,7 @@ Resposta:
     "status": "healthy",
     "architecture": "hexagonal",
     "timestamp": "2025-07-23T13:21:51.256633",
-    "version": "0.13.2",
+    "version": "0.13.3",
     "copyright": "© 2025 eShow. Todos os direitos reservados."
 }
 ```

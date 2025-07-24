@@ -1,6 +1,6 @@
 # Resumo da Implementação - eShow API
 
-## 🚀 Versão Atual: 0.13.2+
+## 🚀 Versão Atual: 0.13.3+
 
 ### ✨ Funcionalidades Implementadas na v0.12.0
 
@@ -58,6 +58,8 @@
   - **Dados de exemplo populados (12 reviews)** seguindo regras de negócio
 - **Versão 0.13.1**: Correções no sistema de reviews implementadas
 - **Versão 0.13.2**: Correção do parâmetro include_relations nos endpoints de reviews
+- **Versão 0.13.3**: Padronização dos endpoints DELETE para retornar mensagens de sucesso
+- **Versão 0.13.3**: Padronização dos endpoints DELETE para retornar mensagens de sucesso
 
 ### ✨ Funcionalidades Implementadas na v0.10.0-0.10.2
 

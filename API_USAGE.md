@@ -547,6 +547,7 @@ Authorization: Bearer {token}
 - **Profile_id determinado automaticamente** pelo usuário logado (não enviar no request)
 - **Notas**: Apenas valores inteiros de 1 a 5
 - **Depoimento**: Mínimo 10 caracteres, máximo 1000 caracteres
+- **Endpoints DELETE**: Retornam status 200 com mensagem de sucesso
 - **Relacionamento exclusivo**: Cada review deve ter OU `space_event_type_id` OU `space_festival_type_id` (nunca ambos)
 - **Profile imutável**: O `profile_id` não pode ser alterado após a criação
 - **Autenticação obrigatória**: Todos os endpoints requerem token JWT válido
