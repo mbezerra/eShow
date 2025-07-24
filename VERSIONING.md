@@ -1,14 +1,14 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.13.3** (2025-01-23) - Padronização dos Endpoints DELETE
+**v0.13.4** (2025-01-23) - Correção do Enum StatusInterest
 
-> **Atualização Recente:** Versão patch incrementada para v0.13.3 com padronização dos endpoints DELETE para retornar mensagens de sucesso.
+> **Atualização Recente:** Versão patch incrementada para v0.13.4 com correção do enum StatusInterest para compatibilidade com banco de dados.
 
 - **SISTEMA DE INTERESTS COMPLETO**: Sistema de manifestações de interesse implementado
   - ✅ 15 endpoints REST funcionais com autenticação JWT
   - ✅ Gestão de manifestações bidirecionais (artista→espaço, espaço→artista)
-  - ✅ Sistema de status com 3 estados: "Aguardando Confirmação", "Aceito", "Recusado"
+  - ✅ Sistema de status com 3 estados: "AGUARDANDO_CONFIRMACAO", "ACEITO", "RECUSADO"
   - ✅ Validação de roles: apenas artistas podem manifestar interesse em espaços e vice-versa
   - ✅ Prevenção de duplicatas: constraint UNIQUE para evitar manifestações duplicadas
   - ✅ Validações robustas: data futura, duração 0.5-8h, valores positivos, mensagem obrigatória
@@ -36,7 +36,28 @@
   - Schemas Pydantic com validações específicas por contexto
   - Tratamento de erros padronizado e informativo
 
-> **Marco de Desenvolvimento:** A v0.13.3 marca a versão patch atualizada com padronização dos endpoints DELETE para retornar mensagens de sucesso. O projeto agora possui 134 endpoints funcionais, 17 entidades de domínio e documentação técnica totalmente sincronizada.
+> **Marco de Desenvolvimento:** A v0.13.4 marca a versão patch atualizada com correção do enum StatusInterest para compatibilidade com banco de dados. O projeto agora possui 134 endpoints funcionais, 17 entidades de domínio e documentação técnica totalmente sincronizada.
+
+### v0.13.4 (2025-01-23) - Correção do Enum StatusInterest
+
+- **CORREÇÃO CRÍTICA**: Resolvido problema de incompatibilidade entre enum e banco de dados
+  - ✅ Corrigido enum StatusInterest para usar valores sem acentos
+  - ✅ Atualizado valores de "Aguardando Confirmação" para "AGUARDANDO_CONFIRMACAO"
+  - ✅ Atualizado valores de "Aceito" para "ACEITO" e "Recusado" para "RECUSADO"
+  - ✅ Corrigidas mensagens de erro para usar os novos valores
+  - ✅ Atualizada documentação da API com os valores corretos
+  - ✅ Resolvido erro LookupError no sistema de interests
+  - ✅ Garantida compatibilidade entre código e banco de dados
+- **DADOS RECRIADOS**: Limpeza e recriação dos dados de exemplo
+  - ✅ Removidos dados antigos com valores incorretos
+  - ✅ Recriados 17 registros de exemplo com os novos valores
+  - ✅ Sistema de interests 100% funcional
+- **TESTES REALIZADOS**: Validação completa da correção
+  - ✅ Consulta direta ao banco funcionando
+  - ✅ API endpoints operacionais
+  - ✅ Parâmetro include_relations funcionando corretamente
+
+> **Correção Técnica:** A v0.13.4 resolve um problema crítico de compatibilidade entre o enum StatusInterest e o banco de dados, garantindo que o sistema de interests funcione corretamente com o parâmetro include_relations.
 
 ### v0.11.1 (2025-01-23) - Refinamentos no Sistema de Bookings e Documentação Atualizada
 

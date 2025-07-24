@@ -272,7 +272,7 @@ class Interest:
                  valor_hora_ofertado: float,
                  valor_couvert_ofertado: float,
                  mensagem: str,
-                 status: str = "Aguardando Confirmação",
+                 status: str = "AGUARDANDO_CONFIRMACAO",
                  resposta: str = None,
                  id: int = None):
 ```
@@ -288,9 +288,9 @@ class Interest:
    - Validação automática no serviço
 
 3. **Estados de Status**:
-   - "Aguardando Confirmação" (padrão)
-   - "Aceito" (com resposta opcional)
-   - "Recusado" (com resposta opcional)
+   - "AGUARDANDO_CONFIRMACAO" (padrão)
+   - "ACEITO" (com resposta opcional)
+- "RECUSADO" (com resposta opcional)
 
 4. **Validações de Dados**:
    - Data inicial deve ser futura

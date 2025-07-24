@@ -24,7 +24,7 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Tabelas no Banco:** 17 (incluindo interests)
 - **Schemas Pydantic:** 75+ (incluindo schemas de Interests)
 - **Cobertura de Testes:** Em desenvolvimento
-- **Versão Atual:** v0.13.3
+- **Versão Atual:** v0.13.4
 
 ## 📁 **Estrutura do Projeto**
 
@@ -291,7 +291,7 @@ O sistema implementa controle de acesso baseado em roles para garantir que apena
 - Apenas **artistas** podem manifestar interesse em **espaços**
 - Apenas **espaços** podem manifestar interesse em **artistas**
 - **Prevenção de duplicatas**: Não é possível manifestar interesse duplicado
-- **Estados de status**: "Aguardando Confirmação", "Aceito", "Recusado"
+- **Estados de status**: "AGUARDANDO_CONFIRMACAO", "ACEITO", "RECUSADO"
 - **Validação de data**: Data inicial deve ser futura
 - **Validação de duração**: Entre 0.5 e 8 horas
 - **Validação de valores**: Valores devem ser positivos

@@ -165,7 +165,7 @@ CREATE TABLE interests (
     valor_hora_ofertado DECIMAL(10,2) NOT NULL CHECK (valor_hora_ofertado > 0),
     valor_couvert_ofertado DECIMAL(10,2) NOT NULL CHECK (valor_couvert_ofertado > 0),
     mensagem TEXT NOT NULL CHECK (LENGTH(mensagem) >= 10 AND LENGTH(mensagem) <= 1000),
-    status VARCHAR(50) NOT NULL DEFAULT 'Aguardando Confirmação' CHECK (status IN ('Aguardando Confirmação', 'Aceito', 'Recusado')),
+    status VARCHAR(50) NOT NULL DEFAULT 'AGUARDANDO_CONFIRMACAO' CHECK (status IN ('AGUARDANDO_CONFIRMACAO', 'ACEITO', 'RECUSADO')),
     resposta TEXT,
     space_event_type_id INTEGER REFERENCES space_event_types(id),
     space_festival_type_id INTEGER REFERENCES space_festival_types(id),
@@ -218,8 +218,8 @@ SELECT
     p.name,
     COUNT(CASE WHEN i.profile_id_interessado = p.id THEN 1 END) as enviadas,
     COUNT(CASE WHEN i.profile_id_interesse = p.id THEN 1 END) as recebidas,
-    COUNT(CASE WHEN i.profile_id_interessado = p.id AND i.status = 'Aguardando Confirmação' THEN 1 END) as pendentes_enviadas,
-    COUNT(CASE WHEN i.profile_id_interesse = p.id AND i.status = 'Aguardando Confirmação' THEN 1 END) as pendentes_recebidas,
+    COUNT(CASE WHEN i.profile_id_interessado = p.id AND i.status = 'AGUARDANDO_CONFIRMACAO' THEN 1 END) as pendentes_enviadas,
+COUNT(CASE WHEN i.profile_id_interesse = p.id AND i.status = 'AGUARDANDO_CONFIRMACAO' THEN 1 END) as pendentes_recebidas,
     AVG(CASE WHEN i.profile_id_interessado = p.id THEN i.valor_hora_ofertado END) as media_valor_enviado,
     AVG(CASE WHEN i.profile_id_interesse = p.id THEN i.valor_hora_ofertado END) as media_valor_recebido
 FROM profiles p
@@ -438,9 +438,9 @@ psql -U eshow_user -d eshow -c "SELECT banco, COUNT(*) FROM financials GROUP BY 
 
 # Verificar manifestações de interesse
 sqlite3 eshow.db "SELECT status, COUNT(*) FROM interests GROUP BY status;"
-sqlite3 eshow.db "SELECT COUNT(*) FROM interests WHERE status = 'Aguardando Confirmação';"
+sqlite3 eshow.db "SELECT COUNT(*) FROM interests WHERE status = 'AGUARDANDO_CONFIRMACAO';"
 psql -U eshow_user -d eshow -c "SELECT status, COUNT(*) FROM interests GROUP BY status;"
-psql -U eshow_user -d eshow -c "SELECT COUNT(*) FROM interests WHERE status = 'Aguardando Confirmação';"
+psql -U eshow_user -d eshow -c "SELECT COUNT(*) FROM interests WHERE status = 'AGUARDANDO_CONFIRMACAO';"
 
 # Verificar estrutura da coluna banco (deve ser VARCHAR(3))
 sqlite3 eshow.db "PRAGMA table_info(financials);" | grep banco

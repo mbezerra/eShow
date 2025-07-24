@@ -1,6 +1,6 @@
 # Resumo da Implementação - eShow API
 
-## 🚀 Versão Atual: 0.13.3+
+## 🚀 Versão Atual: 0.13.4+
 
 ### ✨ Funcionalidades Implementadas na v0.12.0
 
@@ -9,7 +9,7 @@
 - **Interest**: Sistema completo de manifestações de interesse entre artistas e espaços
   - 15 endpoints REST funcionais com autenticação JWT
   - Gestão de manifestações de interesse bidirecionais (artista→espaço, espaço→artista)
-  - Sistema de status com 3 estados: "Aguardando Confirmação", "Aceito", "Recusado"
+  - Sistema de status com 3 estados: "AGUARDANDO_CONFIRMACAO", "ACEITO", "RECUSADO"
   - Validação de roles: apenas artistas podem manifestar interesse em espaços e vice-versa
   - Prevenção de duplicatas: não é possível manifestar interesse duplicado
   - Validações robustas: data futura, duração 0.5-8h, valores positivos, mensagem obrigatória
@@ -21,6 +21,7 @@
   - Parâmetro `include_relations=true` para carregar dados relacionados
   - Migração de banco aplicada (tabela interests)
   - Dados de exemplo populados (17 manifestações com diferentes status)
+  - **v0.13.4**: Correção do enum StatusInterest para compatibilidade com banco de dados
 
 ### ✨ Funcionalidades Implementadas na v0.11.1
 
@@ -59,7 +60,7 @@
 - **Versão 0.13.1**: Correções no sistema de reviews implementadas
 - **Versão 0.13.2**: Correção do parâmetro include_relations nos endpoints de reviews
 - **Versão 0.13.3**: Padronização dos endpoints DELETE para retornar mensagens de sucesso
-- **Versão 0.13.3**: Padronização dos endpoints DELETE para retornar mensagens de sucesso
+- **Versão 0.13.4**: Correção do enum StatusInterest para compatibilidade com banco de dados
 
 ### ✨ Funcionalidades Implementadas na v0.10.0-0.10.2
 
