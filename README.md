@@ -25,7 +25,7 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Tabelas no Banco:** 17 (incluindo interests)
 - **Schemas Pydantic:** 80+ (incluindo schemas de Location Search)
 - **Cobertura de Testes:** Em desenvolvimento
-- **Versão Atual:** v0.16.0
+- **Versão Atual:** v0.17.0
 
 ## 🆕 **Funcionalidades Recentes**
 
@@ -42,7 +42,7 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Consistência total** em todos os endpoints relacionados
 - **Padrão idêntico** ao Space Event Types para manter uniformidade
 
-### Sistema de Busca por Localização
+### Sistema de Busca por Localização ✅ **CONCLUÍDO**
 - **4 novos endpoints** para busca geográfica baseada em raio de atuação
 - **Cálculo de distância** usando fórmula de Haversine
 - **Integração com ViaCEP** para obtenção de coordenadas geográficas
@@ -52,7 +52,7 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 
 ### Documentação Atualizada
 - **API_USAGE.md** - Novas seções completas sobre Location Search, Space Event Types e Space Festival Types
-- **IMPLEMENTATION_SUMMARY.md** - Resumo da implementação atualizado para v0.16.0
+- **IMPLEMENTATION_SUMMARY.md** - Resumo da implementação atualizado para v0.17.0
 - **STATUS_IMPLEMENTATION.md** - Detalhes da implementação
 - **STATUS_CONSISTENCY_CHECK.md** - Verificação de consistência
 - **SPACE_FESTIVAL_STATUS_IMPLEMENTATION.md** - Implementação específica para Space Festival Types

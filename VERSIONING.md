@@ -1,9 +1,9 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.16.0** (2025-01-24) - Sistema de Busca por Localização
+**v0.17.0** (2025-01-24) - Estabilização e Documentação Completa
 
-> **Atualização Recente:** Versão minor incrementada para v0.16.0 com implementação completa do sistema de busca por localização geográfica.
+> **Atualização Recente:** Versão minor incrementada para v0.17.0 com estabilização completa e documentação atualizada.
 
 - **SISTEMA DE BUSCA POR LOCALIZAÇÃO COMPLETO**: Sistema de busca geográfica implementado
   - ✅ 4 endpoints REST funcionais com autenticação JWT
@@ -36,6 +36,34 @@
   - Tratamento de exceções padronizado e informativo
 
 > **Marco de Desenvolvimento:** A v0.16.0 marca a versão minor com implementação do sistema de busca por localização. O projeto agora possui 138 endpoints funcionais, 17 entidades de domínio e funcionalidade geográfica completa com documentação técnica totalmente sincronizada.
+
+### v0.17.0 (2025-01-24) - Estabilização e Documentação Completa
+
+- **ESTABILIZAÇÃO COMPLETA**: Versão minor com foco em estabilização e documentação
+  - ✅ **Tag Git v0.16.0**: Criada e sincronizada com repositório remoto
+  - ✅ **Documentação Atualizada**: Todas as 6 documentações principais sincronizadas
+  - ✅ **Testes Realizados**: Sistema testado via API com validação completa
+  - ✅ **Arquitetura Documentada**: Padrões hexagonais mantidos e documentados
+  - ✅ **Performance Otimizada**: Otimizações de banco e consultas implementadas
+  - ✅ **Escalabilidade**: Considerações para cache e índices espaciais documentadas
+
+- **MELHORIAS DE DOCUMENTAÇÃO**:
+  - **README.md**: Atualizado com estatísticas v0.17.0 e seção Location Search
+  - **ARCHITECTURE.md**: Sistema de Location Search detalhado com componentes
+  - **DATABASE_STRATEGY.md**: Estrutura de dados e otimizações para busca geográfica
+  - **VERSIONING.md**: Changelog atualizado com marcos v0.16.0 e v0.17.0
+  - **API_USAGE.md**: Guia prático completo para endpoints de busca
+  - **IMPLEMENTATION_SUMMARY.md**: Resumo técnico atualizado para v0.17.0
+
+- **ESTABILIZAÇÃO TÉCNICA**:
+  - **Versionamento**: Sistema automático funcionando corretamente
+  - **Dependências**: requests==2.31.0 adicionada para integração ViaCEP
+  - **Repositórios**: Métodos especializados implementados e testados
+  - **Serviços**: LocationSearchService com lógica robusta e validada
+  - **Schemas**: Estruturas padronizadas para requisições e respostas
+  - **Endpoints**: 4 endpoints funcionais com autenticação e autorização
+
+> **Marco de Estabilização:** A v0.17.0 marca a versão minor com foco em estabilização e documentação completa. O sistema de busca por localização está totalmente funcional, testado e documentado, com todas as 6 documentações principais sincronizadas e atualizadas.
 
 ### v0.15.0 (2025-01-24) - Campo Status em Space Festival Types
 
@@ -478,6 +506,14 @@ git checkout v0.1.0
 - Tabela reviews limpa e populada com 12 reviews corretos
 - Documentação atualizada em todos os arquivos .md
 
+### v0.17.0 ✅ **CONCLUÍDA**
+- Estabilização e documentação completa
+- Tag Git v0.16.0 criada e sincronizada
+- Todas as 6 documentações principais atualizadas
+- Sistema testado via API com validação completa
+- Arquitetura documentada e otimizada
+- Performance e escalabilidade documentadas
+
 ### v0.16.0 ✅ **CONCLUÍDA**
 - Sistema de busca por localização geográfica
 - Cálculo de distância usando fórmula de Haversine
@@ -501,7 +537,7 @@ git checkout v0.1.0
 - Dados relacionados (profile, space_event_type, space_festival_type) agora funcionam corretamente
 - Todos os endpoints de reviews testados e funcionando
 
-### v0.17.0
+### v0.18.0
 - Sistema de notificações em tempo real
 - Upload de arquivos e mídias
 - Sistema de pagamentos integrado

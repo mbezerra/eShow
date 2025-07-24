@@ -1,6 +1,6 @@
 # Resumo da Implementação - eShow API
 
-## 🚀 Versão Atual: 0.16.0+
+## 🚀 Versão Atual: 0.17.0+
 
 ### ✨ Funcionalidades Implementadas na v0.14.0
 
@@ -101,12 +101,40 @@
   - **Tratamento de Erros**: Códigos de erro específicos e mensagens claras
   - **Performance**: Limite configurável de resultados e otimizações de consulta
 
-- **Documentação Completa:**
+  - **Documentação Completa:**
   - **API_USAGE.md**: Documentação técnica completa com exemplos práticos
   - **IMPLEMENTATION_SUMMARY.md**: Resumo detalhado da implementação
   - **Exemplos de Uso**: JavaScript, Python e cURL para diferentes cenários
   - **Códigos de Erro**: Tabela completa com descrições específicas
   - **Limitações**: Documentação de limitações e recomendações de melhoria
+
+### ✨ Funcionalidades Implementadas na v0.17.0
+
+#### **Sistema de Busca por Localização (Estabilizado):**
+
+- **Versão Minor**: Atualização para v0.17.0 com estabilização completa
+  - **Tag Git**: v0.16.0 criada e sincronizada com repositório remoto
+  - **Documentação**: Todas as 6 documentações principais atualizadas
+  - **Testes**: Sistema testado via API com validação de funcionalidades
+  - **Arquitetura**: Padrões hexagonais mantidos e documentados
+  - **Performance**: Otimizações de banco e consultas implementadas
+  - **Escalabilidade**: Considerações para cache e índices espaciais documentadas
+
+- **Melhorias de Documentação:**
+  - **README.md**: Atualizado com estatísticas v0.17.0 e seção Location Search
+  - **ARCHITECTURE.md**: Sistema de Location Search detalhado com componentes
+  - **DATABASE_STRATEGY.md**: Estrutura de dados e otimizações para busca geográfica
+  - **VERSIONING.md**: Changelog atualizado com marcos v0.16.0 e v0.17.0
+  - **API_USAGE.md**: Guia prático completo para endpoints de busca
+  - **IMPLEMENTATION_SUMMARY.md**: Resumo técnico atualizado para v0.17.0
+
+- **Estabilização Técnica:**
+  - **Versionamento**: Sistema automático funcionando corretamente
+  - **Dependências**: requests==2.31.0 adicionada para integração ViaCEP
+  - **Repositórios**: Métodos especializados implementados e testados
+  - **Serviços**: LocationSearchService com lógica robusta e validada
+  - **Schemas**: Estruturas padronizadas para requisições e respostas
+  - **Endpoints**: 4 endpoints funcionais com autenticação e autorização
 
 ### ✨ Funcionalidades Implementadas na v0.12.0
 
