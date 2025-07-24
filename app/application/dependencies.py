@@ -43,35 +43,31 @@ from infrastructure.repositories.interest_repository_impl import InterestReposit
 from app.application.services.interest_service import InterestService
 from fastapi import Depends
 
-def get_user_repository():
+def get_user_repository(db=Depends(get_database_session)):
     """Dependency para obter o repositório de usuários"""
-    session = next(get_database_session())
-    return UserRepositoryImpl(session)
+    return UserRepositoryImpl(db)
 
-def get_user_service():
+def get_user_service(user_repository: UserRepositoryImpl = Depends(get_user_repository)):
     """Dependency para obter o serviço de usuários"""
-    user_repository = get_user_repository()
     return UserService(user_repository)
 
-def get_role_repository():
+def get_role_repository(db=Depends(get_database_session)):
     """Dependency para obter o repositório de roles"""
-    session = next(get_database_session())
-    return RoleRepositoryImpl(session)
+    return RoleRepositoryImpl(db)
 
-def get_role_service():
+def get_role_service(role_repository: RoleRepositoryImpl = Depends(get_role_repository)):
     """Dependency para obter o serviço de roles"""
-    role_repository = get_role_repository()
     return RoleService(role_repository)
 
-def get_profile_repository():
+def get_profile_repository(db=Depends(get_database_session)):
     """Dependency para obter o repositório de profiles"""
-    session = next(get_database_session())
-    return ProfileRepositoryImpl(session)
+    return ProfileRepositoryImpl(db)
 
-def get_profile_service():
+def get_profile_service(
+    profile_repository: ProfileRepositoryImpl = Depends(get_profile_repository),
+    role_repository: RoleRepositoryImpl = Depends(get_role_repository)
+):
     """Dependency para obter o serviço de profiles"""
-    profile_repository = get_profile_repository()
-    role_repository = get_role_repository()
     return ProfileService(profile_repository, role_repository)
 
 def get_artist_type_repository(db=Depends(get_database_session)) -> ArtistTypeRepository:

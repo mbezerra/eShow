@@ -14,12 +14,22 @@ DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./eshow.db")
 if DATABASE_URL.startswith("sqlite"):
     engine = create_engine(
         DATABASE_URL,
-        connect_args={"check_same_thread": False}
+        connect_args={"check_same_thread": False},
+        pool_size=20,
+        max_overflow=30,
+        pool_timeout=60,
+        pool_recycle=3600
     )
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 else:
     # Para PostgreSQL (produção)
-    engine = create_engine(DATABASE_URL)
+    engine = create_engine(
+        DATABASE_URL,
+        pool_size=20,
+        max_overflow=30,
+        pool_timeout=60,
+        pool_recycle=3600
+    )
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
@@ -29,5 +39,8 @@ def get_database_session():
     db = SessionLocal()
     try:
         yield db
+    except Exception:
+        db.rollback()
+        raise
     finally:
         db.close() 
