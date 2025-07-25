@@ -1,9 +1,59 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.18.1** (2025-01-25) - Correção do LocationUtils e Refatoração Completa
+**v0.19.0** (2025-01-25) - Coordenadas Geográficas em Perfis
 
-> **Atualização Recente:** Versão patch incrementada para v0.18.1 com correção crítica do LocationUtils e refatoração completa.
+> **Atualização Recente:** Versão minor incrementada para v0.19.0 com implementação de coordenadas geográficas em perfis.
+
+- **COORDENADAS GEOGRÁFICAS EM PERFIS**: Campos latitude e longitude implementados
+  - ✅ **Campos opcionais**: latitude e longitude adicionados à entidade Profile
+  - ✅ **Migração Alembic**: `37212dd22c82_adicionar_colunas_latitude_longitude_em_profiles` aplicada
+  - ✅ **Modelo de banco atualizado**: Colunas como Float e nullable=True
+  - ✅ **Schemas Pydantic atualizados**: ProfileBase, ProfileUpdate e ProfileResponse
+  - ✅ **Repositório atualizado**: Todos os métodos processam os novos campos
+  - ✅ **Serviço de aplicação atualizado**: ProfileService inclui coordenadas
+  - ✅ **Script de inicialização atualizado**: `init_profiles.py` com coordenadas reais
+  - ✅ **Testes atualizados**: `tests/test_profiles.py` verifica funcionalidade
+  - ✅ **Validação de coordenadas**: Latitude -90 a 90, longitude -180 a 180
+  - ✅ **Integração com sistema de busca**: Campos utilizados para cálculos de distância
+  - ✅ **Compatibilidade total**: Perfis existentes funcionam normalmente
+  - ✅ **Documentação atualizada**: API_USAGE.md e README.md com exemplos
+
+> **Marco de Funcionalidade:** A v0.19.0 adiciona suporte completo a coordenadas geográficas em perfis, permitindo cálculos de distância precisos e integração com o sistema de busca por localização.
+
+### v0.19.0 (2025-01-25) - Coordenadas Geográficas em Perfis
+
+- **COORDENADAS GEOGRÁFICAS EM PERFIS**: Campos latitude e longitude implementados
+  - ✅ **Campos opcionais**: latitude e longitude adicionados à entidade Profile
+  - ✅ **Migração Alembic**: `37212dd22c82_adicionar_colunas_latitude_longitude_em_profiles` aplicada
+  - ✅ **Modelo de banco atualizado**: Colunas como Float e nullable=True
+  - ✅ **Schemas Pydantic atualizados**: ProfileBase, ProfileUpdate e ProfileResponse
+  - ✅ **Repositório atualizado**: Todos os métodos processam os novos campos
+  - ✅ **Serviço de aplicação atualizado**: ProfileService inclui coordenadas
+  - ✅ **Script de inicialização atualizado**: `init_profiles.py` com coordenadas reais
+  - ✅ **Testes atualizados**: `tests/test_profiles.py` verifica funcionalidade
+  - ✅ **Validação de coordenadas**: Latitude -90 a 90, longitude -180 a 180
+  - ✅ **Integração com sistema de busca**: Campos utilizados para cálculos de distância
+  - ✅ **Compatibilidade total**: Perfis existentes funcionam normalmente
+  - ✅ **Documentação atualizada**: API_USAGE.md e README.md com exemplos
+
+- **INTEGRAÇÃO COM SISTEMA DE BUSCA**: Coordenadas utilizadas para cálculos de distância
+  - ✅ **Cálculo de distância otimizado**: Fórmula de Haversine com coordenadas precisas
+  - ✅ **Busca por proximidade**: Resultados ordenados por distância geográfica
+  - ✅ **Performance melhorada**: Consultas SQL otimizadas com coordenadas
+  - ✅ **Dados de inicialização**: Perfis com coordenadas reais de cidades brasileiras
+
+- **DOCUMENTAÇÃO COMPLETA**: Todas as documentações atualizadas
+  - ✅ **API_USAGE.md**: Seção completa sobre Sistema de Perfis com coordenadas
+  - ✅ **README.md**: Funcionalidades recentes atualizadas
+  - ✅ **IMPLEMENTATION_SUMMARY.md**: Resumo técnico da implementação
+  - ✅ **ARCHITECTURE.md**: Descrição da entidade Profile atualizada
+  - ✅ **DATABASE_STRATEGY.md**: Consultas SQL atualizadas com coordenadas
+  - ✅ **VERSIONING.md**: Changelog atualizado para v0.19.0
+
+> **Marco de Funcionalidade:** A v0.19.0 adiciona suporte completo a coordenadas geográficas em perfis, permitindo cálculos de distância precisos e integração com o sistema de busca por localização.
+
+### v0.18.1 (2025-01-25) - Correção do LocationUtils e Refatoração Completa
 
 - **REFATORAÇÃO COMPLETA DO LOCATIONUTILS**: Correção crítica e eliminação de hard coded
   - ✅ **Eliminação de hard coded**: Removidos todos os mapeamentos manuais de CEPs

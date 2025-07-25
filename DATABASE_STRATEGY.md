@@ -668,10 +668,10 @@ O sistema de busca por localização utiliza os dados existentes das tabelas `pr
 
 ### **Dados Utilizados:**
 
-#### **Tabela Profiles (CEP e Localização):**
+#### **Tabela Profiles (CEP e Coordenadas Geográficas):**
 ```sql
--- CEPs dos profiles são usados para cálculo de distância
-SELECT id, cep, cidade, uf, role_id 
+-- CEPs e coordenadas dos profiles são usados para cálculo de distância
+SELECT id, cep, cidade, uf, role_id, latitude, longitude 
 FROM profiles 
 WHERE role_id IN (2, 3); -- Artistas e Espaços
 ```
@@ -718,13 +718,13 @@ FROM bookings;
 #### **Busca de Espaços para Artista:**
 ```sql
 -- 1. Obter dados do artista
-SELECT a.id, a.raio_atuacao, p.cep as cep_artista
+SELECT a.id, a.raio_atuacao, p.cep as cep_artista, p.latitude as lat_artista, p.longitude as lng_artista
 FROM artists a
 JOIN profiles p ON a.profile_id = p.id
 WHERE p.id = ?;
 
 -- 2. Buscar espaços com eventos/festivais disponíveis
-SELECT DISTINCT s.id, s.profile_id, sp.cep as cep_espaco
+SELECT DISTINCT s.id, s.profile_id, sp.cep as cep_espaco, sp.latitude as lat_espaco, sp.longitude as lng_espaco
 FROM spaces s
 JOIN profiles sp ON s.profile_id = sp.id
 WHERE sp.role_id = 3
@@ -746,13 +746,13 @@ AND (
 #### **Busca de Artistas para Espaço:**
 ```sql
 -- 1. Obter dados do espaço
-SELECT s.id, sp.cep as cep_espaco
+SELECT s.id, sp.cep as cep_espaco, sp.latitude as lat_espaco, sp.longitude as lng_espaco
 FROM spaces s
 JOIN profiles sp ON s.profile_id = sp.id
 WHERE sp.id = ?;
 
 -- 2. Buscar artistas disponíveis
-SELECT a.id, a.profile_id, a.raio_atuacao, p.cep as cep_artista
+SELECT a.id, a.profile_id, a.raio_atuacao, p.cep as cep_artista, p.latitude as lat_artista, p.longitude as lng_artista
 FROM artists a
 JOIN profiles p ON a.profile_id = p.id
 WHERE p.role_id = 2

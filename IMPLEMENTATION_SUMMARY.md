@@ -1,6 +1,22 @@
 # Resumo da Implementação - eShow API
 
-## 🚀 Versão Atual: 0.18.1+
+## 🚀 Versão Atual: 0.19.0+
+
+### ✨ Funcionalidades Implementadas na v0.19.0
+
+#### **Coordenadas Geográficas em Perfis:**
+- **Campos `latitude` e `longitude`** adicionados à entidade Profile como opcionais
+- **Migração Alembic**: `37212dd22c82_adicionar_colunas_latitude_longitude_em_profiles` aplicada
+- **Modelo de banco atualizado**: Colunas `latitude` e `longitude` como `Float` e `nullable=True`
+- **Schemas Pydantic atualizados**: ProfileBase, ProfileUpdate e ProfileResponse incluem os novos campos
+- **Repositório atualizado**: Todos os métodos (create, get_by_id, get_by_role_id, get_by_user_id, get_all, update) processam os novos campos
+- **Serviço de aplicação atualizado**: ProfileService inclui latitude e longitude em todas as operações
+- **Script de inicialização atualizado**: `init_profiles.py` com coordenadas reais para diferentes cidades brasileiras
+- **Testes atualizados**: `tests/test_profiles.py` verifica criação, leitura e atualização dos campos
+- **Validação de coordenadas**: Latitude entre -90 e 90, longitude entre -180 e 180
+- **Integração com sistema de busca**: Campos utilizados para cálculos de distância e proximidade
+- **Compatibilidade total**: Perfis existentes funcionam normalmente (campos opcionais)
+- **Documentação atualizada**: API_USAGE.md e README.md incluem exemplos de uso
 
 ### ✨ Funcionalidades Implementadas na v0.18.1
 

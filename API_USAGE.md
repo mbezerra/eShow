@@ -1,5 +1,6 @@
 # Guia de Uso da API
 
+- [Sistema de Perfis (Profiles)](#sistema-de-perfis-profiles)
 - [Sistema de Agendamentos (Bookings)](#sistema-de-agendamentos-bookings)
 - [Sistema de Avaliações/Reviews](#sistema-de-avaliaçõesreviews)
 - [Sistema de Manifestações de Interesse (Interests)](#sistema-de-manifestações-de-interesse-interests)
@@ -61,6 +62,266 @@ curl -X POST "http://localhost:8000/api/v1/auth/refresh" \
 ```json
 {
   "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+}
+```
+
+---
+
+## Sistema de Perfis (Profiles)
+
+### Visão Geral
+O sistema de perfis gerencia as informações pessoais e profissionais dos usuários, incluindo dados de localização com coordenadas geográficas (latitude e longitude) para facilitar buscas por proximidade.
+
+**🆕 Novo:** Campos `latitude` e `longitude` opcionais para localização geográfica precisa.
+
+### Estrutura do Perfil
+```json
+{
+  "id": 1,
+  "user_id": 1,
+  "role_id": 2,
+  "full_name": "João Silva",
+  "artistic_name": "João Artista",
+  "bio": "Músico profissional com experiência em diversos estilos",
+  "cep": "01234-567",
+  "logradouro": "Rua das Flores",
+  "numero": "123",
+  "complemento": "Apto 1",
+  "cidade": "São Paulo",
+  "uf": "SP",
+  "telefone_fixo": "(11) 3333-1111",
+  "telefone_movel": "(11) 99999-1111",
+  "whatsapp": "(11) 99999-1111",
+  "latitude": -23.5505,
+  "longitude": -46.6333,
+  "created_at": "2025-07-23T14:16:15",
+  "updated_at": "2025-07-23T14:16:15"
+}
+```
+
+### Endpoints Disponíveis
+
+#### CRUD Básico
+```bash
+# Listar todos os perfis
+GET /api/v1/profiles/
+Authorization: Bearer {token}
+
+# Obter perfil por ID
+GET /api/v1/profiles/{id}
+Authorization: Bearer {token}
+
+# Criar novo perfil
+POST /api/v1/profiles/
+Authorization: Bearer {token}
+Content-Type: application/json
+{
+  "role_id": 2,
+  "full_name": "João Silva",
+  "artistic_name": "João Artista",
+  "bio": "Músico profissional com experiência em diversos estilos",
+  "cep": "01234-567",
+  "logradouro": "Rua das Flores",
+  "numero": "123",
+  "complemento": "Apto 1",
+  "cidade": "São Paulo",
+  "uf": "SP",
+  "telefone_fixo": "(11) 3333-1111",
+  "telefone_movel": "(11) 99999-1111",
+  "whatsapp": "(11) 99999-1111",
+  "latitude": -23.5505,
+  "longitude": -46.6333
+}
+
+# Atualizar perfil
+PUT /api/v1/profiles/{id}
+Authorization: Bearer {token}
+Content-Type: application/json
+{
+  "artistic_name": "João Artista Atualizado",
+  "bio": "Bio atualizada com mais informações",
+  "latitude": -23.5631,
+  "longitude": -46.6544
+}
+
+# Deletar perfil
+DELETE /api/v1/profiles/{id}
+Authorization: Bearer {token}
+```
+
+#### Filtros Especializados
+```bash
+# Perfis por role (tipo de usuário)
+GET /api/v1/profiles/role/{role_id}
+Authorization: Bearer {token}
+
+# Perfil por usuário
+GET /api/v1/profiles/user/{user_id}
+Authorization: Bearer {token}
+```
+
+### Campos de Localização Geográfica
+
+#### Latitude e Longitude
+- **Tipo:** `float` (opcional)
+- **Formato:** Coordenadas decimais (ex: -23.5505, -46.6333)
+- **Uso:** Para cálculos de distância e busca por proximidade
+- **Validação:** Valores válidos entre -90 e 90 para latitude, -180 e 180 para longitude
+
+#### Exemplo de Uso com Coordenadas
+```bash
+# Criar perfil com coordenadas
+curl -X POST "http://localhost:8000/api/v1/profiles/" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "role_id": 2,
+    "full_name": "Maria Santos",
+    "artistic_name": "Maria Cantora",
+    "bio": "Cantora de MPB e bossa nova",
+    "cep": "20000-000",
+    "logradouro": "Av. Rio Branco",
+    "numero": "100",
+    "cidade": "Rio de Janeiro",
+    "uf": "RJ",
+    "telefone_movel": "(21) 99999-9999",
+    "latitude": -22.9068,
+    "longitude": -43.1729
+  }'
+
+# Atualizar coordenadas de um perfil existente
+curl -X PUT "http://localhost:8000/api/v1/profiles/1" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "latitude": -23.5631,
+    "longitude": -46.6544
+  }'
+```
+
+### Regras de Negócio
+
+#### Campos Obrigatórios
+- `role_id`: ID do tipo de usuário (1=ADMIN, 2=ARTISTA, 3=ESPAÇO)
+- `full_name`: Nome completo ou razão social
+- `artistic_name`: Nome artístico ou nome de fantasia
+- `bio`: Apresentação/biografia
+- `cep`: CEP válido (8-10 caracteres)
+- `logradouro`: Endereço
+- `numero`: Número do endereço
+- `cidade`: Cidade
+- `uf`: Estado (2 caracteres)
+- `telefone_movel`: Telefone móvel
+
+#### Campos Opcionais
+- `user_id`: ID do usuário associado
+- `complemento`: Complemento do endereço
+- `telefone_fixo`: Telefone fixo
+- `whatsapp`: WhatsApp
+- `latitude`: Coordenada de latitude
+- `longitude`: Coordenada de longitude
+
+#### Validações
+- **CEP:** Entre 8 e 10 caracteres
+- **UF:** Exatamente 2 caracteres
+- **Telefones:** Máximo 20 caracteres
+- **Latitude:** Entre -90 e 90
+- **Longitude:** Entre -180 e 180
+- **Bio:** Mínimo 1 caractere
+- **Nomes:** Máximo 255 caracteres
+
+### Exemplo Prático: Gerenciar Perfil Completo
+
+```bash
+# 1. Login
+TOKEN=$(curl -s -X POST "http://localhost:8000/api/v1/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{"email": "admin@eshow.com", "password": "admin123"}' | jq -r '.access_token')
+
+# 2. Criar perfil com coordenadas
+curl -X POST "http://localhost:8000/api/v1/profiles/" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "role_id": 2,
+    "full_name": "Carlos Eduardo",
+    "artistic_name": "Carlos Guitarra",
+    "bio": "Guitarrista profissional com 15 anos de experiência em rock e blues",
+    "cep": "01310-100",
+    "logradouro": "Av. Paulista",
+    "numero": "1000",
+    "complemento": "Apto 45",
+    "cidade": "São Paulo",
+    "uf": "SP",
+    "telefone_fixo": "(11) 3333-4444",
+    "telefone_movel": "(11) 99999-4444",
+    "whatsapp": "(11) 99999-4444",
+    "latitude": -23.5631,
+    "longitude": -46.6544
+  }' | jq
+
+# 3. Buscar perfil criado
+curl -X GET "http://localhost:8000/api/v1/profiles/1" \
+  -H "Authorization: Bearer $TOKEN" | jq
+
+# 4. Atualizar coordenadas
+curl -X PUT "http://localhost:8000/api/v1/profiles/1" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "latitude": -23.5505,
+    "longitude": -46.6333,
+    "bio": "Guitarrista profissional com 15 anos de experiência em rock e blues. Especializado em solos improvisados."
+  }' | jq
+
+# 5. Listar perfis de artistas
+curl -X GET "http://localhost:8000/api/v1/profiles/role/2" \
+  -H "Authorization: Bearer $TOKEN" | jq
+```
+
+### Integração com Sistema de Busca por Localização
+
+Os campos `latitude` e `longitude` dos perfis são utilizados pelo sistema de busca por localização para:
+
+- **Calcular distâncias** entre artistas e espaços
+- **Filtrar resultados** por raio de atuação
+- **Ordenar resultados** por proximidade
+- **Otimizar buscas** geográficas
+
+### Respostas de Erro Comuns
+
+```json
+// Coordenadas inválidas
+{
+  "detail": [
+    {
+      "type": "value_error",
+      "loc": ["body", "latitude"],
+      "msg": "Value error, Latitude deve estar entre -90 e 90"
+    }
+  ]
+}
+
+// CEP inválido
+{
+  "detail": [
+    {
+      "type": "value_error",
+      "loc": ["body", "cep"],
+      "msg": "Value error, CEP deve ter entre 8 e 10 caracteres"
+    }
+  ]
+}
+
+// UF inválida
+{
+  "detail": [
+    {
+      "type": "value_error",
+      "loc": ["body", "uf"],
+      "msg": "Value error, UF deve ter exatamente 2 caracteres"
+    }
+  ]
 }
 ```
 

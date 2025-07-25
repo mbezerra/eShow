@@ -7,7 +7,7 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 ## 🎯 **Funcionalidades Principais**
 
 - **Gestão de Usuários** com autenticação JWT
-- **Sistema de Perfis** (Artists e Spaces)
+- **Sistema de Perfis** (Artists e Spaces) com coordenadas geográficas
 - **Gerenciamento de Artistas** e estilos musicais
 - **Administração de Espaços** e tipos de evento
 - **Sistema de Agendamentos/Reservas** (Bookings)
@@ -54,8 +54,16 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Autenticação e autorização** por role (artista/espaço)
 - **Sistema confiável** baseado em dados reais da base IBGE
 
+### Coordenadas Geográficas em Perfis ✅ **NOVO**
+- **Campos `latitude` e `longitude`** opcionais em todos os perfis
+- **Integração com sistema de busca** por localização
+- **Cálculo de distâncias** otimizado para proximidade
+- **Validação de coordenadas** (latitude: -90 a 90, longitude: -180 a 180)
+- **Compatibilidade total** com perfis existentes
+- **Migração automática** aplicada ao banco de dados
+
 ### Documentação Atualizada
-- **API_USAGE.md** - Exemplos de uso detalhados
+- **API_USAGE.md** - Exemplos de uso detalhados incluindo coordenadas geográficas
 - **IMPLEMENTATION_SUMMARY.md** - Resumo técnico completo
 - **ARCHITECTURE.md** - Arquitetura detalhada
 - **DATABASE_STRATEGY.md** - Estratégia de banco de dados

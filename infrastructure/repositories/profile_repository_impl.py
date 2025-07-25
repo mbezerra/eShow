@@ -24,7 +24,9 @@ class ProfileRepositoryImpl(ProfileRepository):
             uf=profile.uf,
             telefone_fixo=profile.telefone_fixo,
             telefone_movel=profile.telefone_movel,
-            whatsapp=profile.whatsapp
+            whatsapp=profile.whatsapp,
+            latitude=profile.latitude,
+            longitude=profile.longitude
         )
         self.session.add(db_profile)
         self.session.commit()
@@ -46,6 +48,8 @@ class ProfileRepositoryImpl(ProfileRepository):
             telefone_fixo=db_profile.telefone_fixo,
             telefone_movel=db_profile.telefone_movel,
             whatsapp=db_profile.whatsapp,
+            latitude=db_profile.latitude,
+            longitude=db_profile.longitude,
             created_at=db_profile.created_at,
             updated_at=db_profile.updated_at
         )
@@ -72,6 +76,8 @@ class ProfileRepositoryImpl(ProfileRepository):
             telefone_fixo=db_profile.telefone_fixo,
             telefone_movel=db_profile.telefone_movel,
             whatsapp=db_profile.whatsapp,
+            latitude=db_profile.latitude,
+            longitude=db_profile.longitude,
             created_at=db_profile.created_at,
             updated_at=db_profile.updated_at
         )
@@ -96,6 +102,8 @@ class ProfileRepositoryImpl(ProfileRepository):
                 telefone_fixo=db_profile.telefone_fixo,
                 telefone_movel=db_profile.telefone_movel,
                 whatsapp=db_profile.whatsapp,
+                latitude=db_profile.latitude,
+                longitude=db_profile.longitude,
                 created_at=db_profile.created_at,
                 updated_at=db_profile.updated_at
             )
@@ -124,6 +132,8 @@ class ProfileRepositoryImpl(ProfileRepository):
             telefone_fixo=db_profile.telefone_fixo,
             telefone_movel=db_profile.telefone_movel,
             whatsapp=db_profile.whatsapp,
+            latitude=db_profile.latitude,
+            longitude=db_profile.longitude,
             created_at=db_profile.created_at,
             updated_at=db_profile.updated_at
         )
@@ -148,6 +158,8 @@ class ProfileRepositoryImpl(ProfileRepository):
                 telefone_fixo=db_profile.telefone_fixo,
                 telefone_movel=db_profile.telefone_movel,
                 whatsapp=db_profile.whatsapp,
+                latitude=db_profile.latitude,
+                longitude=db_profile.longitude,
                 created_at=db_profile.created_at,
                 updated_at=db_profile.updated_at
             )
@@ -175,6 +187,8 @@ class ProfileRepositoryImpl(ProfileRepository):
         db_profile.telefone_fixo = profile.telefone_fixo
         db_profile.telefone_movel = profile.telefone_movel
         db_profile.whatsapp = profile.whatsapp
+        db_profile.latitude = profile.latitude
+        db_profile.longitude = profile.longitude
         db_profile.updated_at = profile.updated_at
         
         self.session.commit()
@@ -196,6 +210,8 @@ class ProfileRepositoryImpl(ProfileRepository):
             telefone_fixo=db_profile.telefone_fixo,
             telefone_movel=db_profile.telefone_movel,
             whatsapp=db_profile.whatsapp,
+            latitude=db_profile.latitude,
+            longitude=db_profile.longitude,
             created_at=db_profile.created_at,
             updated_at=db_profile.updated_at
         )
