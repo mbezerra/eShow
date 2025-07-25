@@ -1498,86 +1498,50 @@ curl -X GET "http://localhost:8000/api/v1/space-festival-types/1" \
 ### Visão Geral
 O sistema de busca por localização permite encontrar espaços para artistas e artistas para espaços baseado em raio de atuação, utilizando cálculo de distância geográfica e verificação de disponibilidade.
 
-**🆕 Novo:** Sistema completo de busca geográfica com cálculo de distância usando fórmula de Haversine e integração com API do ViaCEP.
+**🆕 Atualização Importante:**
+- **Obtenção de Coordenadas 100% Local:**
+  - O sistema utiliza uma base local de coordenadas de municípios brasileiros, importada do IBGE (malha municipal) e/ou bases de CEPs com latitude/longitude.
+  - Não há mais dependência de APIs externas (ViaCEP, Nominatim, Google, etc) para busca de coordenadas.
+  - A busca por coordenadas é feita diretamente no banco de dados local, garantindo performance, disponibilidade e precisão.
+  - Caso o CEP não seja encontrado, o sistema tenta buscar por prefixo ou por cidade/UF na base local.
+
+**Como funciona a busca de coordenadas:**
+- Para cada CEP informado, o sistema:
+  1. Busca o CEP exato na tabela local de coordenadas.
+  2. Se não encontrar, busca por prefixo (primeiros 5 dígitos).
+  3. Se ainda não encontrar, busca por cidade/UF (extraído do endereço cadastrado).
+  4. Se não houver correspondência, retorna erro ou utiliza fallback para o município mais próximo.
+- A base pode ser atualizada a qualquer momento via script, sem necessidade de expor API pública ou depender de terceiros.
+
+**Vantagens da Solução Atual:**
+- 100% offline/local, sem limites de requisição ou falhas externas
+- Performance máxima (busca SQL/indexada)
+- Fácil de atualizar e expandir (basta importar novos dumps de CEPs ou municípios)
+- Resposta de API mais limpa (campo distance_km só no root do resultado)
 
 ### Endpoints Disponíveis
 
-#### Base URL
-```
-/api/v1/location-search
-```
+#### Buscar Espaços para Artista
 
-### 1. Buscar Espaços para Artista
-
-#### GET `/spaces-for-artist`
+GET `/api/v1/location-search/spaces-for-artist`
 Busca espaços disponíveis para um artista baseado no seu raio de atuação.
 
-**Parâmetros de Query:**
-- `return_full_data` (boolean, opcional): Se deve retornar dados completos ou apenas IDs. Padrão: `true`
-- `max_results` (integer, opcional): Limite máximo de resultados. Padrão: `100`
+#### Buscar Artistas para Espaço
 
-**Exemplo de Requisição:**
-```bash
-GET /api/v1/location-search/spaces-for-artist?return_full_data=true&max_results=50
-Authorization: Bearer <token>
-```
-
-**Exemplo de Resposta:**
-```json
-{
-  "results": [
-    {
-      "id": 1,
-      "profile_id": 5,
-      "space_type_id": 2,
-      "acesso": "Público",
-      "valor_hora": 150.0,
-      "valor_couvert": 25.0,
-      "publico_estimado": "101-500",
-      "distance_km": 12.5,
-      "profile": {
-        "id": 5,
-        "full_name": "Casa de Shows ABC",
-        "artistic_name": "Casa ABC",
-        "cep": "01234-567",
-        "cidade": "São Paulo",
-        "uf": "SP"
-      }
-    }
-  ],
-  "total_count": 1,
-  "search_radius_km": 50.0,
-  "origin_cep": "01234-000"
-}
-```
-
-#### POST `/spaces-for-artist`
-Versão POST do endpoint acima, aceitando parâmetros no corpo da requisição.
-
-**Corpo da Requisição:**
-```json
-{
-  "return_full_data": true,
-  "max_results": 50
-}
-```
-
-### 2. Buscar Artistas para Espaço
-
-#### GET `/artists-for-space`
+GET `/api/v1/location-search/artists-for-space`
 Busca artistas disponíveis para um espaço baseado no raio de atuação dos artistas.
 
-**Parâmetros de Query:**
+#### Parâmetros de Query
 - `return_full_data` (boolean, opcional): Se deve retornar dados completos ou apenas IDs. Padrão: `true`
 - `max_results` (integer, opcional): Limite máximo de resultados. Padrão: `100`
 
-**Exemplo de Requisição:**
+#### Exemplo de Requisição
 ```bash
 GET /api/v1/location-search/artists-for-space?return_full_data=true&max_results=50
 Authorization: Bearer <token>
 ```
 
-**Exemplo de Resposta:**
+#### Exemplo de Resposta
 ```json
 {
   "results": [
@@ -1605,131 +1569,22 @@ Authorization: Bearer <token>
 }
 ```
 
-#### POST `/artists-for-space`
-Versão POST do endpoint acima, aceitando parâmetros no corpo da requisição.
-
-**Corpo da Requisição:**
-```json
-{
-  "return_full_data": true,
-  "max_results": 50
-}
-```
-
 ### Lógica de Busca
 
-#### Endpoint 1: Espaços para Artista
+1. **Obtenção de Coordenadas:** Busca 100% local na base de municípios/CEPs.
+2. **Cálculo de Distância:** Fórmula de Haversine entre as coordenadas dos CEPs.
+3. **Filtro por Raio:** Apenas resultados dentro do raio de atuação do artista ou espaço.
+4. **Verificação de Disponibilidade:** Checa conflitos de agenda e status de contratação.
+5. **Retorno:** Lista de resultados ordenados por distância.
 
-1. **Verificação do Usuário**: Confirma que o usuário logado é um artista (role_id = 2)
-2. **Obtenção de Dados**: Recupera o raio de atuação do artista e seu CEP
-3. **Busca de Espaços**: Localiza todos os espaços (role_id = 3) no sistema
-4. **Filtro por Distância**: Verifica se o CEP do espaço está dentro do raio de atuação do artista
-5. **Filtro por Disponibilidade**: Verifica se o espaço tem eventos ou festivais com status "CONTRATANDO"
-6. **Cálculo de Distância**: Calcula a distância exata entre o artista e o espaço
-7. **Retorno**: Retorna a lista de espaços que atendem aos critérios
+### Limitações Removidas
+- **Não há mais dependência de APIs externas** para coordenadas.
+- **Não há mais limitação de volume** (pode importar quantos CEPs/municípios quiser).
+- **Não há mais delays de rede** para busca de localização.
 
-#### Endpoint 2: Artistas para Espaço
-
-1. **Verificação do Usuário**: Confirma que o usuário logado é um espaço (role_id = 3)
-2. **Obtenção de Dados**: Recupera o CEP do espaço
-3. **Busca de Artistas**: Localiza todos os artistas (role_id = 2) no sistema
-4. **Filtro por Distância**: Verifica se o CEP do artista está dentro do raio de atuação do artista
-5. **Verificação de Disponibilidade**: Verifica se o artista não tem agendamentos conflitantes com os eventos/festivais do espaço
-6. **Cálculo de Distância**: Calcula a distância exata entre o espaço e o artista
-7. **Retorno**: Retorna a lista de artistas disponíveis que atendem aos critérios
-
-### Cálculo de Distância
-
-O sistema utiliza a fórmula de Haversine para calcular a distância entre dois CEPs:
-
-1. **Obtenção de Coordenadas**: Consulta a API do ViaCEP para obter latitude e longitude
-2. **Cálculo de Distância**: Aplica a fórmula de Haversine para calcular a distância em quilômetros
-3. **Verificação de Raio**: Compara a distância calculada com o raio de atuação
-
-### Status de Eventos e Festivais
-
-Os endpoints consideram apenas eventos e festivais com os seguintes status:
-- `CONTRATANDO`: Evento/festival está aceitando artistas
-- `FECHADO`: Evento/festival não está mais aceitando artistas
-- `SUSPENSO`: Evento/festival foi suspenso temporariamente
-- `CANCELADO`: Evento/festival foi cancelado
-
-### Códigos de Erro
-
-| Código | Descrição |
-|--------|-----------|
-| 400 | Parâmetros inválidos ou erro na requisição |
-| 401 | Token de autenticação inválido ou ausente |
-| 403 | Usuário não tem permissão para usar o endpoint |
-| 404 | Profile do usuário não encontrado |
-| 500 | Erro interno do servidor |
-
-### Autenticação
-
-Todos os endpoints requerem autenticação via JWT token no header:
-```
-Authorization: Bearer <token>
-```
-
-### Limitações
-
-1. **API de CEP**: O sistema depende da API do ViaCEP para obter coordenadas. Em caso de indisponibilidade, pode usar coordenadas aproximadas.
-2. **Performance**: Para grandes volumes de dados, considere implementar cache ou otimizações adicionais.
-3. **Precisão**: As coordenadas são aproximadas baseadas no CEP. Para maior precisão, considere usar coordenadas GPS exatas.
-
-### Exemplos de Uso
-
-#### Frontend JavaScript
-```javascript
-// Buscar espaços para artista
-const response = await fetch('/api/v1/location-search/spaces-for-artist?return_full_data=true', {
-  headers: {
-    'Authorization': `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  }
-});
-
-const data = await response.json();
-console.log('Espaços encontrados:', data.results);
-```
-
-#### Python Requests
-```python
-import requests
-
-# Buscar artistas para espaço
-response = requests.get(
-    'http://localhost:8000/api/v1/location-search/artists-for-space',
-    params={'return_full_data': True, 'max_results': 50},
-    headers={'Authorization': f'Bearer {token}'}
-)
-
-data = response.json()
-print(f"Artistas encontrados: {len(data['results'])}")
-```
-
-#### Exemplo Prático Completo
-```bash
-# 1. Fazer login e obter token
-TOKEN=$(curl -s -X POST "http://localhost:8000/api/v1/auth/login" \
-  -H "Content-Type: application/json" \
-  -d '{"email": "admin@eshow.com", "password": "admin123"}' | \
-  jq -r '.access_token')
-
-# 2. Buscar espaços para artista (usuário logado como artista)
-curl -X GET "http://localhost:8000/api/v1/location-search/spaces-for-artist?return_full_data=true&max_results=10" \
-  -H "Authorization: Bearer $TOKEN" | jq
-
-# 3. Buscar artistas para espaço (usuário logado como espaço)
-curl -X GET "http://localhost:8000/api/v1/location-search/artists-for-space?return_full_data=true&max_results=10" \
-  -H "Authorization: Bearer $TOKEN" | jq
-
-# 4. Usar versão POST com parâmetros no corpo
-curl -X POST "http://localhost:8000/api/v1/location-search/spaces-for-artist" \
-  -H "Authorization: Bearer $TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"return_full_data": false, "max_results": 5}' | jq
-```
+### Como Atualizar a Base de Coordenadas
+- Utilize os scripts de importação fornecidos para importar novos dumps do IBGE, BrasilCeps, OSM, etc.
+- A base pode ser expandida a qualquer momento sem downtime.
 
 ---
 
