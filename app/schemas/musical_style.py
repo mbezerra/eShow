@@ -3,18 +3,21 @@ from typing import Optional
 from datetime import datetime
 
 class MusicalStyleBase(BaseModel):
-    estyle: str = Field(..., description="Estilo musical (qualquer valor string)")
+    style: str = Field(..., min_length=1, max_length=100, description="Estilo musical")
+
+    model_config = {"from_attributes": True}
 
 class MusicalStyleCreate(MusicalStyleBase):
     pass
 
 class MusicalStyleUpdate(BaseModel):
-    estyle: Optional[str] = Field(None, description="Estilo musical (qualquer valor string)")
+    style: Optional[str] = Field(None, min_length=1, max_length=100, description="Estilo musical")
+
+    model_config = {"from_attributes": True}
 
 class MusicalStyleResponse(MusicalStyleBase):
     id: int
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True 
+    model_config = {"from_attributes": True} 

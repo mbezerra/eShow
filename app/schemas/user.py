@@ -7,6 +7,8 @@ class UserBase(BaseModel):
     email: EmailStr
     is_active: bool = True
 
+    model_config = {"from_attributes": True}
+
 class UserCreate(UserBase):
     password: str
 
@@ -15,11 +17,11 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     is_active: Optional[bool] = None
 
+    model_config = {"from_attributes": True}
+
 class UserResponse(UserBase):
     id: int
-    password: str | None = None  # Incluir para autenticação
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True 
+    model_config = {"from_attributes": True} 

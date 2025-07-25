@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 from typing import List, Optional
 from datetime import datetime
 from domain.entities.space_festival_type import StatusFestivalType
@@ -18,37 +18,43 @@ class SpaceFestivalTypeBase(BaseModel):
     link_divulgacao: Optional[str] = None
     banner: Optional[str] = None  # Path local da imagem do banner
 
-    @validator('space_id')
+    @field_validator('space_id')
+    @classmethod
     def validate_space_id(cls, v):
         if v <= 0:
             raise ValueError("ID do espaço deve ser maior que zero")
         return v
 
-    @validator('festival_type_id')
+    @field_validator('festival_type_id')
+    @classmethod
     def validate_festival_type_id(cls, v):
         if v <= 0:
             raise ValueError("ID do tipo de festival deve ser maior que zero")
         return v
 
-    @validator('tema')
+    @field_validator('tema')
+    @classmethod
     def validate_tema(cls, v):
         if not v or not v.strip():
             raise ValueError("Tema é obrigatório")
         return v.strip()
 
-    @validator('descricao')
+    @field_validator('descricao')
+    @classmethod
     def validate_descricao(cls, v):
         if not v or not v.strip():
             raise ValueError("Descrição é obrigatória")
         return v.strip()
 
-    @validator('horario')
+    @field_validator('horario')
+    @classmethod
     def validate_horario(cls, v):
         if not v or not v.strip():
             raise ValueError("Horário é obrigatório")
         return v.strip()
 
-    @validator('status')
+    @field_validator('status')
+    @classmethod
     def validate_status(cls, v):
         if not isinstance(v, StatusFestivalType):
             raise ValueError("Status deve ser um valor válido")
@@ -66,25 +72,29 @@ class SpaceFestivalTypeUpdate(BaseModel):
     data: Optional[datetime] = None
     horario: Optional[str] = None
 
-    @validator('tema')
+    @field_validator('tema')
+    @classmethod
     def validate_tema(cls, v):
         if v is not None and (not v or not v.strip()):
             raise ValueError("Tema não pode estar vazio")
         return v.strip() if v else v
 
-    @validator('descricao')
+    @field_validator('descricao')
+    @classmethod
     def validate_descricao(cls, v):
         if v is not None and (not v or not v.strip()):
             raise ValueError("Descrição não pode estar vazia")
         return v.strip() if v else v
 
-    @validator('horario')
+    @field_validator('horario')
+    @classmethod
     def validate_horario(cls, v):
         if v is not None and (not v or not v.strip()):
             raise ValueError("Horário não pode estar vazio")
         return v.strip() if v else v
 
-    @validator('status')
+    @field_validator('status')
+    @classmethod
     def validate_status(cls, v):
         if v is not None and not isinstance(v, StatusFestivalType):
             raise ValueError("Status deve ser um valor válido")
@@ -94,7 +104,8 @@ class SpaceFestivalTypeStatusUpdate(BaseModel):
     """Schema específico para atualização de status"""
     status: StatusFestivalType
 
-    @validator('status')
+    @field_validator('status')
+    @classmethod
     def validate_status(cls, v):
         if not isinstance(v, StatusFestivalType):
             raise ValueError("Status deve ser um valor válido")
@@ -104,8 +115,7 @@ class SpaceFestivalTypeResponse(SpaceFestivalTypeBase):
     id: int
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class SpaceFestivalTypeWithRelations(SpaceFestivalTypeResponse):
     """Schema com dados relacionados incluídos"""
@@ -116,28 +126,28 @@ class SpaceFestivalTypeListResponse(BaseModel):
     """Schema para resposta de lista de relacionamentos"""
     items: List[SpaceFestivalTypeResponse]
     
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class SpaceFestivalTypeListWithRelations(BaseModel):
     """Schema para resposta de lista de relacionamentos com dados relacionados"""
     items: List[SpaceFestivalTypeWithRelations]
     
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class SpaceFestivalTypeBulkCreate(BaseModel):
     """Schema para criação em lote de relacionamentos para um espaço"""
     space_id: int
     festivals: List[dict]
 
-    @validator('space_id')
+    @field_validator('space_id')
+    @classmethod
     def validate_space_id(cls, v):
         if v <= 0:
             raise ValueError("ID do espaço deve ser maior que zero")
         return v
 
-    @validator('festivals')
+    @field_validator('festivals')
+    @classmethod
     def validate_festivals(cls, v):
         if not v:
             raise ValueError("Lista de festivais não pode estar vazia")

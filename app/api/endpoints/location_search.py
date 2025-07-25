@@ -16,6 +16,7 @@ from infrastructure.repositories.profile_repository_impl import ProfileRepositor
 from infrastructure.repositories.space_event_type_repository_impl import SpaceEventTypeRepositoryImpl
 from infrastructure.repositories.space_festival_type_repository_impl import SpaceFestivalTypeRepositoryImpl
 from infrastructure.repositories.booking_repository_impl import BookingRepositoryImpl
+from app.core.location_utils import get_location_by_cep, get_location_by_city_state, get_location_by_coordinates
 
 router = APIRouter()
 
@@ -36,6 +37,42 @@ def get_location_search_service(db: Session = Depends(get_database_session)) -> 
         space_festival_type_repository=space_festival_type_repository,
         booking_repository=booking_repository
     )
+
+@router.get("/cep/{cep}")
+async def search_by_cep(cep: str):
+    """Buscar localização por CEP"""
+    try:
+        location = get_location_by_cep(cep)
+        if not location:
+            raise HTTPException(status_code=404, detail="CEP não encontrado")
+        return location
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro interno do servidor: {str(e)}")
+
+@router.get("/city/{city}/state/{state}")
+async def search_by_city_state(city: str, state: str):
+    """Buscar localização por cidade e estado"""
+    try:
+        location = get_location_by_city_state(city, state)
+        if not location:
+            raise HTTPException(status_code=404, detail="Cidade/Estado não encontrado")
+        return location
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro interno do servidor: {str(e)}")
+
+@router.get("/coordinates")
+async def search_by_coordinates(
+    lat: float = Query(..., description="Latitude"),
+    lng: float = Query(..., description="Longitude")
+):
+    """Buscar localização por coordenadas"""
+    try:
+        location = get_location_by_coordinates(lat, lng)
+        if not location:
+            raise HTTPException(status_code=404, detail="Coordenadas não encontradas")
+        return location
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro interno do servidor: {str(e)}")
 
 @router.get("/spaces-for-artist", response_model=LocationSearchResponse)
 async def search_spaces_for_artist(

@@ -12,29 +12,25 @@ class ProfileRelation(BaseModel):
     cidade: str
     uf: str
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class SpaceTypeRelation(BaseModel):
     id: int
     tipo: str
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class EventTypeRelation(BaseModel):
     id: int
     type: str
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class FestivalTypeRelation(BaseModel):
     id: int
     type: str
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class SpaceBase(BaseModel):
     profile_id: int
@@ -84,8 +80,7 @@ class SpaceResponse(SpaceBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class SpaceResponseWithRelations(SpaceBase):
     id: int
@@ -96,5 +91,4 @@ class SpaceResponseWithRelations(SpaceBase):
     event_type: Optional[EventTypeRelation] = None
     festival_type: Optional[FestivalTypeRelation] = None
 
-    class Config:
-        from_attributes = True 
+    model_config = {"from_attributes": True} 

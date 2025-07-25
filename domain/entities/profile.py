@@ -14,6 +14,7 @@ class Profile:
         cidade: str,
         uf: str,
         telefone_movel: str,
+        user_id: Optional[int] = None,
         complemento: Optional[str] = None,
         telefone_fixo: Optional[str] = None,
         whatsapp: Optional[str] = None,
@@ -22,6 +23,7 @@ class Profile:
         updated_at: Optional[datetime] = None
     ):
         self.id = id
+        self.user_id = user_id
         self.role_id = role_id
         self.full_name = full_name
         self.artistic_name = artistic_name

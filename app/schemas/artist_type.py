@@ -6,16 +6,19 @@ from domain.entities.artist_type import ArtistTypeEnum
 class ArtistTypeBase(BaseModel):
     tipo: ArtistTypeEnum = Field(..., description="Tipo de artista (Cantor(a) solo, Dupla, Trio, Banda, Grupo)")
 
+    model_config = {"from_attributes": True}
+
 class ArtistTypeCreate(ArtistTypeBase):
     pass
 
 class ArtistTypeUpdate(BaseModel):
     tipo: Optional[ArtistTypeEnum] = Field(None, description="Tipo de artista (Cantor(a) solo, Dupla, Trio, Banda, Grupo)")
 
+    model_config = {"from_attributes": True}
+
 class ArtistTypeResponse(ArtistTypeBase):
     id: int
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True 
+    model_config = {"from_attributes": True} 

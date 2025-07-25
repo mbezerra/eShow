@@ -7,6 +7,7 @@ class ArtistMusicalStyle:
     """Entidade de domínio para o relacionamento N:N entre Artists e Musical Styles"""
     artist_id: int
     musical_style_id: int
+    id: Optional[int] = None
     created_at: Optional[datetime] = None
 
     def __post_init__(self):

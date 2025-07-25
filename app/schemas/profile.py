@@ -18,9 +18,10 @@ class ProfileBase(BaseModel):
     whatsapp: Optional[str] = Field(None, max_length=20, description="WhatsApp")
 
 class ProfileCreate(ProfileBase):
-    pass
+    user_id: Optional[int] = Field(None, description="ID do usuário associado")
 
 class ProfileUpdate(BaseModel):
+    user_id: Optional[int] = Field(None, description="ID do usuário associado")
     role_id: Optional[int] = Field(None, description="ID do role associado")
     full_name: Optional[str] = Field(None, min_length=1, max_length=255, description="Nome completo ou Razão Social")
     artistic_name: Optional[str] = Field(None, min_length=1, max_length=255, description="Nome artístico ou Nome de Fantasia")
@@ -37,8 +38,8 @@ class ProfileUpdate(BaseModel):
 
 class ProfileResponse(ProfileBase):
     id: int
+    user_id: Optional[int] = None
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True 
+    model_config = {"from_attributes": True} 
