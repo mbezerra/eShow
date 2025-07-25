@@ -32,34 +32,30 @@ class LocationUtils:
             Tuple com (latitude, longitude) ou None se não conseguir obter
         """
         try:
-            # Remove caracteres não numéricos
+            # Normalizar CEP para formato com hífen
             cep_clean = ''.join(filter(str.isdigit, cep))
             
             if len(cep_clean) != 8:
                 logger.warning(f"CEP inválido: {cep}")
                 return None
             
+            # Formatar CEP com hífen para busca na base local
+            cep_formatted = f"{cep_clean[:5]}-{cep_clean[5:]}"
+            
             # Verificar cache primeiro
-            if cep_clean in LocationUtils._coordinates_cache:
-                return LocationUtils._coordinates_cache[cep_clean]
+            if cep_formatted in LocationUtils._coordinates_cache:
+                return LocationUtils._coordinates_cache[cep_formatted]
             
-            # Tentar múltiplas fontes em ordem de preferência
-            coordinates = None
+            # 1. Tentar base de dados local (primária)
+            coordinates = LocationUtils._get_coordinates_from_local_db(cep_formatted)
             
-            # 1. Tentar base de dados local (mais rápido e confiável)
-            coordinates = LocationUtils._get_coordinates_from_local_db(cep_clean)
-            
-            # 2. Se não encontrar, tentar ViaCEP + busca por endereço
+            # 2. Se não encontrar, tentar ViaCEP + salvar na base local
             if coordinates is None:
-                coordinates = LocationUtils._get_coordinates_viacep(cep_clean)
-            
-            # 3. Último recurso: coordenadas aproximadas por região
-            if coordinates is None:
-                coordinates = LocationUtils._get_approximate_coordinates(cep_clean)
+                coordinates = LocationUtils._get_coordinates_viacep_and_save(cep_formatted)
             
             # Armazenar no cache
             if coordinates:
-                LocationUtils._coordinates_cache[cep_clean] = coordinates
+                LocationUtils._coordinates_cache[cep_formatted] = coordinates
                 logger.info(f"Coordenadas obtidas para CEP {cep}: {coordinates}")
             
             return coordinates
@@ -75,22 +71,12 @@ class LocationUtils:
             repository, db = LocationUtils._get_cep_repository()
             
             try:
-                # Primeiro, tentar buscar o CEP exato
+                # Buscar o CEP exato
                 cep_coords = repository.get_by_cep(cep)
                 
                 if cep_coords:
                     logger.info(f"Coordenadas encontradas na base de dados para CEP {cep}: {cep_coords.coordinates}")
                     return cep_coords.coordinates
-                
-                # Se não encontrar, tentar buscar por prefixo
-                cep_prefix = cep[:5]
-                cep_list = repository.search_by_prefix(cep_prefix)
-                
-                if cep_list:
-                    # Usar o primeiro CEP encontrado com esse prefixo
-                    first_cep = cep_list[0]
-                    logger.info(f"Coordenadas encontradas por prefixo para CEP {cep}: {first_cep.coordinates}")
-                    return first_cep.coordinates
                 
                 return None
                 
@@ -102,8 +88,8 @@ class LocationUtils:
             return None
     
     @staticmethod
-    def _get_coordinates_viacep(cep: str) -> Optional[Tuple[float, float]]:
-        """Obtém coordenadas usando ViaCEP + busca por endereço"""
+    def _get_coordinates_viacep_and_save(cep: str) -> Optional[Tuple[float, float]]:
+        """Obtém coordenadas via ViaCEP e salva na base local"""
         try:
             # Consulta a API do ViaCEP
             url = f"https://viacep.com.br/ws/{cep}/json/"
@@ -112,24 +98,24 @@ class LocationUtils:
             if response.status_code == 200:
                 data = response.json()
                 
-                if not data.get('erro'):
-                    # Construir endereço completo
-                    address_parts = []
-                    if data.get('logradouro'):
-                        address_parts.append(data['logradouro'])
-                    if data.get('bairro'):
-                        address_parts.append(data['bairro'])
-                    if data.get('localidade'):
-                        address_parts.append(data['localidade'])
-                    if data.get('uf'):
-                        address_parts.append(data['uf'])
+                if not data.get('erro') and data.get('lat') and data.get('lng'):
+                    # ViaCEP retorna coordenadas diretamente
+                    latitude = float(data['lat'])
+                    longitude = float(data['lng'])
                     
-                    if address_parts:
-                        full_address = ', '.join(address_parts) + ', Brazil'
-                        logger.info(f"Endereço obtido via ViaCEP para CEP {cep}: {full_address}")
-                        
-                        # Tentar obter coordenadas do endereço via busca local
-                        return LocationUtils._get_coordinates_by_address_local(full_address, cep)
+                    # Salvar na base local para futuras consultas
+                    LocationUtils._save_cep_coordinates(
+                        cep=cep,
+                        latitude=latitude,
+                        longitude=longitude,
+                        cidade=data.get('localidade'),
+                        uf=data.get('uf'),
+                        logradouro=data.get('logradouro'),
+                        bairro=data.get('bairro')
+                    )
+                    
+                    logger.info(f"Coordenadas obtidas via ViaCEP para CEP {cep}: ({latitude}, {longitude})")
+                    return (latitude, longitude)
             
             return None
             
@@ -138,81 +124,32 @@ class LocationUtils:
             return None
     
     @staticmethod
-    def _get_coordinates_by_address_local(address: str, cep: str) -> Optional[Tuple[float, float]]:
-        """Obtém coordenadas usando busca local por cidade/estado"""
+    def _save_cep_coordinates(cep: str, latitude: float, longitude: float, 
+                             cidade: Optional[str] = None, uf: Optional[str] = None,
+                             logradouro: Optional[str] = None, bairro: Optional[str] = None):
+        """Salva coordenadas de CEP na base local"""
         try:
-            # Extrair cidade e estado do endereço
-            address_lower = address.lower()
+            from domain.entities.cep_coordinates import CepCoordinates
             
-            # Buscar por cidades conhecidas na base local
-            # Removido uso de _cep_database, agora busca por cidade/uf no banco
+            cep_entity = CepCoordinates(
+                cep=cep,
+                latitude=latitude,
+                longitude=longitude,
+                cidade=cidade,
+                uf=uf,
+                logradouro=logradouro,
+                bairro=bairro
+            )
+            
             repository, db = LocationUtils._get_cep_repository()
             try:
-                # Tentar encontrar por cidade e UF
-                for city_name in [
-                    'cícero dantas', 'ribeira do pombal', 'itapicuru', 'olindina', 'acajutiba',
-                    'crisópolis', 'esplanada', 'cardeal da silva', 'conde', 'entre rios',
-                    'são paulo', 'campinas', 'santos', 'rio de janeiro', 'porto alegre',
-                    'salvador', 'belo horizonte', 'recife', 'fortaleza', 'brasília', 'curitiba'
-                ]:
-                    if city_name in address_lower:
-                        # Buscar todos os CEPs dessa cidade
-                        results = repository.get_by_cidade_uf(city_name.title(), None)
-                        if results:
-                            logger.info(f"Coordenadas encontradas por cidade para CEP {cep}: {results[0].coordinates}")
-                            return results[0].coordinates
-                return None
+                repository.create(cep_entity)
+                logger.info(f"CEP {cep} salvo na base local")
             finally:
                 db.close()
+                
         except Exception as e:
-            logger.warning(f"Erro ao obter coordenadas por endereço para CEP {cep}: {str(e)}")
-            return None
-    
-    @staticmethod
-    def _get_approximate_coordinates(cep: str) -> Tuple[float, float]:
-        """
-        Obtém coordenadas aproximadas baseadas no CEP
-        Esta é uma implementação simplificada - em produção, seria melhor usar
-        uma base de dados de CEPs com coordenadas precisas
-        """
-        # Mapeamento simplificado de CEPs para coordenadas aproximadas
-        # Em produção, isso deveria ser uma base de dados completa
-        cep_prefix = cep[:5]
-        
-        # Coordenadas aproximadas por região
-        if cep.startswith('48100'):  # Cícero Dantas - BA
-            return (-10.6000, -38.3833)
-        elif cep.startswith('48400'):  # Ribeira do Pombal - BA
-            return (-10.8333, -38.5333)
-        elif cep.startswith('48120'):  # Itapicuru - BA
-            return (-11.3167, -38.2333)
-        elif cep.startswith('48130'):  # Olindina - BA
-            return (-11.3667, -38.3333)
-        elif cep.startswith('48140'):  # Acajutiba - BA
-            return (-11.6667, -38.0167)
-        elif cep.startswith('48150'):  # Crisópolis - BA
-            return (-11.5167, -38.1500)
-        elif cep.startswith('01000'):  # São Paulo capital
-            return (-23.5505, -46.6333)
-        elif cep.startswith('02000'):  # Campinas - SP
-            return (-22.9064, -47.0616)
-        elif cep.startswith('03000'):  # Santos - SP
-            return (-23.9608, -46.3336)
-        elif cep.startswith('04000'):  # São Paulo capital
-            return (-23.5505, -46.6333)
-        elif cep.startswith('05000'):  # São Paulo capital
-            return (-23.5505, -46.6333)
-        elif cep.startswith('06000'):  # São Paulo capital
-            return (-23.5505, -46.6333)
-        elif cep.startswith('07000'):  # Rio de Janeiro
-            return (-22.9068, -43.1729)
-        elif cep.startswith('08000'):  # Porto Alegre
-            return (-30.0346, -51.2177)
-        elif cep.startswith('09000'):  # Salvador
-            return (-12.9714, -38.5011)
-        else:
-            # Coordenadas padrão (São Paulo)
-            return (-23.5505, -46.6333)
+            logger.warning(f"Erro ao salvar CEP {cep} na base local: {str(e)}")
     
     @staticmethod
     def calculate_distance(cep1: str, cep2: str) -> Optional[float]:
