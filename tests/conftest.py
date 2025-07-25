@@ -159,6 +159,12 @@ def setup_database():
         session.add(event_type)
         session.commit()
         
+        # Criar festival type básico
+        from infrastructure.database.models.festival_type_model import FestivalTypeModel
+        festival_type = FestivalTypeModel(type="Festival de Jazz")
+        session.add(festival_type)
+        session.commit()
+        
         # Criar space event type básico
         from infrastructure.database.models.space_event_type_model import SpaceEventTypeModel
         from domain.entities.space_event_type import StatusEventType

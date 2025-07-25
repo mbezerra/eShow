@@ -28,7 +28,7 @@ class ArtistMusicalStyleCreate(ArtistMusicalStyleBase):
     pass
 
 class ArtistMusicalStyleResponse(ArtistMusicalStyleBase):
-    id: int
+    id: Optional[int] = None
     created_at: datetime
 
     model_config = {"from_attributes": True}

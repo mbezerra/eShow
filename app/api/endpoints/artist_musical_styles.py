@@ -13,11 +13,17 @@ from app.schemas.user import UserResponse
 
 def convert_artist_musical_style_to_response(artist_musical_style):
     """Converter relacionamento para o schema de resposta"""
-    return ArtistMusicalStyleResponse.model_validate({
+    data = {
         "artist_id": artist_musical_style.artist_id,
         "musical_style_id": artist_musical_style.musical_style_id,
         "created_at": artist_musical_style.created_at
-    })
+    }
+    
+    # Adicionar id apenas se não for None
+    if artist_musical_style.id is not None:
+        data["id"] = artist_musical_style.id
+    
+    return ArtistMusicalStyleResponse.model_validate(data)
 
 def convert_artist_musical_styles_list_to_response(artist_musical_styles):
     """Converter lista de relacionamentos para o schema de resposta"""
