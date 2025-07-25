@@ -16,199 +16,190 @@ class LocationUtils:
     
     @staticmethod
     def _get_cep_repository():
-        """Obtém uma instância do repositório de CEPs"""
+        """Obtém uma instância do repositório de coordenadas"""
         db = SessionLocal()
         return CepCoordinatesRepositoryImpl(db), db
     
     @staticmethod
-    def get_coordinates_from_cep(cep: str) -> Optional[Tuple[float, float]]:
+    def get_coordinates_from_cidade_uf(cidade: str, uf: str) -> Optional[Tuple[float, float]]:
         """
-        Obtém as coordenadas (latitude, longitude) de um CEP usando múltiplas fontes
+        Obtém as coordenadas (latitude, longitude) de uma cidade/UF
         
         Args:
-            cep: CEP no formato '12345-678' ou '12345678'
+            cidade: Nome da cidade
+            uf: Sigla da UF (2 caracteres)
             
         Returns:
             Tuple com (latitude, longitude) ou None se não conseguir obter
         """
         try:
-            # Normalizar CEP para formato com hífen
-            cep_clean = ''.join(filter(str.isdigit, cep))
-            
-            if len(cep_clean) != 8:
-                logger.warning(f"CEP inválido: {cep}")
-                return None
-            
-            # Formatar CEP com hífen para busca na base local
-            cep_formatted = f"{cep_clean[:5]}-{cep_clean[5:]}"
+            # Normalizar cidade e UF
+            cidade_clean = cidade.strip().upper()
+            uf_clean = uf.strip().upper()
             
             # Verificar cache primeiro
-            if cep_formatted in LocationUtils._coordinates_cache:
-                return LocationUtils._coordinates_cache[cep_formatted]
+            cache_key = f"{cidade_clean}_{uf_clean}"
+            if cache_key in LocationUtils._coordinates_cache:
+                return LocationUtils._coordinates_cache[cache_key]
             
-            # 1. Tentar base de dados local (primária)
-            coordinates = LocationUtils._get_coordinates_from_local_db(cep_formatted)
-            
-            # 2. Se não encontrar, tentar ViaCEP + salvar na base local
-            if coordinates is None:
-                coordinates = LocationUtils._get_coordinates_viacep_and_save(cep_formatted)
+            # Buscar na base de dados local
+            coordinates = LocationUtils._get_coordinates_from_local_db(cidade_clean, uf_clean)
             
             # Armazenar no cache
             if coordinates:
-                LocationUtils._coordinates_cache[cep_formatted] = coordinates
-                logger.info(f"Coordenadas obtidas para CEP {cep}: {coordinates}")
+                LocationUtils._coordinates_cache[cache_key] = coordinates
+                logger.info(f"Coordenadas obtidas para {cidade}/{uf}: {coordinates}")
             
             return coordinates
                 
         except Exception as e:
-            logger.error(f"Erro ao obter coordenadas do CEP {cep}: {str(e)}")
+            logger.error(f"Erro ao obter coordenadas de {cidade}/{uf}: {str(e)}")
             return None
     
     @staticmethod
-    def _get_coordinates_from_local_db(cep: str) -> Optional[Tuple[float, float]]:
+    def _get_coordinates_from_local_db(cidade: str, uf: str) -> Optional[Tuple[float, float]]:
         """Obtém coordenadas da base de dados local"""
         try:
             repository, db = LocationUtils._get_cep_repository()
             
             try:
-                # Buscar o CEP exato
-                cep_coords = repository.get_by_cep(cep)
+                # Buscar por cidade e UF
+                cep_coords = repository.get_by_cidade_uf(cidade, uf)
                 
                 if cep_coords:
-                    logger.info(f"Coordenadas encontradas na base de dados para CEP {cep}: {cep_coords.coordinates}")
+                    logger.info(f"Coordenadas encontradas na base de dados para {cidade}/{uf}: {cep_coords.coordinates}")
                     return cep_coords.coordinates
                 
+                # Se não encontrar exato, tentar busca parcial por cidade
+                cidades_similares = repository.search_by_cidade(cidade)
+                if cidades_similares:
+                    # Retornar a primeira cidade encontrada com a UF correta
+                    for cidade_similar in cidades_similares:
+                        if cidade_similar.uf == uf:
+                            logger.info(f"Coordenadas encontradas (busca parcial) para {cidade}/{uf}: {cidade_similar.coordinates}")
+                            return cidade_similar.coordinates
+                
                 return None
                 
             finally:
                 db.close()
                 
         except Exception as e:
-            logger.warning(f"Erro ao buscar coordenadas na base de dados para CEP {cep}: {str(e)}")
+            logger.warning(f"Erro ao buscar coordenadas na base de dados para {cidade}/{uf}: {str(e)}")
             return None
     
     @staticmethod
-    def _get_coordinates_viacep_and_save(cep: str) -> Optional[Tuple[float, float]]:
-        """Obtém coordenadas via ViaCEP e salva na base local"""
-        try:
-            # Consulta a API do ViaCEP
-            url = f"https://viacep.com.br/ws/{cep}/json/"
-            response = requests.get(url, timeout=10)
+    def calculate_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+        """
+        Calcula a distância entre dois pontos usando a fórmula de Haversine
+        
+        Args:
+            lat1, lon1: Coordenadas do primeiro ponto
+            lat2, lon2: Coordenadas do segundo ponto
             
-            if response.status_code == 200:
-                data = response.json()
+        Returns:
+            Distância em quilômetros
+        """
+        # Raio da Terra em quilômetros
+        R = 6371.0
+        
+        # Converter graus para radianos
+        lat1_rad = math.radians(lat1)
+        lon1_rad = math.radians(lon1)
+        lat2_rad = math.radians(lat2)
+        lon2_rad = math.radians(lon2)
+        
+        # Diferenças nas coordenadas
+        dlat = lat2_rad - lat1_rad
+        dlon = lon2_rad - lon1_rad
+        
+        # Fórmula de Haversine
+        a = math.sin(dlat/2)**2 + math.cos(lat1_rad) * math.cos(lat2_rad) * math.sin(dlon/2)**2
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+        
+        # Distância em quilômetros
+        distance = R * c
+        
+        return distance
+    
+    @staticmethod
+    def get_nearby_cities(latitude: float, longitude: float, radius_km: float = 50) -> list:
+        """
+        Obtém cidades próximas a um ponto dado
+        
+        Args:
+            latitude, longitude: Coordenadas do ponto central
+            radius_km: Raio de busca em quilômetros
+            
+        Returns:
+            Lista de cidades próximas com suas coordenadas
+        """
+        try:
+            repository, db = LocationUtils._get_cep_repository()
+            
+            try:
+                nearby_cities = repository.get_nearby_cities(latitude, longitude, radius_km)
                 
-                if not data.get('erro') and data.get('lat') and data.get('lng'):
-                    # ViaCEP retorna coordenadas diretamente
-                    latitude = float(data['lat'])
-                    longitude = float(data['lng'])
-                    
-                    # Salvar na base local para futuras consultas
-                    LocationUtils._save_cep_coordinates(
-                        cep=cep,
-                        latitude=latitude,
-                        longitude=longitude,
-                        cidade=data.get('localidade'),
-                        uf=data.get('uf'),
-                        logradouro=data.get('logradouro'),
-                        bairro=data.get('bairro')
+                # Calcular distância para cada cidade
+                result = []
+                for city in nearby_cities:
+                    distance = LocationUtils.calculate_distance(
+                        latitude, longitude, 
+                        city.latitude, city.longitude
                     )
                     
-                    logger.info(f"Coordenadas obtidas via ViaCEP para CEP {cep}: ({latitude}, {longitude})")
-                    return (latitude, longitude)
-            
-            return None
-            
-        except Exception as e:
-            logger.warning(f"Erro ao obter dados via ViaCEP para CEP {cep}: {str(e)}")
-            return None
-    
-    @staticmethod
-    def _save_cep_coordinates(cep: str, latitude: float, longitude: float, 
-                             cidade: Optional[str] = None, uf: Optional[str] = None,
-                             logradouro: Optional[str] = None, bairro: Optional[str] = None):
-        """Salva coordenadas de CEP na base local"""
-        try:
-            from domain.entities.cep_coordinates import CepCoordinates
-            
-            cep_entity = CepCoordinates(
-                cep=cep,
-                latitude=latitude,
-                longitude=longitude,
-                cidade=cidade,
-                uf=uf,
-                logradouro=logradouro,
-                bairro=bairro
-            )
-            
-            repository, db = LocationUtils._get_cep_repository()
-            try:
-                repository.create(cep_entity)
-                logger.info(f"CEP {cep} salvo na base local")
+                    result.append({
+                        'cidade': city.cidade,
+                        'uf': city.uf,
+                        'latitude': city.latitude,
+                        'longitude': city.longitude,
+                        'distancia_km': round(distance, 2)
+                    })
+                
+                # Ordenar por distância
+                result.sort(key=lambda x: x['distancia_km'])
+                
+                return result
+                
             finally:
                 db.close()
                 
         except Exception as e:
-            logger.warning(f"Erro ao salvar CEP {cep} na base local: {str(e)}")
+            logger.error(f"Erro ao buscar cidades próximas: {str(e)}")
+            return []
     
     @staticmethod
-    def calculate_distance(cep1: str, cep2: str) -> Optional[float]:
+    def search_cities_by_name(cidade: str, limit: int = 10) -> list:
         """
-        Calcula a distância em quilômetros entre dois CEPs
+        Busca cidades por nome (parcial)
         
         Args:
-            cep1: Primeiro CEP
-            cep2: Segundo CEP
+            cidade: Nome da cidade (ou parte do nome)
+            limit: Limite de resultados
             
         Returns:
-            Distância em quilômetros ou None se não conseguir calcular
+            Lista de cidades encontradas
         """
         try:
-            coords1 = LocationUtils.get_coordinates_from_cep(cep1)
-            coords2 = LocationUtils.get_coordinates_from_cep(cep2)
+            repository, db = LocationUtils._get_cep_repository()
             
-            if coords1 is None or coords2 is None:
-                return None
-            
-            lat1, lon1 = coords1
-            lat2, lon2 = coords2
-            
-            # Fórmula de Haversine para calcular distância entre coordenadas
-            R = 6371  # Raio da Terra em quilômetros
-            
-            lat1_rad = math.radians(lat1)
-            lat2_rad = math.radians(lat2)
-            delta_lat = math.radians(lat2 - lat1)
-            delta_lon = math.radians(lon2 - lon1)
-            
-            a = (math.sin(delta_lat / 2) ** 2 + 
-                 math.cos(lat1_rad) * math.cos(lat2_rad) * 
-                 math.sin(delta_lon / 2) ** 2)
-            c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-            
-            distance = R * c
-            return distance
-            
+            try:
+                cities = repository.search_by_cidade(cidade)
+                
+                result = []
+                for city in cities[:limit]:
+                    result.append({
+                        'cidade': city.cidade,
+                        'uf': city.uf,
+                        'latitude': city.latitude,
+                        'longitude': city.longitude
+                    })
+                
+                return result
+                
+            finally:
+                db.close()
+                
         except Exception as e:
-            logger.error(f"Erro ao calcular distância entre {cep1} e {cep2}: {str(e)}")
-            return None
-    
-    @staticmethod
-    def is_within_radius(cep_origin: str, cep_target: str, radius_km: float) -> bool:
-        """
-        Verifica se um CEP está dentro do raio especificado de outro CEP
-        
-        Args:
-            cep_origin: CEP de origem
-            cep_target: CEP de destino
-            radius_km: Raio em quilômetros
-            
-        Returns:
-            True se estiver dentro do raio, False caso contrário
-        """
-        distance = LocationUtils.calculate_distance(cep_origin, cep_target)
-        
-        if distance is None:
-            return False
-        
-        return distance <= radius_km 
+            logger.error(f"Erro ao buscar cidades por nome: {str(e)}")
+            return [] 

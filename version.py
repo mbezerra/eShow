@@ -13,6 +13,9 @@ import sys
 import re
 from typing import Tuple
 
+# Versão atual do projeto
+VERSION = "0.18.0"
+
 def get_current_version() -> str:
     """Obtém a versão atual baseada na tag mais recente"""
     try:

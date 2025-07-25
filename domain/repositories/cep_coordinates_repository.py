@@ -1,18 +1,18 @@
 from abc import ABC, abstractmethod
-from typing import Optional, List, Tuple
+from typing import Optional, List
 from domain.entities.cep_coordinates import CepCoordinates
 
 class CepCoordinatesRepository(ABC):
-    """Interface para repositório de coordenadas de CEPs"""
+    """Interface do repositório de coordenadas de municípios"""
     
     @abstractmethod
-    def get_by_cep(self, cep: str) -> Optional[CepCoordinates]:
-        """Obtém coordenadas por CEP"""
+    def get_by_cidade_uf(self, cidade: str, uf: str) -> Optional[CepCoordinates]:
+        """Obtém coordenadas por cidade e UF"""
         pass
     
     @abstractmethod
-    def get_by_cidade_uf(self, cidade: str, uf: str) -> List[CepCoordinates]:
-        """Obtém coordenadas por cidade e UF"""
+    def get_by_uf(self, uf: str) -> List[CepCoordinates]:
+        """Obtém coordenadas por UF"""
         pass
     
     @abstractmethod
@@ -26,7 +26,7 @@ class CepCoordinatesRepository(ABC):
         pass
     
     @abstractmethod
-    def delete(self, cep: str) -> bool:
+    def delete(self, cidade: str, uf: str) -> bool:
         """Deleta registro de coordenadas"""
         pass
     
@@ -36,6 +36,11 @@ class CepCoordinatesRepository(ABC):
         pass
     
     @abstractmethod
-    def search_by_prefix(self, cep_prefix: str) -> List[CepCoordinates]:
-        """Busca CEPs por prefixo (ex: 48100 para todos os CEPs de Cícero Dantas)"""
+    def search_by_cidade(self, cidade: str) -> List[CepCoordinates]:
+        """Busca municípios por nome da cidade (parcial)"""
+        pass
+    
+    @abstractmethod
+    def get_nearby_cities(self, latitude: float, longitude: float, radius_km: float = 50) -> List[CepCoordinates]:
+        """Busca cidades próximas usando fórmula de Haversine"""
         pass 

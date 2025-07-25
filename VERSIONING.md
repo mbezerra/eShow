@@ -833,3 +833,214 @@ git commit -m "docs: atualizar versão para v0.15.0 em todas as documentações"
 - **Arquitetura sólida:** Padrões estabelecidos seguidos fielmente
 
 **A API eShow está na versão v0.15.0 e pronta para uso! 🎉** 
+
+# Histórico de Versões
+
+## v0.18.0 (2025-07-24)
+### Mudanças na Estrutura da Tabela cep_coordinates
+- **Refatoração completa** da tabela `cep_coordinates` para trabalhar com cidade/UF em vez de CEP
+- **Removidas colunas**: `cep`, `logradouro`, `bairro`
+- **Nova chave primária**: composta por `cidade` e `uf`
+- **Colunas mantidas**: `latitude`, `longitude`, `created_at`, `updated_at`
+
+### Importação de Dados do IBGE
+- **Importação completa** de todos os 5.565 municípios brasileiros
+- **Coordenadas reais e precisas** obtidas do arquivo oficial do IBGE
+- **Cobertura 100%** dos municípios brasileiros com coordenadas válidas
+- **Mapeamento automático** de códigos IBGE para siglas de UF
+
+### Atualizações no Código
+- **Entidade CepCoordinates**: refatorada para trabalhar com cidade/UF
+- **Modelo CepCoordinatesModel**: atualizado com nova estrutura
+- **Repositório CepCoordinatesRepository**: métodos adaptados para nova estrutura
+- **LocationUtils**: refatorado para buscar por cidade/UF em vez de CEP
+- **Novos métodos**: busca por cidade, busca por UF, busca de cidades próximas
+
+### Migração de Banco
+- **Nova migração Alembic**: `fa49132b1dc5_alterar_cep_coordinates_para_cidade_uf`
+- **Recriação da tabela** com nova estrutura
+- **Preservação de dados** existentes durante migração
+
+### Estatísticas da Importação
+- **Total**: 5.565 municípios
+- **Estados com mais municípios**: MG (853), SP (645), RS (496)
+- **Estados com menos municípios**: DF (1), RR (15), AP (16)
+
+## v0.17.0 (2025-07-24)
+### Nova Funcionalidade: Location Search
+- **Endpoints de busca por localização** implementados
+- **Cálculo de distância** usando fórmula de Haversine
+- **Integração com ViaCEP** para obtenção de coordenadas
+- **Busca de espaços para artistas** e **artistas para espaços**
+- **Verificação de disponibilidade** e conflitos de agenda
+- **Filtros por status** de eventos e festivais
+
+### Componentes Adicionados
+- **LocationSearchService**: serviço principal de busca por localização
+- **LocationUtils**: utilitários para cálculos geográficos
+- **Novos endpoints**: `/api/v1/location-search/spaces-for-artist` e `/api/v1/location-search/artists-for-space`
+- **Métodos de repositório**: para suporte à funcionalidade de busca
+
+### Documentação
+- **API_USAGE.md**: atualizado com novos endpoints
+- **README.md**: documentação da funcionalidade de busca
+- **VERSIONING.md**: histórico de versões atualizado
+
+## v0.16.0 (2025-07-24)
+### Correções e Melhorias
+- **Correção de bugs** em endpoints de usuários
+- **Melhorias na validação** de dados
+- **Otimizações de performance** em consultas de banco
+- **Atualização de dependências** para versões mais recentes
+
+## v0.15.0 (2025-07-24)
+### Implementação de Status para Space Festival Types
+- **Novo enum StatusFestivalType** com valores: CONTRATANDO, FECHADO, SUSPENSO, CANCELADO
+- **Entidade SpaceFestivalType** atualizada com campo status
+- **Nova migração** para adicionar coluna status na tabela space_festival_types
+- **Novo endpoint** PATCH /api/v1/space-festival-types/{id}/status
+- **Documentação completa** da implementação
+
+### Documentação Expandida
+- **DOCUMENTATION_UPDATE_SUMMARY.md**: resumo das atualizações
+- **SPACE_FESTIVAL_STATUS_IMPLEMENTATION.md**: detalhes da implementação
+- **SPACE_FESTIVAL_STATUS_CONSISTENCY_CHECK.md**: verificação de consistência
+- **Atualização de todos os arquivos de documentação** principais
+
+## v0.14.0 (2025-07-24)
+### Implementação de Status para Space Event Types
+- **Novo enum StatusEventType** com valores: CONTRATANDO, FECHADO, SUSPENSO, CANCELADO
+- **Entidade SpaceEventType** atualizada com campo status
+- **Nova migração** para adicionar coluna status na tabela space_event_types
+- **Novo endpoint** PATCH /api/v1/space-event-types/{id}/status
+- **Documentação completa** da implementação
+
+## v0.13.0 (2025-07-24)
+### Sistema de Reviews e Avaliações
+- **Entidade Review** implementada
+- **Modelo ReviewModel** criado
+- **Repositório ReviewRepository** implementado
+- **Serviço ReviewService** criado
+- **Endpoints de reviews** implementados
+- **Validações** de nota (1-5) e depoimento
+- **Relacionamentos** com eventos e festivais
+
+## v0.12.0 (2025-07-24)
+### Sistema de Interesses
+- **Entidade Interest** implementada
+- **Modelo InterestModel** criado
+- **Repositório InterestRepository** implementado
+- **Serviço InterestService** criado
+- **Endpoints de interesses** implementados
+- **Status de interesse** (AGUARDANDO_CONFIRMACAO, ACEITO, RECUSADO, CANCELADO)
+- **Validações** de valores monetários e mensagens
+
+## v0.11.0 (2025-07-24)
+### Sistema Financeiro
+- **Entidade Financial** implementada
+- **Modelo FinancialModel** criado
+- **Repositório FinancialRepository** implementado
+- **Serviço FinancialService** criado
+- **Endpoints financeiros** implementados
+- **Validações** de CPF/CNPJ, chaves PIX, códigos bancários
+- **Enums** para tipos de conta, chave PIX e preferência de transferência
+
+## v0.10.0 (2025-07-24)
+### Sistema de Agendamentos
+- **Entidade Booking** implementada
+- **Modelo BookingModel** criado
+- **Repositório BookingRepository** implementado
+- **Serviço BookingService** criado
+- **Endpoints de agendamentos** implementados
+- **Validações** de conflitos de horário
+- **Relacionamentos** com espaços, artistas, eventos e festivais
+
+## v0.9.0 (2025-07-24)
+### Sistema de Festivais
+- **Entidade SpaceFestivalType** implementada
+- **Modelo SpaceFestivalTypeModel** criado
+- **Repositório SpaceFestivalTypeRepository** implementado
+- **Serviço SpaceFestivalTypeService** criado
+- **Endpoints de festivais** implementados
+- **Relacionamentos** com espaços e tipos de festival
+
+## v0.8.0 (2025-07-24)
+### Sistema de Eventos
+- **Entidade SpaceEventType** implementada
+- **Modelo SpaceEventTypeModel** criado
+- **Repositório SpaceEventTypeRepository** implementado
+- **Serviço SpaceEventTypeService** criado
+- **Endpoints de eventos** implementados
+- **Relacionamentos** com espaços e tipos de evento
+
+## v0.7.0 (2025-07-24)
+### Sistema de Espaços
+- **Entidade Space** implementada
+- **Modelo SpaceModel** criado
+- **Repositório SpaceRepository** implementado
+- **Serviço SpaceService** criado
+- **Endpoints de espaços** implementados
+- **Validações** de valores monetários e requisitos
+- **Enums** para acesso e público estimado
+
+## v0.6.0 (2025-07-24)
+### Sistema de Artistas
+- **Entidade Artist** implementada
+- **Modelo ArtistModel** criado
+- **Repositório ArtistRepository** implementado
+- **Serviço ArtistService** criado
+- **Endpoints de artistas** implementados
+- **Relacionamentos** com estilos musicais
+- **Validações** de raio de atuação e valores
+
+## v0.5.0 (2025-07-24)
+### Sistema de Estilos Musicais
+- **Entidade MusicalStyle** implementada
+- **Modelo MusicalStyleModel** criado
+- **Repositório MusicalStyleRepository** implementado
+- **Serviço MusicalStyleService** criado
+- **Endpoints de estilos musicais** implementados
+- **Relacionamento N:N** com artistas
+
+## v0.4.0 (2025-07-24)
+### Sistema de Tipos de Artista
+- **Entidade ArtistType** implementada
+- **Modelo ArtistTypeModel** criado
+- **Repositório ArtistTypeRepository** implementado
+- **Serviço ArtistTypeService** criado
+- **Endpoints de tipos de artista** implementados
+- **Enum ArtistTypeEnum** com categorias
+
+## v0.3.0 (2025-07-24)
+### Sistema de Tipos de Espaço
+- **Entidade SpaceType** implementada
+- **Modelo SpaceTypeModel** criado
+- **Repositório SpaceTypeRepository** implementado
+- **Serviço SpaceTypeService** criado
+- **Endpoints de tipos de espaço** implementados
+
+## v0.2.0 (2025-07-24)
+### Sistema de Tipos de Evento
+- **Entidade EventType** implementada
+- **Modelo EventTypeModel** criado
+- **Repositório EventTypeRepository** implementado
+- **Serviço EventTypeService** criado
+- **Endpoints de tipos de evento** implementados
+
+## v0.1.0 (2025-07-24)
+### Sistema de Tipos de Festival
+- **Entidade FestivalType** implementada
+- **Modelo FestivalTypeModel** criado
+- **Repositório FestivalTypeRepository** implementado
+- **Serviço FestivalTypeService** criado
+- **Endpoints de tipos de festival** implementados
+
+## v0.0.1 (2025-07-24)
+### Versão Inicial
+- **Arquitetura hexagonal** implementada
+- **Sistema de autenticação** com JWT
+- **Sistema de usuários** e perfis
+- **Sistema de roles** (ARTISTA, ESPACO)
+- **Banco de dados SQLite** configurado
+- **Migrations Alembic** configuradas
+- **Documentação básica** criada 
