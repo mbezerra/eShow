@@ -28,6 +28,14 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 
 ## 🆕 **Funcionalidades Recentes**
 
+### Busca Insensível a Acentos ✅ **NOVO**
+- **Busca por cidade ignora acentuação ortográfica** completamente
+- **Normalização automática** de todos os 5.565 municípios brasileiros
+- **Exemplos funcionais**: "São Paulo" = "SAO PAULO" = "são paulo"
+- **Busca parcial** funciona com termos normalizados
+- **Performance otimizada** com índice na coluna normalizada
+- **Flexibilidade total** para cadastros com ou sem acentos
+
 ### Campo Status em Space Event Types e Space Festival Types
 - **Novo campo `status`** com valores: CONTRATANDO, FECHADO, SUSPENSO, CANCELADO
 - **Endpoint específico** para atualização de status: `PATCH /api/v1/space-event-types/{id}/status` e `PATCH /api/v1/space-festival-types/{id}/status`
@@ -37,12 +45,12 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 ### Sistema de Busca por Localização ✅ **CONCLUÍDO E CORRIGIDO**
 - **4 novos endpoints** para busca geográfica baseada em raio de atuação
 - **Cálculo de distância** usando fórmula de Haversine com dados reais
-- **Base de dados primária** com 4111 CEPs e 3928 cidades brasileiras
-- **ViaCEP como redundância** para CEPs não cadastrados na base local
+- **Base de dados primária** com 5.565 municípios brasileiros (100% cobertura)
+- **Dados oficiais do IBGE** com coordenadas reais e precisas
 - **Validação de disponibilidade** baseada em status de eventos/festivais
 - **Verificação de conflitos** de agendamento para artistas
 - **Autenticação e autorização** por role (artista/espaço)
-- **Sistema confiável** sem hard coded, baseado em dados reais da base IBGE
+- **Sistema confiável** baseado em dados reais da base IBGE
 
 ### Documentação Atualizada
 - **API_USAGE.md** - Exemplos de uso detalhados

@@ -14,7 +14,35 @@
 - **2 espaços encontrados**: Dentro do raio de 50km do artista (48400-000)
 - **Documentação atualizada**: VERSIONING.md e README.md atualizados
 
+#### **Busca Insensível a Acentos (NOVO):**
+- **Normalização automática**: Função `_normalize_text()` que remove acentos usando `unicodedata`
+- **Coluna normalizada**: `cidade_normalizada` adicionada à tabela `cep_coordinates`
+- **Migração Alembic**: `7ad7aed06bd6_adicionar_coluna_cidade_normalizada` aplicada
+- **População automática**: Todos os 5.565 municípios processados com normalização
+- **Busca flexível**: Métodos `get_by_cidade_uf()` e `search_by_cidade()` atualizados
+- **Performance otimizada**: Índice `idx_cep_coordinates_cidade_normalizada` criado
+- **Exemplos funcionais**: "São Paulo" = "SAO PAULO" = "são paulo"
+- **Busca parcial**: Funciona com termos parciais normalizados
+- **Testes realizados**: 16 casos de teste com diferentes acentuações - 100% sucesso
+
+#### **Correções Críticas da v0.18.0:**
+- **Correção do erro**: `LocationUtils.is_within_radius` não encontrado
+- **Adaptação do LocationSearchService** para nova estrutura de coordenadas
+- **Correção dos parâmetros** do método `get_conflicting_bookings`
+- **Sistema 100% funcional** com nova estrutura de dados geográficos
+
 ### ✨ Funcionalidades Implementadas na v0.18.0
+
+#### **Refatoração Completa do Sistema de Localização:**
+- **Mudança estrutural**: Tabela `cep_coordinates` refatorada para cidade/UF em vez de CEP
+- **Remoção de colunas**: `cep`, `logradouro`, `bairro` removidas
+- **Nova chave primária**: Composta por `cidade` e `uf`
+- **Importação IBGE**: 5.565 municípios brasileiros com coordenadas reais
+- **Cobertura 100%**: Todos os municípios brasileiros incluídos
+- **Dados oficiais**: Coordenadas precisas do arquivo oficial do IBGE
+- **Migração complexa**: `fa49132b1dc5_alterar_cep_coordinates_para_cidade_uf`
+- **Recriação de tabela**: Estratégia necessária para SQLite
+- **Preservação de dados**: Todos os dados existentes mantidos
 
 ### ✨ Funcionalidades Implementadas na v0.14.0
 

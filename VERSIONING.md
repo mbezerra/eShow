@@ -836,13 +836,33 @@ git commit -m "docs: atualizar versão para v0.15.0 em todas as documentações"
 
 # Histórico de Versões
 
+## v0.18.1 (2025-07-24)
+### Busca Insensível a Acentos
+- **Nova funcionalidade**: busca por cidade ignora acentuação ortográfica
+- **Coluna normalizada**: `cidade_normalizada` armazena versão sem acentos
+- **Normalização automática**: todos os 5.565 municípios processados
+- **Exemplos funcionais**: "São Paulo" = "SAO PAULO" = "são paulo"
+- **Busca parcial**: funciona com termos parciais normalizados
+- **Migração adicional**: `7ad7aed06bd6_adicionar_coluna_cidade_normalizada`
+- **População automática** da coluna normalizada
+
+### Atualizações no Código
+- **Modelo CepCoordinatesModel**: adicionada coluna `cidade_normalizada`
+- **Repositório CepCoordinatesRepository**: métodos atualizados para usar normalização
+- **LocationUtils**: função `_normalize_text()` para remoção de acentos
+- **Índice otimizado**: `idx_cep_coordinates_cidade_normalizada` para performance
+
+### Correções de Bugs
+- **Correção do erro**: `LocationUtils.is_within_radius` não encontrado
+- **Adaptação do LocationSearchService** para nova estrutura de coordenadas
+- **Correção dos parâmetros** do método `get_conflicting_bookings`
+
 ## v0.18.0 (2025-07-24)
 ### Mudanças na Estrutura da Tabela cep_coordinates
 - **Refatoração completa** da tabela `cep_coordinates` para trabalhar com cidade/UF em vez de CEP
 - **Removidas colunas**: `cep`, `logradouro`, `bairro`
 - **Nova chave primária**: composta por `cidade` e `uf`
 - **Colunas mantidas**: `latitude`, `longitude`, `created_at`, `updated_at`
-- **Nova coluna**: `cidade_normalizada` para busca insensível a acentos
 
 ### Importação de Dados do IBGE
 - **Importação completa** de todos os 5.565 municípios brasileiros
@@ -852,36 +872,21 @@ git commit -m "docs: atualizar versão para v0.15.0 em todas as documentações"
 
 ### Atualizações no Código
 - **Entidade CepCoordinates**: refatorada para trabalhar com cidade/UF
-- **Modelo CepCoordinatesModel**: atualizado com nova estrutura e coluna normalizada
+- **Modelo CepCoordinatesModel**: atualizado com nova estrutura
 - **Repositório CepCoordinatesRepository**: métodos adaptados para nova estrutura
 - **LocationUtils**: refatorado para buscar por cidade/UF em vez de CEP
 - **LocationSearchService**: corrigido para trabalhar com nova estrutura de coordenadas
 - **Novos métodos**: busca por cidade, busca por UF, busca de cidades próximas
 
-### Busca Insensível a Acentos
-- **Nova funcionalidade**: busca por cidade ignora acentuação ortográfica
-- **Coluna normalizada**: `cidade_normalizada` armazena versão sem acentos
-- **Normalização automática**: todos os 5.565 municípios processados
-- **Exemplos funcionais**: "São Paulo" = "SAO PAULO" = "são paulo"
-- **Busca parcial**: funciona com termos parciais normalizados
-
 ### Migração de Banco
 - **Nova migração Alembic**: `fa49132b1dc5_alterar_cep_coordinates_para_cidade_uf`
-- **Migração adicional**: `7ad7aed06bd6_adicionar_coluna_cidade_normalizada`
 - **Recriação da tabela** com nova estrutura
 - **Preservação de dados** existentes durante migração
-- **População automática** da coluna normalizada
-
-### Correções de Bugs
-- **Correção do erro**: `LocationUtils.is_within_radius` não encontrado
-- **Adaptação do LocationSearchService** para nova estrutura de coordenadas
-- **Correção dos parâmetros** do método `get_conflicting_bookings`
 
 ### Estatísticas da Importação
 - **Total**: 5.565 municípios
 - **Estados com mais municípios**: MG (853), SP (645), RS (496)
 - **Estados com menos municípios**: DF (1), RR (15), AP (16)
-- **Coluna normalizada**: 100% dos registros processados
 
 ## v0.17.0 (2025-07-24)
 ### Nova Funcionalidade: Location Search

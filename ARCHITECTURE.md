@@ -565,16 +565,24 @@ O sistema de **Location Search** permite que artistas encontrem espaços dentro 
 ```python
 class LocationUtils:
     @staticmethod
-    def calculate_distance(cep1: str, cep2: str) -> float:
-        """Calcula distância entre dois CEPs usando fórmula de Haversine"""
+    def calculate_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+        """Calcula distância entre dois pontos usando fórmula de Haversine"""
         
     @staticmethod
-    def is_within_radius(cep_origin: str, cep_target: str, radius_km: float) -> bool:
-        """Verifica se CEP de destino está dentro do raio de origem"""
+    def get_coordinates_from_cidade_uf(cidade: str, uf: str) -> Optional[Tuple[float, float]]:
+        """Obtém coordenadas geográficas de uma cidade/UF da base local"""
         
     @staticmethod
-    def get_coordinates_from_cep(cep: str) -> Tuple[float, float]:
-        """Obtém coordenadas geográficas de um CEP via ViaCEP API"""
+    def _normalize_text(text: str) -> str:
+        """Normaliza texto removendo acentos e convertendo para maiúsculas"""
+        
+    @staticmethod
+    def search_cities_by_name(cidade: str, limit: int = 10) -> list:
+        """Busca cidades por nome (insensível a acentos)"""
+        
+    @staticmethod
+    def get_nearby_cities(latitude: float, longitude: float, radius_km: float = 50) -> list:
+        """Busca cidades próximas a um ponto geográfico"""
 ```
 
 **LocationSearchService**:
@@ -621,23 +629,30 @@ class LocationSearchService:
 
 2. **Cálculo de Distância**:
    - Baseado na fórmula de Haversine
-   - Coordenadas obtidas via API ViaCEP
-   - Fallback para coordenadas aproximadas
+   - Coordenadas obtidas da base local (5.565 municípios)
+   - Dados oficiais do IBGE com 100% de cobertura
 
-3. **Filtros de Disponibilidade**:
+3. **Busca Insensível a Acentos**:
+   - Normalização automática de nomes de cidades
+   - Coluna `cidade_normalizada` para busca otimizada
+   - Exemplos: "São Paulo" = "SAO PAULO" = "são paulo"
+
+4. **Filtros de Disponibilidade**:
    - Espaços devem ter eventos/festivais com status "CONTRATANDO"
    - Artistas não devem ter agendamentos conflitantes
 
-4. **Performance**:
+5. **Performance**:
    - Limite configurável de resultados
    - Opção de retornar dados completos ou apenas IDs
-   - Cache de coordenadas (futuro)
+   - Índices otimizados na base de dados
 
 #### Benefícios da Implementação
 
-1. **Precisão Geográfica**: Cálculos baseados em coordenadas reais
-2. **Flexibilidade**: Suporte a diferentes raios de atuação
-3. **Performance**: Filtros otimizados e limites configuráveis
-4. **Confiabilidade**: Sistema de fallback para coordenadas
-5. **Segurança**: Validação de roles e autenticação
-6. **Escalabilidade**: Arquitetura preparada para cache e otimizações 
+1. **Precisão Geográfica**: Cálculos baseados em coordenadas reais do IBGE
+2. **Cobertura Completa**: 100% dos municípios brasileiros incluídos
+3. **Flexibilidade**: Suporte a diferentes raios de atuação
+4. **Busca Inteligente**: Insensível a acentuação ortográfica
+5. **Performance**: Filtros otimizados e índices na base de dados
+6. **Confiabilidade**: Dados oficiais sem dependência de APIs externas
+7. **Segurança**: Validação de roles e autenticação
+8. **Escalabilidade**: Arquitetura preparada para otimizações futuras 
