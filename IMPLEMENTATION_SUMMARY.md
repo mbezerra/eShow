@@ -1,6 +1,14 @@
 # Resumo da Implementação - eShow API
 
-## 🚀 Versão Atual: 0.17.0+
+## 🚀 Versão Atual: 0.18.0+
+
+### ✨ Funcionalidades Implementadas na v0.18.0
+
+- Sistema de busca por localização 100% local, sem dependências externas
+- Base de coordenadas de municípios do IBGE integrada
+- Limpeza de arquivos temporários e scripts de debug
+- Resposta de API mais limpa (campo distance_km removido do profile)
+- Documentação e versionamento atualizados
 
 ### ✨ Funcionalidades Implementadas na v0.14.0
 

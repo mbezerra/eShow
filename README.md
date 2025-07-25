@@ -24,7 +24,7 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Tabelas no Banco:** 18
 - **Schemas Pydantic:** 20 arquivos principais
 - **Cobertura de Testes:** Em desenvolvimento
-- **Versão Atual:** v0.17.0
+- **Versão Atual:** v0.18.0
 
 ## 🆕 **Funcionalidades Recentes**
 
