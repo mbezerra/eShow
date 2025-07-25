@@ -3,13 +3,28 @@ from fastapi.testclient import TestClient
 
 def test_create_profile(client: TestClient):
     """Teste para criar um profile"""
-    # Este teste está falhando porque há um problema de design:
-    # - O ProfileModel tem user_id obrigatório
-    # - Mas a entidade Profile não tem user_id
-    # - E o serviço não está definindo o user_id
-    #
-    # Por enquanto, vamos pular este teste até que o problema seja resolvido
-    pytest.skip("Teste de criação de profile precisa ser corrigido após resolver problema de design")
+    profile_data = {
+        "user_id": 1,  # Usuário existente do conftest.py
+        "role_id": 1,  # Role ARTISTA
+        "full_name": "João Silva",
+        "artistic_name": "João Artista",
+        "bio": "Músico profissional com experiência em diversos estilos",
+        "cep": "01234-567",
+        "logradouro": "Rua das Flores",
+        "numero": "123",
+        "cidade": "São Paulo",
+        "uf": "SP",
+        "telefone_movel": "11999999999"
+    }
+    
+    response = client.post("/api/v1/profiles/", json=profile_data)
+    assert response.status_code == 201
+    
+    data = response.json()
+    assert data["full_name"] == profile_data["full_name"]
+    assert data["artistic_name"] == profile_data["artistic_name"]
+    assert data["user_id"] == profile_data["user_id"]
+    assert "id" in data
 
 def test_get_profiles(client: TestClient):
     """Teste para listar profiles"""

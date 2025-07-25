@@ -18,6 +18,7 @@ class ProfileService:
 
         # Criar entidade de domínio
         profile = Profile(
+            user_id=profile_data.user_id,
             role_id=profile_data.role_id,
             full_name=profile_data.full_name,
             artistic_name=profile_data.artistic_name,
@@ -39,6 +40,7 @@ class ProfileService:
         # Converter para schema de resposta
         return ProfileResponse(
             id=created_profile.id,
+            user_id=created_profile.user_id,
             role_id=created_profile.role_id,
             full_name=created_profile.full_name,
             artistic_name=created_profile.artistic_name,
@@ -62,6 +64,7 @@ class ProfileService:
         return [
             ProfileResponse(
                 id=profile.id,
+                user_id=profile.user_id,
                 role_id=profile.role_id,
                 full_name=profile.full_name,
                 artistic_name=profile.artistic_name,
@@ -89,6 +92,7 @@ class ProfileService:
         
         return ProfileResponse(
             id=profile.id,
+            user_id=profile.user_id,
             role_id=profile.role_id,
             full_name=profile.full_name,
             artistic_name=profile.artistic_name,

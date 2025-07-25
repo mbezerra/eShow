@@ -11,6 +11,7 @@ class ProfileRepositoryImpl(ProfileRepository):
     def create(self, profile: Profile) -> Profile:
         """Criar um novo profile"""
         db_profile = ProfileModel(
+            user_id=profile.user_id,
             role_id=profile.role_id,
             full_name=profile.full_name,
             artistic_name=profile.artistic_name,
@@ -31,6 +32,7 @@ class ProfileRepositoryImpl(ProfileRepository):
         
         return Profile(
             id=db_profile.id,
+            user_id=db_profile.user_id,
             role_id=db_profile.role_id,
             full_name=db_profile.full_name,
             artistic_name=db_profile.artistic_name,
@@ -56,6 +58,7 @@ class ProfileRepositoryImpl(ProfileRepository):
         
         return Profile(
             id=db_profile.id,
+            user_id=db_profile.user_id,
             role_id=db_profile.role_id,
             full_name=db_profile.full_name,
             artistic_name=db_profile.artistic_name,
@@ -79,6 +82,7 @@ class ProfileRepositoryImpl(ProfileRepository):
         return [
             Profile(
                 id=db_profile.id,
+                user_id=db_profile.user_id,
                 role_id=db_profile.role_id,
                 full_name=db_profile.full_name,
                 artistic_name=db_profile.artistic_name,
@@ -106,6 +110,7 @@ class ProfileRepositoryImpl(ProfileRepository):
         
         return Profile(
             id=db_profile.id,
+            user_id=db_profile.user_id,
             role_id=db_profile.role_id,
             full_name=db_profile.full_name,
             artistic_name=db_profile.artistic_name,
@@ -129,6 +134,7 @@ class ProfileRepositoryImpl(ProfileRepository):
         return [
             Profile(
                 id=db_profile.id,
+                user_id=db_profile.user_id,
                 role_id=db_profile.role_id,
                 full_name=db_profile.full_name,
                 artistic_name=db_profile.artistic_name,
@@ -154,6 +160,8 @@ class ProfileRepositoryImpl(ProfileRepository):
         if not db_profile:
             raise ValueError("Profile não encontrado")
         
+        if profile.user_id is not None:
+            db_profile.user_id = profile.user_id
         db_profile.role_id = profile.role_id
         db_profile.full_name = profile.full_name
         db_profile.artistic_name = profile.artistic_name
@@ -174,6 +182,7 @@ class ProfileRepositoryImpl(ProfileRepository):
         
         return Profile(
             id=db_profile.id,
+            user_id=db_profile.user_id,
             role_id=db_profile.role_id,
             full_name=db_profile.full_name,
             artistic_name=db_profile.artistic_name,
