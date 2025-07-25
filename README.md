@@ -1,6 +1,6 @@
 # eShow API
 
-Versão: 0.19.0
+Versão: 0.20.0
 
 Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvido com **FastAPI** e arquitetura hexagonal.
 
@@ -26,7 +26,7 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Tabelas no Banco:** 18
 - **Schemas Pydantic:** 20 arquivos principais
 - **Cobertura de Testes:** Em desenvolvimento
-- **Versão Atual:** v0.18.1
+- **Versão Atual:** v0.20.0
 
 ## 🆕 **Funcionalidades Recentes**
 
@@ -62,12 +62,22 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Compatibilidade total** com perfis existentes
 - **Migração automática** aplicada ao banco de dados
 
-### Documentação Atualizada
+### Documentação Completa ✅ **NOVO**
+- **Todas as documentações sincronizadas** e atualizadas para v0.20.0
 - **API_USAGE.md** - Exemplos de uso detalhados incluindo coordenadas geográficas
-- **IMPLEMENTATION_SUMMARY.md** - Resumo técnico completo
-- **ARCHITECTURE.md** - Arquitetura detalhada
-- **DATABASE_STRATEGY.md** - Estratégia de banco de dados
-- **VERSIONING.md** - Estratégia de versionamento
+- **IMPLEMENTATION_SUMMARY.md** - Resumo técnico completo atualizado
+- **ARCHITECTURE.md** - Arquitetura detalhada com entidades atualizadas
+- **DATABASE_STRATEGY.md** - Estratégia de banco com consultas otimizadas
+- **VERSIONING.md** - Changelog completo e versionamento automatizado
+- **SCRIPTS_README.md** - Documentação de scripts atualizada
+
+### Sistema Estabilizado ✅ **NOVO**
+- **151 endpoints funcionais** testados e documentados
+- **18 entidades de domínio** com arquitetura hexagonal consolidada
+- **18 tabelas no banco** com estrutura otimizada
+- **20 schemas Pydantic** com validação robusta
+- **Sistema de coordenadas** integrado com busca geográfica
+- **Testes automatizados** com cobertura implementada
 
 ## 📁 **Estrutura do Projeto**
 

@@ -1,9 +1,9 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.19.0** (2025-01-25) - Coordenadas Geográficas em Perfis
+**v0.20.0** (2025-01-25) - Documentação Completa e Estabilização
 
-> **Atualização Recente:** Versão minor incrementada para v0.19.0 com implementação de coordenadas geográficas em perfis.
+> **Atualização Recente:** Versão minor incrementada para v0.20.0 com documentação completa e estabilização do sistema.
 
 - **COORDENADAS GEOGRÁFICAS EM PERFIS**: Campos latitude e longitude implementados
   - ✅ **Campos opcionais**: latitude e longitude adicionados à entidade Profile
@@ -20,6 +20,33 @@
   - ✅ **Documentação atualizada**: API_USAGE.md e README.md com exemplos
 
 > **Marco de Funcionalidade:** A v0.19.0 adiciona suporte completo a coordenadas geográficas em perfis, permitindo cálculos de distância precisos e integração com o sistema de busca por localização.
+
+### v0.20.0 (2025-01-25) - Documentação Completa e Estabilização
+
+- **DOCUMENTAÇÃO COMPLETA**: Todas as documentações atualizadas e sincronizadas
+  - ✅ **API_USAGE.md**: Seção completa sobre Sistema de Perfis com coordenadas geográficas
+  - ✅ **README.md**: Funcionalidades recentes atualizadas com coordenadas geográficas
+  - ✅ **IMPLEMENTATION_SUMMARY.md**: Resumo técnico atualizado para v0.20.0
+  - ✅ **ARCHITECTURE.md**: Descrição da entidade Profile atualizada
+  - ✅ **DATABASE_STRATEGY.md**: Consultas SQL atualizadas com coordenadas
+  - ✅ **VERSIONING.md**: Changelog completo e atualizado
+  - ✅ **SCRIPTS_README.md**: Documentação de scripts atualizada
+
+- **ESTABILIZAÇÃO DO SISTEMA**: Sistema maduro e bem documentado
+  - ✅ **151 endpoints funcionais**: Todos os endpoints testados e documentados
+  - ✅ **18 entidades de domínio**: Arquitetura hexagonal consolidada
+  - ✅ **18 tabelas no banco**: Estrutura de dados otimizada
+  - ✅ **20 schemas Pydantic**: Validação de dados robusta
+  - ✅ **Sistema de coordenadas**: Integração completa com busca geográfica
+  - ✅ **Testes automatizados**: Cobertura de testes implementada
+
+- **VERSIONAMENTO AUTOMÁTICO**: Sistema de versionamento maduro
+  - ✅ **Tag Git v0.20.0**: Criada e sincronizada com repositório remoto
+  - ✅ **Versionamento semântico**: Padrão MAJOR.MINOR.PATCH seguido
+  - ✅ **Changelog detalhado**: Histórico completo de mudanças
+  - ✅ **Documentação sincronizada**: Todas as referências de versão atualizadas
+
+> **Marco de Estabilização:** A v0.20.0 marca a versão minor com foco em documentação completa e estabilização do sistema. Todas as funcionalidades estão implementadas, testadas e documentadas, com arquitetura hexagonal madura e sistema de versionamento automatizado.
 
 ### v0.19.0 (2025-01-25) - Coordenadas Geográficas em Perfis
 
@@ -49,7 +76,7 @@
   - ✅ **IMPLEMENTATION_SUMMARY.md**: Resumo técnico da implementação
   - ✅ **ARCHITECTURE.md**: Descrição da entidade Profile atualizada
   - ✅ **DATABASE_STRATEGY.md**: Consultas SQL atualizadas com coordenadas
-  - ✅ **VERSIONING.md**: Changelog atualizado para v0.19.0
+  - ✅ **VERSIONING.md**: Changelog atualizado para v0.20.0
 
 > **Marco de Funcionalidade:** A v0.19.0 adiciona suporte completo a coordenadas geográficas em perfis, permitindo cálculos de distância precisos e integração com o sistema de busca por localização.
 
