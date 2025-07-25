@@ -1,14 +1,20 @@
 # Resumo da Implementação - eShow API
 
-## 🚀 Versão Atual: 0.18.0+
+## 🚀 Versão Atual: 0.18.1+
+
+### ✨ Funcionalidades Implementadas na v0.18.1
+
+- **Correção crítica do LocationUtils**: Refatoração completa e eliminação de hard coded
+- **Base de dados primária**: Uso exclusivo da tabela cep_coordinates (4111 CEPs, 3928 cidades)
+- **ViaCEP como redundância**: API externa apenas para CEPs não cadastrados
+- **Formato de CEP corrigido**: CEPs formatados com hífen para busca local
+- **Sistema confiável**: Baseado em dados reais da base IBGE sem hard coded
+- **Performance melhorada**: Consultas diretas na base local sem fallbacks desnecessários
+- **Teste realizado**: Script de diagnóstico criado e executado com sucesso
+- **2 espaços encontrados**: Dentro do raio de 50km do artista (48400-000)
+- **Documentação atualizada**: VERSIONING.md e README.md atualizados
 
 ### ✨ Funcionalidades Implementadas na v0.18.0
-
-- Sistema de busca por localização 100% local, sem dependências externas
-- Base de coordenadas de municípios do IBGE integrada
-- Limpeza de arquivos temporários e scripts de debug
-- Resposta de API mais limpa (campo distance_km removido do profile)
-- Documentação e versionamento atualizados
 
 ### ✨ Funcionalidades Implementadas na v0.14.0
 

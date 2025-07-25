@@ -1,41 +1,68 @@
 # Controle de Versão - eShow API
 
 ## Versão Atual
-**v0.17.0** (2025-01-24) - Estabilização e Documentação Completa
+**v0.18.1** (2025-01-25) - Correção do LocationUtils e Refatoração Completa
 
-> **Atualização Recente:** Versão minor incrementada para v0.17.0 com estabilização completa e documentação atualizada.
+> **Atualização Recente:** Versão patch incrementada para v0.18.1 com correção crítica do LocationUtils e refatoração completa.
 
-- **SISTEMA DE BUSCA POR LOCALIZAÇÃO COMPLETO**: Sistema de busca geográfica implementado
-  - ✅ 4 endpoints REST funcionais com autenticação JWT
-  - ✅ Busca de espaços para artistas baseada no raio de atuação
-  - ✅ Busca de artistas para espaços baseada na disponibilidade
-  - ✅ Cálculo de distância usando fórmula de Haversine
-  - ✅ Integração com API ViaCEP para coordenadas geográficas
-  - ✅ Sistema de fallback com coordenadas aproximadas
-  - ✅ Validação de disponibilidade baseada em status de eventos/festivais
-  - ✅ Verificação de conflitos de agendamento para artistas
-  - ✅ Autenticação e autorização por role (artista/espaço)
-  - ✅ Parâmetros configuráveis: return_full_data, max_results
-  - ✅ Respostas estruturadas com metadados de busca
-  - ✅ Tratamento robusto de erros e validações
-  - ✅ Arquitetura hexagonal respeitada em todas as camadas
-- **DOCUMENTAÇÃO ATUALIZADA**: Todos os arquivos .md sincronizados
-  - README.md: Seção Location Search completa com 4 endpoints e regras de negócio
-  - ARCHITECTURE.md: Sistema de Location Search detalhado com componentes e fluxos
-  - IMPLEMENTATION_SUMMARY.md: Seção v0.16.0 detalhada com sistema Location Search
-  - DATABASE_STRATEGY.md: Estrutura de dados, consultas SQL e otimizações
-  - API_USAGE.md: Guia prático completo com exemplos curl para Location Search
-  - VERSIONING.md: Changelog atualizado com marcos v0.16.0
-  - Estatísticas atualizadas: **138 endpoints**, **17 entidades**, **80+ schemas**
+- **REFATORAÇÃO COMPLETA DO LOCATIONUTILS**: Correção crítica e eliminação de hard coded
+  - ✅ **Eliminação de hard coded**: Removidos todos os mapeamentos manuais de CEPs
+  - ✅ **Base de dados primária**: Uso exclusivo da tabela cep_coordinates (4111 CEPs, 3928 cidades)
+  - ✅ **ViaCEP como redundância**: API externa apenas para CEPs não cadastrados
+  - ✅ **Correção de formato**: CEPs formatados corretamente com hífen para busca local
+  - ✅ **Cache otimizado**: Sistema de cache para evitar consultas repetidas
+  - ✅ **Salvamento automático**: CEPs obtidos via ViaCEP são salvos na base local
+  - ✅ **Tratamento robusto**: Validações e tratamento de erros aprimorados
+  - ✅ **Performance melhorada**: Consultas diretas na base local sem fallbacks desnecessários
+  - ✅ **Confiabilidade**: Sistema baseado em dados reais da base IBGE
+  - ✅ **Manutenibilidade**: Código limpo e sem dependências de dados hard coded
+- **SISTEMA DE BUSCA POR LOCALIZAÇÃO FUNCIONAL**: Endpoints operacionais após correção
+  - ✅ **4 endpoints REST funcionais**: Busca de espaços e artistas por localização
+  - ✅ **Cálculo de distância preciso**: Fórmula de Haversine com dados reais
+  - ✅ **Validação de disponibilidade**: Status CONTRATANDO para eventos/festivais
+  - ✅ **Verificação de conflitos**: Agendamentos conflitantes para artistas
+  - ✅ **Autenticação e autorização**: Por role (artista/espaço) com JWT
+  - ✅ **Parâmetros configuráveis**: return_full_data, max_results
+  - ✅ **Respostas estruturadas**: Metadados de busca e resultados organizados
+  - ✅ **Arquitetura hexagonal**: Padrões mantidos em todas as camadas
 - **ARQUITETURA HEXAGONAL MADURA**: Padrões estabelecidos seguidos fielmente
-  - LocationUtils com cálculos geográficos independentes
-  - LocationSearchService com lógica de negócio bem estruturada
-  - Schemas Pydantic com validações específicas para busca
-  - Repository Pattern com métodos especializados
+  - LocationUtils refatorado com base de dados primária e ViaCEP como redundância
+  - LocationSearchService com lógica de negócio robusta e validada
+  - Schemas Pydantic com validações específicas para busca geográfica
+  - Repository Pattern com métodos especializados para coordenadas
   - Service Layer com orquestração de múltiplos repositórios
   - Tratamento de exceções padronizado e informativo
 
-> **Marco de Desenvolvimento:** A v0.16.0 marca a versão minor com implementação do sistema de busca por localização. O projeto agora possui 138 endpoints funcionais, 17 entidades de domínio e funcionalidade geográfica completa com documentação técnica totalmente sincronizada.
+> **Marco de Correção:** A v0.18.1 marca a versão patch com correção crítica do LocationUtils. O sistema agora usa primariamente a base de dados local (4111 CEPs) com ViaCEP como redundância, eliminando todos os hard coded e garantindo confiabilidade e manutenibilidade.
+
+### v0.18.1 (2025-01-25) - Correção do LocationUtils e Refatoração Completa
+
+- **CORREÇÃO CRÍTICA DO LOCATIONUTILS**: Refatoração completa e eliminação de hard coded
+  - ✅ **Problema identificado**: Formato de CEP incorreto na busca local
+  - ✅ **Hard coded removidos**: Eliminados todos os mapeamentos manuais de CEPs
+  - ✅ **Base de dados primária**: Uso exclusivo da tabela cep_coordinates (4111 CEPs, 3928 cidades)
+  - ✅ **ViaCEP como redundância**: API externa apenas para CEPs não cadastrados
+  - ✅ **Formato corrigido**: CEPs formatados com hífen para busca local
+  - ✅ **Cache otimizado**: Sistema de cache para evitar consultas repetidas
+  - ✅ **Salvamento automático**: CEPs obtidos via ViaCEP são salvos na base local
+  - ✅ **Performance melhorada**: Consultas diretas sem fallbacks desnecessários
+  - ✅ **Confiabilidade**: Sistema baseado em dados reais da base IBGE
+  - ✅ **Manutenibilidade**: Código limpo sem dependências de dados hard coded
+
+- **SISTEMA DE BUSCA FUNCIONAL**: Endpoints operacionais após correção
+  - ✅ **Teste realizado**: Script de diagnóstico criado e executado com sucesso
+  - ✅ **2 espaços encontrados**: Dentro do raio de 50km do artista (48400-000)
+  - ✅ **Distâncias calculadas**: 30.68km para espaços em Cícero Dantas (48100-000)
+  - ✅ **Validação completa**: Eventos CONTRATANDO verificados corretamente
+  - ✅ **Arquitetura mantida**: Padrões hexagonais preservados em todas as camadas
+
+- **DOCUMENTAÇÃO ATUALIZADA**: VERSIONING.md atualizado com correção
+  - ✅ **Changelog atualizado**: Versão 0.18.1 documentada com detalhes técnicos
+  - ✅ **Problemas identificados**: Formato de CEP e hard coded documentados
+  - ✅ **Soluções implementadas**: Refatoração e correção detalhadas
+  - ✅ **Resultados validados**: Sistema testado e funcionando corretamente
+
+> **Marco de Correção:** A v0.18.1 resolveu problemas críticos no LocationUtils, eliminando hard coded e corrigindo formato de CEP. O sistema agora é confiável, baseado em dados reais e mantém a arquitetura hexagonal.
 
 ### v0.17.0 (2025-01-24) - Estabilização e Documentação Completa
 

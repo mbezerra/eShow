@@ -24,7 +24,7 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Tabelas no Banco:** 18
 - **Schemas Pydantic:** 20 arquivos principais
 - **Cobertura de Testes:** Em desenvolvimento
-- **Versão Atual:** v0.18.0
+- **Versão Atual:** v0.18.1
 
 ## 🆕 **Funcionalidades Recentes**
 
@@ -34,13 +34,15 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Valor padrão:** CONTRATANDO para novos registros
 - **Consistência total** em todos os endpoints relacionados
 
-### Sistema de Busca por Localização ✅ **CONCLUÍDO**
+### Sistema de Busca por Localização ✅ **CONCLUÍDO E CORRIGIDO**
 - **4 novos endpoints** para busca geográfica baseada em raio de atuação
-- **Cálculo de distância** usando fórmula de Haversine
-- **Integração com ViaCEP** para obtenção de coordenadas geográficas
+- **Cálculo de distância** usando fórmula de Haversine com dados reais
+- **Base de dados primária** com 4111 CEPs e 3928 cidades brasileiras
+- **ViaCEP como redundância** para CEPs não cadastrados na base local
 - **Validação de disponibilidade** baseada em status de eventos/festivais
 - **Verificação de conflitos** de agendamento para artistas
 - **Autenticação e autorização** por role (artista/espaço)
+- **Sistema confiável** sem hard coded, baseado em dados reais da base IBGE
 
 ### Documentação Atualizada
 - **API_USAGE.md** - Exemplos de uso detalhados
