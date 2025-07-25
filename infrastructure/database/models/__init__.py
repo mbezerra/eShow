@@ -15,4 +15,5 @@ from .space_festival_type_model import SpaceFestivalTypeModel
 from .booking_model import BookingModel
 from .review_model import ReviewModel
 from .financial_model import FinancialModel
-from .interest_model import InterestModel 
+from .interest_model import InterestModel
+from .cep_coordinates_model import CepCoordinatesModel 

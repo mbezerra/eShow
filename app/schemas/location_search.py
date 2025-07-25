@@ -7,7 +7,7 @@ class LocationSearchResult(BaseModel):
     id: int
     distance_km: Optional[float] = None
 
-class ProfileLocationResult(LocationSearchResult):
+class ProfileLocationResult(BaseModel):
     """Schema para resultados de busca de profiles por localização"""
     full_name: str
     artistic_name: str

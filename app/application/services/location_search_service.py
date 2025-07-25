@@ -83,8 +83,9 @@ class LocationSearchService:
                     artist.raio_atuacao
                 ):
                     # 4. Verificar se o espaço tem eventos/festivais com status CONTRATANDO
-                    space = self.space_repository.get_by_profile_id(space_profile.id)
-                    if space:
+                    spaces = self.space_repository.get_by_profile_id(space_profile.id)
+                    if spaces:
+                        space = spaces[0]  # Pegar o primeiro espaço do profile
                         has_contracting_events = self._check_contracting_events(db, space.id)
                         
                         if has_contracting_events:
@@ -99,10 +100,10 @@ class LocationSearchService:
                                     id=space.id,
                                     profile_id=space.profile_id,
                                     space_type_id=space.space_type_id,
-                                    acesso=space.acesso.value,
+                                    acesso=space.acesso,
                                     valor_hora=space.valor_hora,
                                     valor_couvert=space.valor_couvert,
-                                    publico_estimado=space.publico_estimado.value,
+                                    publico_estimado=space.publico_estimado,
                                     distance_km=distance,
                                     profile=ProfileLocationResult(
                                         id=space_profile.id,
@@ -160,9 +161,10 @@ class LocationSearchService:
             if not space_profile:
                 raise ValueError("Profile do espaço não encontrado")
             
-            space = self.space_repository.get_by_profile_id(space_profile_id)
-            if not space:
+            spaces = self.space_repository.get_by_profile_id(space_profile_id)
+            if not spaces:
                 raise ValueError("Espaço não encontrado")
+            space = spaces[0]  # Pegar o primeiro espaço do profile
             
             # 2. Obter todos os profiles de artistas (role_id = 2)
             artist_profiles = self.profile_repository.get_by_role_id(role_id=2)
@@ -240,7 +242,7 @@ class LocationSearchService:
         """
         # Verificar space_event_types
         event_types = self.space_event_type_repository.get_by_space_id_and_status(
-            db, space_id, StatusEventType.CONTRATANDO
+            space_id, StatusEventType.CONTRATANDO
         )
         
         if event_types:
@@ -248,7 +250,7 @@ class LocationSearchService:
         
         # Verificar space_festival_types
         festival_types = self.space_festival_type_repository.get_by_space_id_and_status(
-            db, space_id, StatusFestivalType.CONTRATANDO
+            space_id, StatusFestivalType.CONTRATANDO
         )
         
         return len(festival_types) > 0
@@ -265,24 +267,24 @@ class LocationSearchService:
         """
         # Obter eventos e festivais do espaço com status CONTRATANDO
         contracting_events = self.space_event_type_repository.get_by_space_id_and_status(
-            db, space_id, StatusEventType.CONTRATANDO
+            space_id, StatusEventType.CONTRATANDO
         )
         
         contracting_festivals = self.space_festival_type_repository.get_by_space_id_and_status(
-            db, space_id, StatusFestivalType.CONTRATANDO
+            space_id, StatusFestivalType.CONTRATANDO
         )
         
         # Verificar se o artista tem agendamentos para essas datas/horários
         for event in contracting_events:
             conflicting_bookings = self.booking_repository.get_conflicting_bookings(
-                db, artist_id, event.data, event.horario
+                artist_id, event.data, event.horario
             )
             if conflicting_bookings:
                 return False
         
         for festival in contracting_festivals:
             conflicting_bookings = self.booking_repository.get_conflicting_bookings(
-                db, artist_id, festival.data, festival.horario
+                artist_id, festival.data, festival.horario
             )
             if conflicting_bookings:
                 return False
