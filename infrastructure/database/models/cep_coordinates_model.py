@@ -11,6 +11,9 @@ class CepCoordinatesModel(Base):
     cidade = Column(String(100), nullable=False, primary_key=True)
     uf = Column(String(2), nullable=False, primary_key=True)
     
+    # Coluna normalizada para busca sem acentos
+    cidade_normalizada = Column(String(100), nullable=False)
+    
     # Coordenadas geográficas
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
@@ -22,4 +25,5 @@ class CepCoordinatesModel(Base):
     # Índices para melhor performance
     __table_args__ = (
         Index('idx_cep_coordinates_lat_lng', 'latitude', 'longitude'),
+        Index('idx_cep_coordinates_cidade_normalizada', 'cidade_normalizada'),
     ) 

@@ -1,9 +1,5 @@
-from typing import List, Optional, Dict, Any
-from datetime import datetime
+from typing import List, Optional
 from sqlalchemy.orm import Session
-from sqlalchemy import and_, or_, not_
-
-from app.core.location_utils import LocationUtils
 from domain.repositories.artist_repository import ArtistRepository
 from domain.repositories.space_repository import SpaceRepository
 from domain.repositories.profile_repository import ProfileRepository
@@ -12,17 +8,16 @@ from domain.repositories.space_festival_type_repository import SpaceFestivalType
 from domain.repositories.booking_repository import BookingRepository
 from domain.entities.space_event_type import StatusEventType
 from domain.entities.space_festival_type import StatusFestivalType
+from app.core.location_utils import LocationUtils
 from app.schemas.location_search import (
     LocationSearchResponse,
     SpaceLocationResult,
     ArtistLocationResult,
-    SpaceEventTypeLocationResult,
-    SpaceFestivalTypeLocationResult,
     ProfileLocationResult
 )
 
 class LocationSearchService:
-    """Serviço para busca por localização baseada em raio de atuação"""
+    """Serviço para busca por localização"""
     
     def __init__(
         self,
@@ -48,7 +43,7 @@ class LocationSearchService:
         max_results: Optional[int] = 100
     ) -> LocationSearchResponse:
         """
-        Endpoint 1: Busca espaços para um artista baseado no seu raio de atuação
+        Endpoint 1: Busca espaços para um artista baseado no raio de atuação do artista
         
         Args:
             db: Sessão do banco de dados
@@ -57,44 +52,57 @@ class LocationSearchService:
             max_results: Limite máximo de resultados
             
         Returns:
-            Lista de espaços dentro do raio de atuação do artista
+            Lista de espaços disponíveis dentro do raio de atuação do artista
         """
         try:
             # 1. Obter dados do artista logado
-            artist = self.artist_repository.get_by_profile_id(artist_profile_id)
-            if not artist:
-                raise ValueError("Artista não encontrado")
-            
             artist_profile = self.profile_repository.get_by_id(artist_profile_id)
             if not artist_profile:
                 raise ValueError("Profile do artista não encontrado")
             
-            # 2. Obter todos os profiles de espaços (role_id = 3)
+            artist = self.artist_repository.get_by_profile_id(artist_profile_id)
+            if not artist:
+                raise ValueError("Artista não encontrado")
+            
+            # 2. Obter coordenadas do artista
+            artist_coords = LocationUtils.get_coordinates_from_cidade_uf(
+                artist_profile.cidade, artist_profile.uf
+            )
+            if not artist_coords:
+                raise ValueError(f"Coordenadas não encontradas para {artist_profile.cidade}/{artist_profile.uf}")
+            
+            artist_lat, artist_lng = artist_coords
+            
+            # 3. Obter todos os profiles de espaços (role_id = 3)
             space_profiles = self.profile_repository.get_by_role_id(role_id=3)
             
             results = []
             total_count = 0
             
             for space_profile in space_profiles:
-                # 3. Verificar se o CEP do espaço está dentro do raio do artista
-                if LocationUtils.is_within_radius(
-                    artist_profile.cep,
-                    space_profile.cep,
-                    artist.raio_atuacao
-                ):
-                    # 4. Verificar se o espaço tem eventos/festivais com status CONTRATANDO
+                # 4. Obter coordenadas do espaço
+                space_coords = LocationUtils.get_coordinates_from_cidade_uf(
+                    space_profile.cidade, space_profile.uf
+                )
+                if not space_coords:
+                    continue
+                
+                space_lat, space_lng = space_coords
+                
+                # 5. Calcular distância
+                distance = LocationUtils.calculate_distance(
+                    artist_lat, artist_lng, space_lat, space_lng
+                )
+                
+                # 6. Verificar se está dentro do raio de atuação
+                if distance <= artist.raio_atuacao:
+                    # 7. Verificar se o espaço tem eventos/festivais com status CONTRATANDO
                     spaces = self.space_repository.get_by_profile_id(space_profile.id)
                     if spaces:
                         space = spaces[0]  # Pegar o primeiro espaço do profile
                         has_contracting_events = self._check_contracting_events(db, space.id)
                         
                         if has_contracting_events:
-                            # Calcular distância
-                            distance = LocationUtils.calculate_distance(
-                                artist_profile.cep,
-                                space_profile.cep
-                            )
-                            
                             if return_full_data:
                                 result = SpaceLocationResult(
                                     id=space.id,
@@ -166,36 +174,49 @@ class LocationSearchService:
                 raise ValueError("Espaço não encontrado")
             space = spaces[0]  # Pegar o primeiro espaço do profile
             
-            # 2. Obter todos os profiles de artistas (role_id = 2)
+            # 2. Obter coordenadas do espaço
+            space_coords = LocationUtils.get_coordinates_from_cidade_uf(
+                space_profile.cidade, space_profile.uf
+            )
+            if not space_coords:
+                raise ValueError(f"Coordenadas não encontradas para {space_profile.cidade}/{space_profile.uf}")
+            
+            space_lat, space_lng = space_coords
+            
+            # 3. Obter todos os profiles de artistas (role_id = 2)
             artist_profiles = self.profile_repository.get_by_role_id(role_id=2)
             
             results = []
             total_count = 0
             
             for artist_profile in artist_profiles:
-                # 3. Obter dados do artista
+                # 4. Obter dados do artista
                 artist = self.artist_repository.get_by_profile_id(artist_profile.id)
                 if not artist:
                     continue
                 
-                # 4. Verificar se o CEP do artista está dentro do raio de atuação dele
-                if LocationUtils.is_within_radius(
-                    space_profile.cep,
-                    artist_profile.cep,
-                    artist.raio_atuacao
-                ):
-                    # 5. Verificar se o artista não tem agendamentos conflitantes
+                # 5. Obter coordenadas do artista
+                artist_coords = LocationUtils.get_coordinates_from_cidade_uf(
+                    artist_profile.cidade, artist_profile.uf
+                )
+                if not artist_coords:
+                    continue
+                
+                artist_lat, artist_lng = artist_coords
+                
+                # 6. Calcular distância
+                distance = LocationUtils.calculate_distance(
+                    space_lat, space_lng, artist_lat, artist_lng
+                )
+                
+                # 7. Verificar se está dentro do raio de atuação do artista
+                if distance <= artist.raio_atuacao:
+                    # 8. Verificar se o artista não tem agendamentos conflitantes
                     is_available = self._check_artist_availability(
                         db, artist.id, space.id
                     )
                     
                     if is_available:
-                        # Calcular distância
-                        distance = LocationUtils.calculate_distance(
-                            space_profile.cep,
-                            artist_profile.cep
-                        )
-                        
                         if return_full_data:
                             result = ArtistLocationResult(
                                 id=artist.id,
@@ -274,17 +295,21 @@ class LocationSearchService:
             space_id, StatusFestivalType.CONTRATANDO
         )
         
-        # Verificar se o artista tem agendamentos para essas datas/horários
+        # Verificar conflitos para cada evento/festival
         for event in contracting_events:
             conflicting_bookings = self.booking_repository.get_conflicting_bookings(
-                artist_id, event.data, event.horario
+                artist_id=artist_id,
+                data=event.data,
+                horario=event.horario
             )
             if conflicting_bookings:
                 return False
         
         for festival in contracting_festivals:
             conflicting_bookings = self.booking_repository.get_conflicting_bookings(
-                artist_id, festival.data, festival.horario
+                artist_id=artist_id,
+                data=festival.data,
+                horario=festival.horario
             )
             if conflicting_bookings:
                 return False

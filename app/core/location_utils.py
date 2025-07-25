@@ -1,5 +1,6 @@
 import requests
 import math
+import unicodedata
 from typing import Optional, Tuple
 import logging
 import time
@@ -13,6 +14,24 @@ class LocationUtils:
     
     # Cache simples para evitar requisições repetidas
     _coordinates_cache = {}
+    
+    @staticmethod
+    def _normalize_text(text: str) -> str:
+        """
+        Normaliza texto removendo acentos e convertendo para maiúsculas
+        
+        Args:
+            text: Texto a ser normalizado
+            
+        Returns:
+            Texto normalizado sem acentos e em maiúsculas
+        """
+        # Remove acentos usando unicodedata
+        normalized = unicodedata.normalize('NFD', text)
+        # Remove caracteres de acentuação
+        ascii_text = ''.join(c for c in normalized if unicodedata.category(c) != 'Mn')
+        # Converte para maiúsculas e remove espaços extras
+        return ascii_text.strip().upper()
     
     @staticmethod
     def _get_cep_repository():
@@ -33,8 +52,8 @@ class LocationUtils:
             Tuple com (latitude, longitude) ou None se não conseguir obter
         """
         try:
-            # Normalizar cidade e UF
-            cidade_clean = cidade.strip().upper()
+            # Normalizar cidade e UF (removendo acentos)
+            cidade_clean = LocationUtils._normalize_text(cidade)
             uf_clean = uf.strip().upper()
             
             # Verificar cache primeiro
@@ -63,7 +82,7 @@ class LocationUtils:
             repository, db = LocationUtils._get_cep_repository()
             
             try:
-                # Buscar por cidade e UF
+                # Buscar por cidade e UF (ambos normalizados)
                 cep_coords = repository.get_by_cidade_uf(cidade, uf)
                 
                 if cep_coords:
