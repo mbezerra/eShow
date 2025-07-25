@@ -3,8 +3,10 @@ import json
 from datetime import datetime, timedelta
 
 BASE_URL = "http://localhost:8000/api/v1"
-EMAIL = "admin@eshow.com"
-PASSWORD = "admin123"
+EMAIL = "ana.costa@example.com"  # Usuário artista
+PASSWORD = "artista123"
+EMAIL_ESPACO = "bar.centro@example.com"  # Usuário espaço
+PASSWORD_ESPACO = "espaco123"
 
 def print_response(title, resp):
     print(f"\n=== {title} ===")
@@ -294,33 +296,44 @@ def main():
     
     # 18. LOCATION SEARCH
     print("\n# 18. LOCATION SEARCH")
-    # GET /location-search/spaces-for-artist
-    resp = requests.get(f"{BASE_URL}/location-search/spaces-for-artist?cep=01310-100&raio_km=50&profile_id=3", headers=headers)
-    print_response("Search Spaces for Artist", resp)
     
-    # GET /location-search/artists-for-space
-    resp = requests.get(f"{BASE_URL}/location-search/artists-for-space?cep=01310-100&raio_km=50&profile_id=2", headers=headers)
-    print_response("Search Artists for Space", resp)
+    # Login como artista para buscar espaços
+    login_artista = requests.post(f"{BASE_URL}/auth/login", json={"email": EMAIL, "password": PASSWORD})
+    print_response("Login Artista", login_artista)
+    if login_artista.status_code == 200:
+        token_artista = login_artista.json()["access_token"]
+        headers_artista = {"Authorization": f"Bearer {token_artista}"}
+        
+        # GET /location-search/spaces-for-artist
+        resp = requests.get(f"{BASE_URL}/location-search/spaces-for-artist", headers=headers_artista)
+        print_response("Search Spaces for Artist", resp)
+        
+        # POST /location-search/spaces-for-artist
+        search_payload = {
+            "return_full_data": True,
+            "max_results": 10
+        }
+        resp = requests.post(f"{BASE_URL}/location-search/spaces-for-artist", headers=headers_artista, json=search_payload)
+        print_response("Search Spaces for Artist (POST)", resp)
     
-    # POST /location-search/spaces-for-artist
-    search_payload = {
-        "cep": "01310-100",
-        "raio_km": 50,
-        "return_ids_only": False,
-        "profile_id": 3
-    }
-    resp = requests.post(f"{BASE_URL}/location-search/spaces-for-artist", headers=headers, json=search_payload)
-    print_response("Search Spaces for Artist (POST)", resp)
-    
-    # POST /location-search/artists-for-space
-    search_payload_space = {
-        "cep": "01310-100",
-        "raio_km": 50,
-        "return_ids_only": False,
-        "profile_id": 2
-    }
-    resp = requests.post(f"{BASE_URL}/location-search/artists-for-space", headers=headers, json=search_payload_space)
-    print_response("Search Artists for Space (POST)", resp)
+    # Login como espaço para buscar artistas
+    login_espaco = requests.post(f"{BASE_URL}/auth/login", json={"email": EMAIL_ESPACO, "password": PASSWORD_ESPACO})
+    print_response("Login Espaço", login_espaco)
+    if login_espaco.status_code == 200:
+        token_espaco = login_espaco.json()["access_token"]
+        headers_espaco = {"Authorization": f"Bearer {token_espaco}"}
+        
+        # GET /location-search/artists-for-space
+        resp = requests.get(f"{BASE_URL}/location-search/artists-for-space", headers=headers_espaco)
+        print_response("Search Artists for Space", resp)
+        
+        # POST /location-search/artists-for-space
+        search_payload_space = {
+            "return_full_data": True,
+            "max_results": 10
+        }
+        resp = requests.post(f"{BASE_URL}/location-search/artists-for-space", headers=headers_espaco, json=search_payload_space)
+        print_response("Search Artists for Space (POST)", resp)
     
     # 19. ARTIST MUSICAL STYLES
     print("\n# 19. ARTIST MUSICAL STYLES")
