@@ -1,5 +1,7 @@
 # eShow API
 
+Versão: 0.19.0
+
 Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvido com **FastAPI** e arquitetura hexagonal.
 
 ## 🎯 **Funcionalidades Principais**
