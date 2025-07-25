@@ -76,11 +76,14 @@ class UserService:
             id=user.id,
             name=user.name,
             email=user.email,
-            password=user.password,  # Incluir senha para autenticação
             is_active=user.is_active,
             created_at=user.created_at,
             updated_at=user.updated_at
         )
+
+    def get_user_by_email_for_auth(self, email: str) -> Optional[User]:
+        """Obter usuário por email para autenticação (inclui senha)"""
+        return self.user_repository.get_by_email(email)
 
     def update_user(self, user_id: int, user_data: UserUpdate) -> Optional[UserResponse]:
         """Atualizar usuário"""

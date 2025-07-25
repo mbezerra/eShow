@@ -13,14 +13,22 @@ class AuthService:
 
     def authenticate_user(self, email: str, password: str) -> Optional[UserResponse]:
         """Autenticar usuário com email e senha"""
-        user = self.user_service.get_user_by_email(email)
+        user = self.user_service.get_user_by_email_for_auth(email)
         if not user:
             return None
         
         if not verify_password(password, user.password):
             return None
         
-        return user
+        # Retornar UserResponse sem senha
+        return UserResponse(
+            id=user.id,
+            name=user.name,
+            email=user.email,
+            is_active=user.is_active,
+            created_at=user.created_at,
+            updated_at=user.updated_at
+        )
 
     def register_user(self, user_data: UserRegister) -> UserResponse:
         """Registrar novo usuário"""
