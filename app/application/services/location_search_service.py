@@ -64,12 +64,10 @@ class LocationSearchService:
             if not artist:
                 raise ValueError("Artista não encontrado")
             
-            # 2. Obter coordenadas do artista
-            artist_coords = LocationUtils.get_coordinates_from_cidade_uf(
-                artist_profile.cidade, artist_profile.uf
-            )
+            # 2. Obter coordenadas do artista (priorizando coordenadas do profile)
+            artist_coords = LocationUtils.get_coordinates_from_profile(artist_profile)
             if not artist_coords:
-                raise ValueError(f"Coordenadas não encontradas para {artist_profile.cidade}/{artist_profile.uf}")
+                raise ValueError(f"Coordenadas não encontradas para o artista {artist_profile.id}")
             
             artist_lat, artist_lng = artist_coords
             
@@ -80,10 +78,8 @@ class LocationSearchService:
             total_count = 0
             
             for space_profile in space_profiles:
-                # 4. Obter coordenadas do espaço
-                space_coords = LocationUtils.get_coordinates_from_cidade_uf(
-                    space_profile.cidade, space_profile.uf
-                )
+                # 4. Obter coordenadas do espaço (priorizando coordenadas do profile)
+                space_coords = LocationUtils.get_coordinates_from_profile(space_profile)
                 if not space_coords:
                     continue
                 
@@ -174,12 +170,10 @@ class LocationSearchService:
                 raise ValueError("Espaço não encontrado")
             space = spaces[0]  # Pegar o primeiro espaço do profile
             
-            # 2. Obter coordenadas do espaço
-            space_coords = LocationUtils.get_coordinates_from_cidade_uf(
-                space_profile.cidade, space_profile.uf
-            )
+            # 2. Obter coordenadas do espaço (priorizando coordenadas do profile)
+            space_coords = LocationUtils.get_coordinates_from_profile(space_profile)
             if not space_coords:
-                raise ValueError(f"Coordenadas não encontradas para {space_profile.cidade}/{space_profile.uf}")
+                raise ValueError(f"Coordenadas não encontradas para o espaço {space_profile.id}")
             
             space_lat, space_lng = space_coords
             
@@ -195,10 +189,8 @@ class LocationSearchService:
                 if not artist:
                     continue
                 
-                # 5. Obter coordenadas do artista
-                artist_coords = LocationUtils.get_coordinates_from_cidade_uf(
-                    artist_profile.cidade, artist_profile.uf
-                )
+                # 5. Obter coordenadas do artista (priorizando coordenadas do profile)
+                artist_coords = LocationUtils.get_coordinates_from_profile(artist_profile)
                 if not artist_coords:
                     continue
                 

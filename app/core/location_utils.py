@@ -91,6 +91,93 @@ class LocationUtils:
         return CepCoordinatesRepositoryImpl(db), db
     
     @staticmethod
+    def get_coordinates_from_profile(profile) -> Optional[Tuple[float, float]]:
+        """
+        Obtém coordenadas de um profile com prioridade para latitude/longitude
+        
+        Args:
+            profile: Objeto Profile com campos latitude e longitude
+            
+        Returns:
+            Tuple com (latitude, longitude) ou None se não conseguir obter
+        """
+        try:
+            # 1. Prioridade: coordenadas diretas do profile
+            if profile.latitude is not None and profile.longitude is not None:
+                logger.info(f"Coordenadas obtidas diretamente do profile {profile.id}: ({profile.latitude}, {profile.longitude})")
+                return (profile.latitude, profile.longitude)
+            
+            # 2. Fallback: buscar por cidade/UF na base local
+            if profile.cidade and profile.uf:
+                coordinates = LocationUtils.get_coordinates_from_cidade_uf(profile.cidade, profile.uf)
+                if coordinates:
+                    logger.info(f"Coordenadas obtidas da base local para {profile.cidade}/{profile.uf}: {coordinates}")
+                    return coordinates
+            
+            # 3. Último recurso: API externa ViaCEP
+            if profile.cep:
+                coordinates = LocationUtils._get_coordinates_from_viacep(profile.cep)
+                if coordinates:
+                    logger.info(f"Coordenadas obtidas via ViaCEP para CEP {profile.cep}: {coordinates}")
+                    return coordinates
+            
+            logger.warning(f"Não foi possível obter coordenadas para profile {profile.id}")
+            return None
+                
+        except Exception as e:
+            logger.error(f"Erro ao obter coordenadas do profile {profile.id}: {str(e)}")
+            return None
+    
+    @staticmethod
+    def _get_coordinates_from_viacep(cep: str) -> Optional[Tuple[float, float]]:
+        """
+        Obtém coordenadas via API ViaCEP
+        
+        Args:
+            cep: CEP a ser consultado
+            
+        Returns:
+            Tuple com (latitude, longitude) ou None se não conseguir obter
+        """
+        try:
+            # Limpar CEP (remover hífen)
+            cep_clean = cep.replace('-', '').replace(' ', '')
+            
+            # URL da API ViaCEP
+            url = f"https://viacep.com.br/ws/{cep_clean}/json/"
+            
+            # Fazer requisição com timeout
+            response = requests.get(url, timeout=5)
+            response.raise_for_status()
+            
+            data = response.json()
+            
+            # Verificar se não há erro
+            if 'erro' in data and data['erro']:
+                logger.warning(f"CEP {cep} não encontrado na API ViaCEP")
+                return None
+            
+            # Extrair coordenadas (ViaCEP não retorna coordenadas diretamente)
+            # Vamos usar a cidade/UF para buscar na base local
+            if 'localidade' in data and 'uf' in data:
+                cidade = data['localidade']
+                uf = data['uf']
+                coordinates = LocationUtils.get_coordinates_from_cidade_uf(cidade, uf)
+                if coordinates:
+                    logger.info(f"Coordenadas obtidas via ViaCEP + base local para {cidade}/{uf}: {coordinates}")
+                    return coordinates
+            
+            logger.warning(f"ViaCEP não retornou dados suficientes para CEP {cep}")
+            return None
+            
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Erro na requisição para ViaCEP (CEP {cep}): {str(e)}")
+            return None
+        except Exception as e:
+            logger.error(f"Erro ao processar resposta da ViaCEP (CEP {cep}): {str(e)}")
+            return None
+    
+    @staticmethod
     def get_coordinates_from_cidade_uf(cidade: str, uf: str) -> Optional[Tuple[float, float]]:
         """
         Obtém as coordenadas (latitude, longitude) de uma cidade/UF

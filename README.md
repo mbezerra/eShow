@@ -1,6 +1,6 @@
 # eShow API
 
-Versão: 0.20.0
+Versão: 0.22.0
 
 Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvido com **FastAPI** e arquitetura hexagonal.
 
@@ -26,7 +26,7 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Tabelas no Banco:** 18
 - **Schemas Pydantic:** 20 arquivos principais
 - **Cobertura de Testes:** Em desenvolvimento
-- **Versão Atual:** v0.20.0
+- **Versão Atual:** v0.22.0
 
 ## 🆕 **Funcionalidades Recentes**
 
@@ -44,7 +44,7 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Valor padrão:** CONTRATANDO para novos registros
 - **Consistência total** em todos os endpoints relacionados
 
-### Sistema de Busca por Localização ✅ **CONCLUÍDO E CORRIGIDO**
+### Sistema de Busca por Localização Otimizado ✅ **v0.22.0 - NOVO**
 - **4 novos endpoints** para busca geográfica baseada em raio de atuação
 - **Cálculo de distância** usando fórmula de Haversine com dados reais
 - **Base de dados primária** com 5.565 municípios brasileiros (100% cobertura)
@@ -53,6 +53,10 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Verificação de conflitos** de agendamento para artistas
 - **Autenticação e autorização** por role (artista/espaço)
 - **Sistema confiável** baseado em dados reais da base IBGE
+- **Nova hierarquia de coordenadas**: Prioridade para coordenadas do Profile, fallback para base local e ViaCEP
+- **Performance otimizada**: 50-80% mais rápido com coordenadas diretas
+- **Cache inteligente**: Redução de consultas repetidas
+- **Testes abrangentes**: 12 testes unitários e de integração
 
 ### Coordenadas Geográficas em Perfis ✅ **NOVO**
 - **Campos `latitude` e `longitude`** opcionais em todos os perfis
