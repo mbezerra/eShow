@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 from typing import List, Optional
 from datetime import datetime, date
 from enum import Enum
@@ -28,24 +28,27 @@ class InterestBase(BaseModel):
     resposta: Optional[str] = None
     status: StatusInterestEnum = StatusInterestEnum.AGUARDANDO_CONFIRMACAO
 
-    @validator('profile_id_interessado')
+    @field_validator('profile_id_interessado')
+    @classmethod
     def validate_profile_id_interessado(cls, v):
         if v <= 0:
             raise ValueError("ID do profile interessado deve ser maior que zero")
         return v
 
-    @validator('profile_id_interesse')
-    def validate_profile_id_interesse(cls, v, values):
+    @field_validator('profile_id_interesse')
+    @classmethod
+    def validate_profile_id_interesse(cls, v, info):
         if v <= 0:
             raise ValueError("ID do profile de interesse deve ser maior que zero")
         
         # Verificar se são diferentes
-        if 'profile_id_interessado' in values and v == values['profile_id_interessado']:
+        if 'profile_id_interessado' in info.data and v == info.data['profile_id_interessado']:
             raise ValueError("Profile interessado e profile de interesse devem ser diferentes")
         
         return v
 
-    @validator('horario_inicial')
+    @field_validator('horario_inicial')
+    @classmethod
     def validate_horario_inicial(cls, v):
         if not v or not v.strip():
             raise ValueError("Horário inicial é obrigatório")
@@ -57,7 +60,8 @@ class InterestBase(BaseModel):
         
         return v.strip()
 
-    @validator('duracao_apresentacao')
+    @field_validator('duracao_apresentacao')
+    @classmethod
     def validate_duracao_apresentacao(cls, v):
         if v <= 0:
             raise ValueError("Duração da apresentação deve ser um número positivo")
@@ -67,19 +71,22 @@ class InterestBase(BaseModel):
         
         return v
 
-    @validator('valor_hora_ofertado')
+    @field_validator('valor_hora_ofertado')
+    @classmethod
     def validate_valor_hora_ofertado(cls, v):
         if v < 0:
             raise ValueError("Valor-hora ofertado deve ser um número não negativo")
         return v
 
-    @validator('valor_couvert_ofertado')
+    @field_validator('valor_couvert_ofertado')
+    @classmethod
     def validate_valor_couvert_ofertado(cls, v):
         if v < 0:
             raise ValueError("Valor do couvert ofertado deve ser um número não negativo")
         return v
 
-    @validator('mensagem')
+    @field_validator('mensagem')
+    @classmethod
     def validate_mensagem(cls, v):
         if not v or not v.strip():
             raise ValueError("Mensagem é obrigatória")
@@ -92,31 +99,34 @@ class InterestBase(BaseModel):
         
         return v.strip()
 
-    @validator('space_event_type_id')
+    @field_validator('space_event_type_id')
+    @classmethod
     def validate_space_event_type_id(cls, v):
         if v is not None and v <= 0:
             raise ValueError("ID do space-event type deve ser maior que zero")
         return v
 
-    @validator('space_festival_type_id')
-    def validate_space_festival_type_id(cls, v, values):
+    @field_validator('space_festival_type_id')
+    @classmethod
+    def validate_space_festival_type_id(cls, v, info):
         if v is not None and v <= 0:
             raise ValueError("ID do space-festival type deve ser maior que zero")
         
         # Validar que apenas um relacionamento está definido
-        space_event_type_id = values.get('space_event_type_id')
+        space_event_type_id = info.data.get('space_event_type_id')
         if space_event_type_id is not None and v is not None:
             raise ValueError("Apenas um tipo de relacionamento pode ser especificado por interesse")
         
         return v
 
-    @validator('resposta')
-    def validate_resposta(cls, v, values):
+    @field_validator('resposta')
+    @classmethod
+    def validate_resposta(cls, v, info):
         if v is not None and len(v.strip()) > 1000:
             raise ValueError("Resposta não pode exceder 1000 caracteres")
         
         # Validar consistência com status
-        status = values.get('status')
+        status = info.data.get('status')
         if status == StatusInterestEnum.AGUARDANDO_CONFIRMACAO:
             if v is not None and v.strip():
                 raise ValueError("Resposta não deve estar presente quando status é 'AGUARDANDO_CONFIRMACAO'")
@@ -142,19 +152,22 @@ class InterestUpdate(BaseModel):
     resposta: Optional[str] = None
     status: Optional[StatusInterestEnum] = None
 
-    @validator('profile_id_interessado')
+    @field_validator('profile_id_interessado')
+    @classmethod
     def validate_profile_id_interessado(cls, v):
         if v is not None and v <= 0:
             raise ValueError("ID do profile interessado deve ser maior que zero")
         return v
 
-    @validator('profile_id_interesse')
+    @field_validator('profile_id_interesse')
+    @classmethod
     def validate_profile_id_interesse(cls, v):
         if v is not None and v <= 0:
             raise ValueError("ID do profile de interesse deve ser maior que zero")
         return v
 
-    @validator('horario_inicial')
+    @field_validator('horario_inicial')
+    @classmethod
     def validate_horario_inicial(cls, v):
         if v is not None:
             if not v or not v.strip():
@@ -167,7 +180,8 @@ class InterestUpdate(BaseModel):
         
         return v.strip() if v else v
 
-    @validator('duracao_apresentacao')
+    @field_validator('duracao_apresentacao')
+    @classmethod
     def validate_duracao_apresentacao(cls, v):
         if v is not None:
             if v <= 0:
@@ -178,19 +192,22 @@ class InterestUpdate(BaseModel):
         
         return v
 
-    @validator('valor_hora_ofertado')
+    @field_validator('valor_hora_ofertado')
+    @classmethod
     def validate_valor_hora_ofertado(cls, v):
         if v is not None and v < 0:
             raise ValueError("Valor-hora ofertado deve ser um número não negativo")
         return v
 
-    @validator('valor_couvert_ofertado')
+    @field_validator('valor_couvert_ofertado')
+    @classmethod
     def validate_valor_couvert_ofertado(cls, v):
         if v is not None and v < 0:
             raise ValueError("Valor do couvert ofertado deve ser um número não negativo")
         return v
 
-    @validator('mensagem')
+    @field_validator('mensagem')
+    @classmethod
     def validate_mensagem(cls, v):
         if v is not None:
             if not v or not v.strip():
@@ -204,19 +221,22 @@ class InterestUpdate(BaseModel):
         
         return v.strip() if v else v
 
-    @validator('space_event_type_id')
+    @field_validator('space_event_type_id')
+    @classmethod
     def validate_space_event_type_id(cls, v):
         if v is not None and v <= 0:
             raise ValueError("ID do space-event type deve ser maior que zero")
         return v
 
-    @validator('space_festival_type_id')
+    @field_validator('space_festival_type_id')
+    @classmethod
     def validate_space_festival_type_id(cls, v):
         if v is not None and v <= 0:
             raise ValueError("ID do space-festival type deve ser maior que zero")
         return v
 
-    @validator('resposta')
+    @field_validator('resposta')
+    @classmethod
     def validate_resposta(cls, v):
         if v is not None and len(v.strip()) > 1000:
             raise ValueError("Resposta não pode exceder 1000 caracteres")
@@ -227,8 +247,7 @@ class InterestResponse(InterestBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class InterestWithRelations(InterestResponse):
     """Schema com dados relacionados incluídos"""
@@ -237,29 +256,27 @@ class InterestWithRelations(InterestResponse):
     space_event_type: Optional[SpaceEventTypeResponse] = None
     space_festival_type: Optional[SpaceFestivalTypeResponse] = None
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class InterestListResponse(BaseModel):
     """Schema para resposta de lista de interesses"""
     items: List[InterestResponse]
     
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class InterestListWithRelations(BaseModel):
     """Schema para resposta de lista de interesses com dados relacionados"""
     items: List[InterestWithRelations]
     
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class InterestStatusUpdate(BaseModel):
     """Schema específico para atualização de status"""
     status: StatusInterestEnum
     resposta: Optional[str] = None
 
-    @validator('resposta')
+    @field_validator('resposta')
+    @classmethod
     def validate_resposta(cls, v):
         if v is not None and len(v.strip()) > 1000:
             raise ValueError("Resposta não pode exceder 1000 caracteres")
@@ -272,5 +289,4 @@ class InterestStatistics(BaseModel):
     total_manifestado: int
     total_recebido: int
 
-    class Config:
-        from_attributes = True 
+    model_config = {"from_attributes": True} 

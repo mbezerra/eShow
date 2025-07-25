@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 from typing import List, Optional
 from datetime import datetime
 from enum import Enum
@@ -36,13 +36,15 @@ class FinancialBase(BaseModel):
     chave_pix: str
     preferencia: PreferenciaTransferenciaEnum
 
-    @validator('profile_id')
+    @field_validator('profile_id')
+    @classmethod
     def validate_profile_id(cls, v):
         if v <= 0:
             raise ValueError("ID do profile deve ser maior que zero")
         return v
 
-    @validator('banco')
+    @field_validator('banco')
+    @classmethod
     def validate_banco(cls, v):
         if not isinstance(v, str):
             raise ValueError("Código do banco deve ser uma string")
@@ -59,7 +61,8 @@ class FinancialBase(BaseModel):
         
         return v
 
-    @validator('agencia')
+    @field_validator('agencia')
+    @classmethod
     def validate_agencia(cls, v):
         if not v or not v.strip():
             raise ValueError("Agência não pode estar vazia")
@@ -70,7 +73,8 @@ class FinancialBase(BaseModel):
         
         return agencia_clean
 
-    @validator('conta')
+    @field_validator('conta')
+    @classmethod
     def validate_conta(cls, v):
         if not v or not v.strip():
             raise ValueError("Conta não pode estar vazia")
@@ -81,7 +85,8 @@ class FinancialBase(BaseModel):
         
         return conta_clean
 
-    @validator('cpf_cnpj')
+    @field_validator('cpf_cnpj')
+    @classmethod
     def validate_cpf_cnpj(cls, v):
         if not v or not v.strip():
             raise ValueError("CPF/CNPJ não pode estar vazio")
@@ -102,8 +107,9 @@ class FinancialBase(BaseModel):
         
         return v.strip()
 
-    @validator('chave_pix')
-    def validate_chave_pix(cls, v, values):
+    @field_validator('chave_pix')
+    @classmethod
+    def validate_chave_pix(cls, v, info):
         if not v or not v.strip():
             raise ValueError("Chave PIX não pode estar vazia")
         
@@ -113,7 +119,7 @@ class FinancialBase(BaseModel):
             raise ValueError("Chave PIX deve ter no máximo 50 caracteres")
         
         # Validações específicas por tipo de chave
-        tipo_chave_pix = values.get('tipo_chave_pix')
+        tipo_chave_pix = info.data.get('tipo_chave_pix')
         
         if tipo_chave_pix == TipoChavePixEnum.CPF:
             cpf_clean = re.sub(r'[^\d]', '', chave_clean)
@@ -154,7 +160,8 @@ class FinancialUpdate(BaseModel):
     chave_pix: Optional[str] = None
     preferencia: Optional[PreferenciaTransferenciaEnum] = None
 
-    @validator('banco')
+    @field_validator('banco')
+    @classmethod
     def validate_banco(cls, v):
         if v is not None:
             if not isinstance(v, str):
@@ -172,7 +179,8 @@ class FinancialUpdate(BaseModel):
         
         return v
 
-    @validator('agencia')
+    @field_validator('agencia')
+    @classmethod
     def validate_agencia(cls, v):
         if v is not None:
             if not v or not v.strip():
@@ -185,7 +193,8 @@ class FinancialUpdate(BaseModel):
             return agencia_clean
         return v
 
-    @validator('conta')
+    @field_validator('conta')
+    @classmethod
     def validate_conta(cls, v):
         if v is not None:
             if not v or not v.strip():
@@ -198,7 +207,8 @@ class FinancialUpdate(BaseModel):
             return conta_clean
         return v
 
-    @validator('cpf_cnpj')
+    @field_validator('cpf_cnpj')
+    @classmethod
     def validate_cpf_cnpj(cls, v):
         if v is not None:
             if not v or not v.strip():
@@ -221,8 +231,9 @@ class FinancialUpdate(BaseModel):
             return v.strip()
         return v
 
-    @validator('chave_pix')
-    def validate_chave_pix(cls, v, values):
+    @field_validator('chave_pix')
+    @classmethod
+    def validate_chave_pix(cls, v, info):
         if v is not None:
             if not v or not v.strip():
                 raise ValueError("Chave PIX não pode estar vazia")
@@ -233,7 +244,7 @@ class FinancialUpdate(BaseModel):
                 raise ValueError("Chave PIX deve ter no máximo 50 caracteres")
             
             # Validações específicas por tipo de chave
-            tipo_chave_pix = values.get('tipo_chave_pix')
+            tipo_chave_pix = info.data.get('tipo_chave_pix')
             
             if tipo_chave_pix == TipoChavePixEnum.CPF:
                 cpf_clean = re.sub(r'[^\d]', '', chave_clean)
@@ -267,8 +278,7 @@ class FinancialResponse(FinancialBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class FinancialWithRelations(FinancialResponse):
     """Schema com dados relacionados incluídos"""
@@ -278,12 +288,10 @@ class FinancialListResponse(BaseModel):
     """Schema para resposta de lista de financials"""
     items: List[FinancialResponse]
     
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class FinancialListWithRelations(BaseModel):
     """Schema para resposta de lista de financials com dados relacionados"""
     items: List[FinancialWithRelations]
     
-    class Config:
-        from_attributes = True 
+    model_config = {"from_attributes": True} 

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 from typing import List, Optional
 from datetime import datetime
 
@@ -10,13 +10,15 @@ class ArtistMusicalStyleBase(BaseModel):
     artist_id: int
     musical_style_id: int
 
-    @validator('artist_id')
+    @field_validator('artist_id')
+    @classmethod
     def validate_artist_id(cls, v):
         if v <= 0:
             raise ValueError("ID do artista deve ser maior que zero")
         return v
 
-    @validator('musical_style_id')
+    @field_validator('musical_style_id')
+    @classmethod
     def validate_musical_style_id(cls, v):
         if v <= 0:
             raise ValueError("ID do estilo musical deve ser maior que zero")
@@ -28,8 +30,7 @@ class ArtistMusicalStyleCreate(ArtistMusicalStyleBase):
 class ArtistMusicalStyleResponse(ArtistMusicalStyleBase):
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class ArtistMusicalStyleWithRelations(ArtistMusicalStyleResponse):
     """Schema com dados relacionados incluídos"""
@@ -40,28 +41,28 @@ class ArtistMusicalStyleListResponse(BaseModel):
     """Schema para resposta de lista de relacionamentos"""
     items: List[ArtistMusicalStyleResponse]
     
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class ArtistMusicalStyleListWithRelations(BaseModel):
     """Schema para resposta de lista de relacionamentos com dados relacionados"""
     items: List[ArtistMusicalStyleWithRelations]
     
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class ArtistMusicalStyleBulkCreate(BaseModel):
     """Schema para criação em lote de relacionamentos"""
     artist_id: int
     musical_style_ids: List[int]
 
-    @validator('artist_id')
+    @field_validator('artist_id')
+    @classmethod
     def validate_artist_id(cls, v):
         if v <= 0:
             raise ValueError("ID do artista deve ser maior que zero")
         return v
 
-    @validator('musical_style_ids')
+    @field_validator('musical_style_ids')
+    @classmethod
     def validate_musical_style_ids(cls, v):
         if not v:
             raise ValueError("Lista de IDs de estilos musicais não pode estar vazia")

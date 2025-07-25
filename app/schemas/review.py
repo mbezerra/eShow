@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 from typing import List, Optional
 from datetime import datetime
 
@@ -14,13 +14,15 @@ class ReviewBase(BaseModel):
     nota: int
     depoimento: str
 
-    @validator('nota')
+    @field_validator('nota')
+    @classmethod
     def validate_nota(cls, v):
         if not isinstance(v, int) or v < 1 or v > 5:
             raise ValueError("Nota deve ser um número inteiro entre 1 e 5")
         return v
 
-    @validator('depoimento')
+    @field_validator('depoimento')
+    @classmethod
     def validate_depoimento(cls, v):
         if not v or not v.strip():
             raise ValueError("Depoimento não pode estar vazio")
@@ -33,19 +35,21 @@ class ReviewBase(BaseModel):
         
         return v.strip()
 
-    @validator('space_event_type_id')
+    @field_validator('space_event_type_id')
+    @classmethod
     def validate_space_event_type_id(cls, v):
         if v is not None and v <= 0:
             raise ValueError("ID do space-event type deve ser maior que zero")
         return v
 
-    @validator('space_festival_type_id')
-    def validate_space_festival_type_id(cls, v, values):
+    @field_validator('space_festival_type_id')
+    @classmethod
+    def validate_space_festival_type_id(cls, v, info):
         if v is not None and v <= 0:
             raise ValueError("ID do space-festival type deve ser maior que zero")
         
         # Validar que apenas um relacionamento pode estar definido
-        space_event_type_id = values.get('space_event_type_id')
+        space_event_type_id = info.data.get('space_event_type_id')
         
         if v is not None and space_event_type_id is not None:
             raise ValueError("Apenas um tipo de relacionamento pode ser especificado por review")
@@ -62,13 +66,15 @@ class ReviewUpdate(BaseModel):
     space_event_type_id: Optional[int] = None
     space_festival_type_id: Optional[int] = None
 
-    @validator('nota')
+    @field_validator('nota')
+    @classmethod
     def validate_nota(cls, v):
         if v is not None and (not isinstance(v, int) or v < 1 or v > 5):
             raise ValueError("Nota deve ser um número inteiro entre 1 e 5")
         return v
 
-    @validator('depoimento')
+    @field_validator('depoimento')
+    @classmethod
     def validate_depoimento(cls, v):
         if v is not None:
             if not v or not v.strip():
@@ -83,19 +89,21 @@ class ReviewUpdate(BaseModel):
             return v.strip()
         return v
 
-    @validator('space_event_type_id')
+    @field_validator('space_event_type_id')
+    @classmethod
     def validate_space_event_type_id(cls, v):
         if v is not None and v <= 0:
             raise ValueError("ID do space-event type deve ser maior que zero")
         return v
 
-    @validator('space_festival_type_id')
-    def validate_space_festival_type_id(cls, v, values):
+    @field_validator('space_festival_type_id')
+    @classmethod
+    def validate_space_festival_type_id(cls, v, info):
         if v is not None and v <= 0:
             raise ValueError("ID do space-festival type deve ser maior que zero")
         
         # Validar que apenas um relacionamento pode estar definido
-        space_event_type_id = values.get('space_event_type_id')
+        space_event_type_id = info.data.get('space_event_type_id')
         
         if v is not None and space_event_type_id is not None:
             raise ValueError("Apenas um tipo de relacionamento pode ser especificado por review")
@@ -108,8 +116,7 @@ class ReviewResponse(ReviewBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class ReviewWithRelations(ReviewResponse):
     """Schema com dados relacionados incluídos"""
@@ -117,22 +124,19 @@ class ReviewWithRelations(ReviewResponse):
     space_event_type: Optional[SpaceEventTypeResponse] = None
     space_festival_type: Optional[SpaceFestivalTypeResponse] = None
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class ReviewListResponse(BaseModel):
     """Schema para resposta de lista de reviews"""
     items: List[ReviewResponse]
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class ReviewListWithRelations(BaseModel):
     """Schema para resposta de lista de reviews com dados relacionados"""
     items: List[ReviewWithRelations]
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class ProfileAverageRating(BaseModel):
     """Schema para resposta da média de avaliações de um profile"""
@@ -140,5 +144,4 @@ class ProfileAverageRating(BaseModel):
     average_rating: Optional[float]
     total_reviews: int
 
-    class Config:
-        from_attributes = True 
+    model_config = {"from_attributes": True} 

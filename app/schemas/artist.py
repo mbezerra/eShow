@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, field_validator
 from typing import List, Optional
 from datetime import datetime
 
@@ -25,7 +25,8 @@ class ArtistBase(BaseModel):
     spotify: Optional[str] = None
     deezer: Optional[str] = None
 
-    @validator('dias_apresentacao')
+    @field_validator('dias_apresentacao')
+    @classmethod
     def validate_dias_apresentacao(cls, v):
         dias_validos = ["segunda", "terça", "quarta", "quinta", "sexta", "sábado", "domingo"]
         if not v:
@@ -34,31 +35,36 @@ class ArtistBase(BaseModel):
             raise ValueError("Dias de apresentação inválidos")
         return v
 
-    @validator('raio_atuacao')
+    @field_validator('raio_atuacao')
+    @classmethod
     def validate_raio_atuacao(cls, v):
         if v <= 0:
             raise ValueError("Raio de atuação deve ser maior que zero")
         return v
 
-    @validator('duracao_apresentacao')
+    @field_validator('duracao_apresentacao')
+    @classmethod
     def validate_duracao_apresentacao(cls, v):
         if v <= 0:
             raise ValueError("Duração da apresentação deve ser maior que zero")
         return v
 
-    @validator('valor_hora')
+    @field_validator('valor_hora')
+    @classmethod
     def validate_valor_hora(cls, v):
         if v < 0:
             raise ValueError("Valor por hora não pode ser negativo")
         return v
 
-    @validator('valor_couvert')
+    @field_validator('valor_couvert')
+    @classmethod
     def validate_valor_couvert(cls, v):
         if v < 0:
             raise ValueError("Valor do couvert não pode ser negativo")
         return v
 
-    @validator('requisitos_minimos')
+    @field_validator('requisitos_minimos')
+    @classmethod
     def validate_requisitos_minimos(cls, v):
         if not v or not v.strip():
             raise ValueError("Requisitos mínimos não podem estar vazios")
@@ -85,7 +91,8 @@ class ArtistUpdate(BaseModel):
     spotify: Optional[str] = None
     deezer: Optional[str] = None
 
-    @validator('dias_apresentacao')
+    @field_validator('dias_apresentacao')
+    @classmethod
     def validate_dias_apresentacao(cls, v):
         if v is not None:
             dias_validos = ["segunda", "terça", "quarta", "quinta", "sexta", "sábado", "domingo"]
@@ -95,31 +102,36 @@ class ArtistUpdate(BaseModel):
                 raise ValueError("Dias de apresentação inválidos")
         return v
 
-    @validator('raio_atuacao')
+    @field_validator('raio_atuacao')
+    @classmethod
     def validate_raio_atuacao(cls, v):
         if v is not None and v <= 0:
             raise ValueError("Raio de atuação deve ser maior que zero")
         return v
 
-    @validator('duracao_apresentacao')
+    @field_validator('duracao_apresentacao')
+    @classmethod
     def validate_duracao_apresentacao(cls, v):
         if v is not None and v <= 0:
             raise ValueError("Duração da apresentação deve ser maior que zero")
         return v
 
-    @validator('valor_hora')
+    @field_validator('valor_hora')
+    @classmethod
     def validate_valor_hora(cls, v):
         if v is not None and v < 0:
             raise ValueError("Valor por hora não pode ser negativo")
         return v
 
-    @validator('valor_couvert')
+    @field_validator('valor_couvert')
+    @classmethod
     def validate_valor_couvert(cls, v):
         if v is not None and v < 0:
             raise ValueError("Valor do couvert não pode ser negativo")
         return v
 
-    @validator('requisitos_minimos')
+    @field_validator('requisitos_minimos')
+    @classmethod
     def validate_requisitos_minimos(cls, v):
         if v is not None and (not v or not v.strip()):
             raise ValueError("Requisitos mínimos não podem estar vazios")
@@ -130,8 +142,7 @@ class ArtistResponse(ArtistBase):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class ArtistResponseWithRelations(ArtistResponse):
     """Schema com dados relacionados incluídos"""
@@ -143,12 +154,10 @@ class ArtistListResponse(BaseModel):
     """Schema para resposta dinâmica de lista de artistas"""
     items: List[ArtistResponse]
     
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 class ArtistListResponseWithRelations(BaseModel):
     """Schema para resposta dinâmica de lista de artistas com relacionamentos"""
     items: List[ArtistResponseWithRelations]
     
-    class Config:
-        from_attributes = True 
+    model_config = {"from_attributes": True} 
