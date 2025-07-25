@@ -68,7 +68,7 @@ O script `test_api.sh` testa **todos os 19 grupos de endpoints**:
 
 1. **Autenticação** - Login
 2. **Usuários** - CRUD completo
-3. **Profiles** - CRUD completo
+3. **Profiles** - CRUD completo com coordenadas geográficas
 4. **Roles** - CRUD completo
 5. **Artist Types** - CRUD completo
 6. **Musical Styles** - CRUD completo

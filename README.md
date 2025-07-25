@@ -1,13 +1,13 @@
 # eShow API
 
-Versão: 0.19.0
+Versão: 0.20.0
 
 Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvido com **FastAPI** e arquitetura hexagonal.
 
 ## 🎯 **Funcionalidades Principais**
 
 - **Gestão de Usuários** com autenticação JWT
-- **Sistema de Perfis** (Artists e Spaces)
+- **Sistema de Perfis** (Artists e Spaces) com coordenadas geográficas
 - **Gerenciamento de Artistas** e estilos musicais
 - **Administração de Espaços** e tipos de evento
 - **Sistema de Agendamentos/Reservas** (Bookings)
@@ -26,7 +26,7 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Tabelas no Banco:** 18
 - **Schemas Pydantic:** 20 arquivos principais
 - **Cobertura de Testes:** Em desenvolvimento
-- **Versão Atual:** v0.18.1
+- **Versão Atual:** v0.20.0
 
 ## 🆕 **Funcionalidades Recentes**
 
@@ -54,12 +54,30 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Autenticação e autorização** por role (artista/espaço)
 - **Sistema confiável** baseado em dados reais da base IBGE
 
-### Documentação Atualizada
-- **API_USAGE.md** - Exemplos de uso detalhados
-- **IMPLEMENTATION_SUMMARY.md** - Resumo técnico completo
-- **ARCHITECTURE.md** - Arquitetura detalhada
-- **DATABASE_STRATEGY.md** - Estratégia de banco de dados
-- **VERSIONING.md** - Estratégia de versionamento
+### Coordenadas Geográficas em Perfis ✅ **NOVO**
+- **Campos `latitude` e `longitude`** opcionais em todos os perfis
+- **Integração com sistema de busca** por localização
+- **Cálculo de distâncias** otimizado para proximidade
+- **Validação de coordenadas** (latitude: -90 a 90, longitude: -180 a 180)
+- **Compatibilidade total** com perfis existentes
+- **Migração automática** aplicada ao banco de dados
+
+### Documentação Completa ✅ **NOVO**
+- **Todas as documentações sincronizadas** e atualizadas para v0.20.0
+- **API_USAGE.md** - Exemplos de uso detalhados incluindo coordenadas geográficas
+- **IMPLEMENTATION_SUMMARY.md** - Resumo técnico completo atualizado
+- **ARCHITECTURE.md** - Arquitetura detalhada com entidades atualizadas
+- **DATABASE_STRATEGY.md** - Estratégia de banco com consultas otimizadas
+- **VERSIONING.md** - Changelog completo e versionamento automatizado
+- **SCRIPTS_README.md** - Documentação de scripts atualizada
+
+### Sistema Estabilizado ✅ **NOVO**
+- **151 endpoints funcionais** testados e documentados
+- **18 entidades de domínio** com arquitetura hexagonal consolidada
+- **18 tabelas no banco** com estrutura otimizada
+- **20 schemas Pydantic** com validação robusta
+- **Sistema de coordenadas** integrado com busca geográfica
+- **Testes automatizados** com cobertura implementada
 
 ## 📁 **Estrutura do Projeto**
 

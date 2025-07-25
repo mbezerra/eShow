@@ -18,6 +18,8 @@ class Profile:
         complemento: Optional[str] = None,
         telefone_fixo: Optional[str] = None,
         whatsapp: Optional[str] = None,
+        latitude: Optional[float] = None,
+        longitude: Optional[float] = None,
         id: Optional[int] = None,
         created_at: Optional[datetime] = None,
         updated_at: Optional[datetime] = None
@@ -37,5 +39,7 @@ class Profile:
         self.telefone_fixo = telefone_fixo
         self.telefone_movel = telefone_movel
         self.whatsapp = whatsapp
+        self.latitude = latitude
+        self.longitude = longitude
         self.created_at = created_at or datetime.now()
         self.updated_at = updated_at or datetime.now() 

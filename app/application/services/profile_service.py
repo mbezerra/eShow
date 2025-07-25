@@ -31,7 +31,9 @@ class ProfileService:
             telefone_movel=profile_data.telefone_movel,
             complemento=profile_data.complemento,
             telefone_fixo=profile_data.telefone_fixo,
-            whatsapp=profile_data.whatsapp
+            whatsapp=profile_data.whatsapp,
+            latitude=profile_data.latitude,
+            longitude=profile_data.longitude
         )
 
         # Salvar no repositório
@@ -54,6 +56,8 @@ class ProfileService:
             telefone_fixo=created_profile.telefone_fixo,
             telefone_movel=created_profile.telefone_movel,
             whatsapp=created_profile.whatsapp,
+            latitude=created_profile.latitude,
+            longitude=created_profile.longitude,
             created_at=created_profile.created_at,
             updated_at=created_profile.updated_at
         )
@@ -78,6 +82,8 @@ class ProfileService:
                 telefone_fixo=profile.telefone_fixo,
                 telefone_movel=profile.telefone_movel,
                 whatsapp=profile.whatsapp,
+                latitude=profile.latitude,
+                longitude=profile.longitude,
                 created_at=profile.created_at,
                 updated_at=profile.updated_at
             )
@@ -106,6 +112,8 @@ class ProfileService:
             telefone_fixo=profile.telefone_fixo,
             telefone_movel=profile.telefone_movel,
             whatsapp=profile.whatsapp,
+            latitude=profile.latitude,
+            longitude=profile.longitude,
             created_at=profile.created_at,
             updated_at=profile.updated_at
         )
@@ -131,6 +139,8 @@ class ProfileService:
             telefone_fixo=profile.telefone_fixo,
             telefone_movel=profile.telefone_movel,
             whatsapp=profile.whatsapp,
+            latitude=profile.latitude,
+            longitude=profile.longitude,
             created_at=profile.created_at,
             updated_at=profile.updated_at
         )
@@ -154,6 +164,8 @@ class ProfileService:
                 telefone_fixo=profile.telefone_fixo,
                 telefone_movel=profile.telefone_movel,
                 whatsapp=profile.whatsapp,
+                latitude=profile.latitude,
+                longitude=profile.longitude,
                 created_at=profile.created_at,
                 updated_at=profile.updated_at
             )
@@ -198,6 +210,10 @@ class ProfileService:
             profile.telefone_movel = profile_data.telefone_movel
         if profile_data.whatsapp is not None:
             profile.whatsapp = profile_data.whatsapp
+        if profile_data.latitude is not None:
+            profile.latitude = profile_data.latitude
+        if profile_data.longitude is not None:
+            profile.longitude = profile_data.longitude
 
         # Salvar alterações
         updated_profile = self.profile_repository.update(profile)
@@ -217,6 +233,8 @@ class ProfileService:
             telefone_fixo=updated_profile.telefone_fixo,
             telefone_movel=updated_profile.telefone_movel,
             whatsapp=updated_profile.whatsapp,
+            latitude=updated_profile.latitude,
+            longitude=updated_profile.longitude,
             created_at=updated_profile.created_at,
             updated_at=updated_profile.updated_at
         )

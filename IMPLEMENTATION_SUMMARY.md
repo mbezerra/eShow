@@ -1,6 +1,48 @@
 # Resumo da Implementação - eShow API
 
-## 🚀 Versão Atual: 0.18.1+
+## 🚀 Versão Atual: 0.20.0+
+
+### ✨ Funcionalidades Implementadas na v0.20.0
+
+#### **Documentação Completa e Estabilização:**
+- **Todas as documentações sincronizadas** e atualizadas para v0.20.0
+- **API_USAGE.md**: Seção completa sobre Sistema de Perfis com coordenadas geográficas
+- **README.md**: Funcionalidades recentes atualizadas com coordenadas geográficas
+- **IMPLEMENTATION_SUMMARY.md**: Resumo técnico atualizado para v0.20.0
+- **ARCHITECTURE.md**: Descrição da entidade Profile atualizada
+- **DATABASE_STRATEGY.md**: Consultas SQL atualizadas com coordenadas
+- **VERSIONING.md**: Changelog completo e atualizado
+- **SCRIPTS_README.md**: Documentação de scripts atualizada
+
+#### **Sistema Estabilizado:**
+- **151 endpoints funcionais**: Todos os endpoints testados e documentados
+- **18 entidades de domínio**: Arquitetura hexagonal consolidada
+- **18 tabelas no banco**: Estrutura de dados otimizada
+- **20 schemas Pydantic**: Validação de dados robusta
+- **Sistema de coordenadas**: Integração completa com busca geográfica
+- **Testes automatizados**: Cobertura de testes implementada
+
+#### **Versionamento Automatizado:**
+- **Tag Git v0.20.0**: Criada e sincronizada com repositório remoto
+- **Versionamento semântico**: Padrão MAJOR.MINOR.PATCH seguido
+- **Changelog detalhado**: Histórico completo de mudanças
+- **Documentação sincronizada**: Todas as referências de versão atualizadas
+
+### ✨ Funcionalidades Implementadas na v0.19.0
+
+#### **Coordenadas Geográficas em Perfis:**
+- **Campos `latitude` e `longitude`** adicionados à entidade Profile como opcionais
+- **Migração Alembic**: `37212dd22c82_adicionar_colunas_latitude_longitude_em_profiles` aplicada
+- **Modelo de banco atualizado**: Colunas `latitude` e `longitude` como `Float` e `nullable=True`
+- **Schemas Pydantic atualizados**: ProfileBase, ProfileUpdate e ProfileResponse incluem os novos campos
+- **Repositório atualizado**: Todos os métodos (create, get_by_id, get_by_role_id, get_by_user_id, get_all, update) processam os novos campos
+- **Serviço de aplicação atualizado**: ProfileService inclui latitude e longitude em todas as operações
+- **Script de inicialização atualizado**: `init_profiles.py` com coordenadas reais para diferentes cidades brasileiras
+- **Testes atualizados**: `tests/test_profiles.py` verifica criação, leitura e atualização dos campos
+- **Validação de coordenadas**: Latitude entre -90 e 90, longitude entre -180 e 180
+- **Integração com sistema de busca**: Campos utilizados para cálculos de distância e proximidade
+- **Compatibilidade total**: Perfis existentes funcionam normalmente (campos opcionais)
+- **Documentação atualizada**: API_USAGE.md e README.md incluem exemplos de uso
 
 ### ✨ Funcionalidades Implementadas na v0.18.1
 
@@ -168,7 +210,7 @@
   - **DATABASE_STRATEGY.md**: Estrutura de dados e otimizações para busca geográfica
   - **VERSIONING.md**: Changelog atualizado com marcos v0.16.0 e v0.17.0
   - **API_USAGE.md**: Guia prático completo para endpoints de busca
-  - **IMPLEMENTATION_SUMMARY.md**: Resumo técnico atualizado para v0.17.0
+  - **IMPLEMENTATION_SUMMARY.md**: Resumo técnico atualizado para v0.20.0
 
 - **Estabilização Técnica:**
   - **Versionamento**: Sistema automático funcionando corretamente

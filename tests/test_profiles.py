@@ -14,7 +14,9 @@ def test_create_profile(client: TestClient):
         "numero": "123",
         "cidade": "São Paulo",
         "uf": "SP",
-        "telefone_movel": "11999999999"
+        "telefone_movel": "11999999999",
+        "latitude": -23.5505,
+        "longitude": -46.6333
     }
     
     response = client.post("/api/v1/profiles/", json=profile_data)
@@ -24,6 +26,8 @@ def test_create_profile(client: TestClient):
     assert data["full_name"] == profile_data["full_name"]
     assert data["artistic_name"] == profile_data["artistic_name"]
     assert data["user_id"] == profile_data["user_id"]
+    assert data["latitude"] == profile_data["latitude"]
+    assert data["longitude"] == profile_data["longitude"]
     assert "id" in data
 
 def test_get_profiles(client: TestClient):
@@ -47,6 +51,9 @@ def test_get_profile_by_id(client: TestClient):
     assert data["id"] == profile_id
     assert "bio" in data
     assert "full_name" in data
+    # Verificar se os campos de latitude e longitude estão presentes (mesmo que sejam None)
+    assert "latitude" in data
+    assert "longitude" in data
 
 def test_update_profile(client: TestClient):
     """Teste para atualizar profile"""
@@ -56,7 +63,9 @@ def test_update_profile(client: TestClient):
     # Atualizar o profile
     update_data = {
         "bio": "Músico profissional com experiência em diversos estilos",
-        "telefone_movel": "11666666666"
+        "telefone_movel": "11666666666",
+        "latitude": -23.5505,
+        "longitude": -46.6333
     }
     
     response = client.put(f"/api/v1/profiles/{profile_id}", json=update_data)
@@ -65,6 +74,8 @@ def test_update_profile(client: TestClient):
     data = response.json()
     assert data["bio"] == update_data["bio"]
     assert data["telefone_movel"] == update_data["telefone_movel"]
+    assert data["latitude"] == update_data["latitude"]
+    assert data["longitude"] == update_data["longitude"]
 
 def test_delete_profile(client: TestClient):
     """Teste para deletar profile"""

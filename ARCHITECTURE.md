@@ -13,7 +13,7 @@ O domínio contém as regras de negócio e é independente de qualquer tecnologi
 #### Entidades (`domain/entities/`)
 - **User**: Entidade que representa um usuário do sistema
 - **Artist**: Entidade que representa um artista do sistema
-- **Profile**: Entidade que representa um perfil de usuário
+- **Profile**: Entidade que representa um perfil de usuário com dados de localização geográfica
 - **Role**: Entidade que representa um papel/função no sistema
 - **ArtistType**: Entidade que representa um tipo de artista
 - **MusicalStyle**: Entidade que representa um estilo musical

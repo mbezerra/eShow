@@ -16,6 +16,8 @@ class ProfileBase(BaseModel):
     telefone_fixo: Optional[str] = Field(None, max_length=20, description="Telefone Fixo")
     telefone_movel: str = Field(..., min_length=1, max_length=20, description="Telefone Móvel")
     whatsapp: Optional[str] = Field(None, max_length=20, description="WhatsApp")
+    latitude: Optional[float] = Field(None, description="Latitude da localização")
+    longitude: Optional[float] = Field(None, description="Longitude da localização")
 
 class ProfileCreate(ProfileBase):
     user_id: Optional[int] = Field(None, description="ID do usuário associado")
@@ -35,6 +37,8 @@ class ProfileUpdate(BaseModel):
     telefone_fixo: Optional[str] = Field(None, max_length=20, description="Telefone Fixo")
     telefone_movel: Optional[str] = Field(None, min_length=1, max_length=20, description="Telefone Móvel")
     whatsapp: Optional[str] = Field(None, max_length=20, description="WhatsApp")
+    latitude: Optional[float] = Field(None, description="Latitude da localização")
+    longitude: Optional[float] = Field(None, description="Longitude da localização")
 
 class ProfileResponse(ProfileBase):
     id: int

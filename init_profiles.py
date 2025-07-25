@@ -40,7 +40,9 @@ def main():
             "uf": "SP",
             "telefone_fixo": "(11) 3333-1111",
             "telefone_movel": "(11) 99999-1111",
-            "whatsapp": "(11) 99999-1111"
+            "whatsapp": "(11) 99999-1111",
+            "latitude": -23.5505,
+            "longitude": -46.6333
         },
         {
             "user_id": bruno.id,
@@ -56,7 +58,9 @@ def main():
             "uf": "SP",
             "telefone_fixo": "(19) 3333-2222",
             "telefone_movel": "(19) 99999-2222",
-            "whatsapp": "(19) 99999-2222"
+            "whatsapp": "(19) 99999-2222",
+            "latitude": -22.9064,
+            "longitude": -47.0616
         },
         {
             "user_id": carla.id,
@@ -72,7 +76,9 @@ def main():
             "uf": "SP",
             "telefone_fixo": "(13) 3333-3333",
             "telefone_movel": "(13) 99999-3333",
-            "whatsapp": "(13) 99999-3333"
+            "whatsapp": "(13) 99999-3333",
+            "latitude": -23.9608,
+            "longitude": -46.3336
         },
         {
             "user_id": bar_centro.id,
@@ -88,7 +94,9 @@ def main():
             "uf": "SP",
             "telefone_fixo": "(11) 3333-4444",
             "telefone_movel": "(11) 99999-4444",
-            "whatsapp": "(11) 99999-4444"
+            "whatsapp": "(11) 99999-4444",
+            "latitude": -23.5505,
+            "longitude": -46.6333
         },
         {
             "user_id": casa_musical.id,
@@ -104,7 +112,9 @@ def main():
             "uf": "SP",
             "telefone_fixo": "(11) 3333-5555",
             "telefone_movel": "(11) 99999-5555",
-            "whatsapp": "(11) 99999-5555"
+            "whatsapp": "(11) 99999-5555",
+            "latitude": -23.5631,
+            "longitude": -46.6544
         },
         {
             "user_id": pub_rock.id,
@@ -120,7 +130,9 @@ def main():
             "uf": "SP",
             "telefone_fixo": "(11) 3333-6666",
             "telefone_movel": "(11) 99999-6666",
-            "whatsapp": "(11) 99999-6666"
+            "whatsapp": "(11) 99999-6666",
+            "latitude": -23.5505,
+            "longitude": -46.6333
         },
         {
             "user_id": ana_costa.id,
@@ -136,7 +148,9 @@ def main():
             "uf": "RJ",
             "telefone_fixo": "(21) 3333-7777",
             "telefone_movel": "(21) 99999-7777",
-            "whatsapp": "(21) 99999-7777"
+            "whatsapp": "(21) 99999-7777",
+            "latitude": -22.9068,
+            "longitude": -43.1729
         },
         {
             "user_id": diego_silva.id,
@@ -152,7 +166,9 @@ def main():
             "uf": "RS",
             "telefone_fixo": "(51) 3333-8888",
             "telefone_movel": "(51) 99999-8888",
-            "whatsapp": "(51) 99999-8888"
+            "whatsapp": "(51) 99999-8888",
+            "latitude": -30.0346,
+            "longitude": -51.2177
         },
         {
             "user_id": elena_santos.id,
@@ -168,7 +184,9 @@ def main():
             "uf": "BA",
             "telefone_fixo": "(71) 3333-9999",
             "telefone_movel": "(71) 99999-9999",
-            "whatsapp": "(71) 99999-9999"
+            "whatsapp": "(71) 99999-9999",
+            "latitude": -12.9714,
+            "longitude": -38.5011
         }
     ]
     
