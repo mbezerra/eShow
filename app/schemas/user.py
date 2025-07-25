@@ -7,6 +7,8 @@ class UserBase(BaseModel):
     email: EmailStr
     is_active: bool = True
 
+    model_config = {"from_attributes": True}
+
 class UserCreate(UserBase):
     password: str
 
@@ -14,6 +16,8 @@ class UserUpdate(BaseModel):
     name: Optional[str] = None
     email: Optional[EmailStr] = None
     is_active: Optional[bool] = None
+
+    model_config = {"from_attributes": True}
 
 class UserResponse(UserBase):
     id: int

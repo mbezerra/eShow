@@ -37,14 +37,9 @@ class InterestBase(BaseModel):
 
     @field_validator('profile_id_interesse')
     @classmethod
-    def validate_profile_id_interesse(cls, v, info):
+    def validate_profile_id_interesse(cls, v):
         if v <= 0:
             raise ValueError("ID do profile de interesse deve ser maior que zero")
-        
-        # Verificar se são diferentes
-        if 'profile_id_interessado' in info.data and v == info.data['profile_id_interessado']:
-            raise ValueError("Profile interessado e profile de interesse devem ser diferentes")
-        
         return v
 
     @field_validator('horario_inicial')
@@ -108,30 +103,19 @@ class InterestBase(BaseModel):
 
     @field_validator('space_festival_type_id')
     @classmethod
-    def validate_space_festival_type_id(cls, v, info):
+    def validate_space_festival_type_id(cls, v):
         if v is not None and v <= 0:
             raise ValueError("ID do space-festival type deve ser maior que zero")
-        
-        # Validar que apenas um relacionamento está definido
-        space_event_type_id = info.data.get('space_event_type_id')
-        if space_event_type_id is not None and v is not None:
-            raise ValueError("Apenas um tipo de relacionamento pode ser especificado por interesse")
-        
         return v
 
     @field_validator('resposta')
     @classmethod
-    def validate_resposta(cls, v, info):
-        if v is not None and len(v.strip()) > 1000:
-            raise ValueError("Resposta não pode exceder 1000 caracteres")
-        
-        # Validar consistência com status
-        status = info.data.get('status')
-        if status == StatusInterestEnum.AGUARDANDO_CONFIRMACAO:
-            if v is not None and v.strip():
-                raise ValueError("Resposta não deve estar presente quando status é 'AGUARDANDO_CONFIRMACAO'")
-        
-        return v.strip() if v else v
+    def validate_resposta(cls, v):
+        if v is not None:
+            if len(v.strip()) > 500:
+                raise ValueError("Resposta não pode exceder 500 caracteres")
+            return v.strip()
+        return v
 
 class InterestCreate(InterestBase):
     # Campos que não devem ser definidos na criação
@@ -171,14 +155,15 @@ class InterestUpdate(BaseModel):
     def validate_horario_inicial(cls, v):
         if v is not None:
             if not v or not v.strip():
-                raise ValueError("Horário inicial não pode estar vazio")
+                raise ValueError("Horário inicial é obrigatório")
             
             # Validar formato HH:MM
             import re
             if not re.match(r'^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$', v.strip()):
                 raise ValueError("Horário inicial deve estar no formato HH:MM")
-        
-        return v.strip() if v else v
+            
+            return v.strip()
+        return v
 
     @field_validator('duracao_apresentacao')
     @classmethod
@@ -189,7 +174,6 @@ class InterestUpdate(BaseModel):
             
             if v > 24:
                 raise ValueError("Duração da apresentação não pode exceder 24 horas")
-        
         return v
 
     @field_validator('valor_hora_ofertado')
@@ -211,15 +195,16 @@ class InterestUpdate(BaseModel):
     def validate_mensagem(cls, v):
         if v is not None:
             if not v or not v.strip():
-                raise ValueError("Mensagem não pode estar vazia")
+                raise ValueError("Mensagem é obrigatória")
             
             if len(v.strip()) < 10:
                 raise ValueError("Mensagem deve ter pelo menos 10 caracteres")
             
             if len(v.strip()) > 1000:
                 raise ValueError("Mensagem não pode exceder 1000 caracteres")
-        
-        return v.strip() if v else v
+            
+            return v.strip()
+        return v
 
     @field_validator('space_event_type_id')
     @classmethod
@@ -238,9 +223,11 @@ class InterestUpdate(BaseModel):
     @field_validator('resposta')
     @classmethod
     def validate_resposta(cls, v):
-        if v is not None and len(v.strip()) > 1000:
-            raise ValueError("Resposta não pode exceder 1000 caracteres")
-        return v.strip() if v else v
+        if v is not None:
+            if len(v.strip()) > 500:
+                raise ValueError("Resposta não pode exceder 500 caracteres")
+            return v.strip()
+        return v
 
 class InterestResponse(InterestBase):
     id: int
@@ -278,9 +265,11 @@ class InterestStatusUpdate(BaseModel):
     @field_validator('resposta')
     @classmethod
     def validate_resposta(cls, v):
-        if v is not None and len(v.strip()) > 1000:
-            raise ValueError("Resposta não pode exceder 1000 caracteres")
-        return v.strip() if v else v
+        if v is not None:
+            if len(v.strip()) > 500:
+                raise ValueError("Resposta não pode exceder 500 caracteres")
+            return v.strip()
+        return v
 
 class InterestStatistics(BaseModel):
     """Schema para estatísticas de interesse"""

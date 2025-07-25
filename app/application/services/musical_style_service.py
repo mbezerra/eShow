@@ -8,14 +8,14 @@ class MusicalStyleService:
         self.musical_style_repository = musical_style_repository
 
     def create_musical_style(self, style_data: MusicalStyleCreate) -> MusicalStyleResponse:
-        existing = self.musical_style_repository.get_by_estyle(style_data.estyle)
+        existing = self.musical_style_repository.get_by_estyle(style_data.style)
         if existing:
             raise ValueError("Estilo musical já existe.")
-        style = MusicalStyle(estyle=style_data.estyle)
+        style = MusicalStyle(estyle=style_data.style)
         created = self.musical_style_repository.create(style)
         return MusicalStyleResponse(
             id=created.id,
-            estyle=created.estyle,
+            style=created.estyle,
             created_at=created.created_at,
             updated_at=created.updated_at
         )
@@ -25,7 +25,7 @@ class MusicalStyleService:
         return [
             MusicalStyleResponse(
                 id=s.id,
-                estyle=s.estyle,
+                style=s.estyle,
                 created_at=s.created_at,
                 updated_at=s.updated_at
             ) for s in styles
@@ -37,7 +37,7 @@ class MusicalStyleService:
             return None
         return MusicalStyleResponse(
             id=s.id,
-            estyle=s.estyle,
+            style=s.estyle,
             created_at=s.created_at,
             updated_at=s.updated_at
         )
@@ -46,15 +46,15 @@ class MusicalStyleService:
         s = self.musical_style_repository.get_by_id(style_id)
         if not s:
             return None
-        if style_data.estyle is not None:
-            existing = self.musical_style_repository.get_by_estyle(style_data.estyle)
+        if style_data.style is not None:
+            existing = self.musical_style_repository.get_by_estyle(style_data.style)
             if existing and existing.id != style_id:
                 raise ValueError("Estilo musical já existe.")
-            s.estyle = style_data.estyle
+            s.estyle = style_data.style
         updated = self.musical_style_repository.update(s)
         return MusicalStyleResponse(
             id=updated.id,
-            estyle=updated.estyle,
+            style=updated.estyle,
             created_at=updated.created_at,
             updated_at=updated.updated_at
         )

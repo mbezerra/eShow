@@ -7,6 +7,8 @@ class LocationSearchResult(BaseModel):
     id: int
     distance_km: Optional[float] = None
 
+    model_config = {"from_attributes": True}
+
 class ProfileLocationResult(BaseModel):
     """Schema para resultados de busca de profiles por localização"""
     full_name: str
@@ -14,6 +16,8 @@ class ProfileLocationResult(BaseModel):
     cep: str
     cidade: str
     uf: str
+
+    model_config = {"from_attributes": True}
 
 class ArtistLocationResult(LocationSearchResult):
     """Schema para resultados de busca de artists por localização"""
@@ -24,6 +28,8 @@ class ArtistLocationResult(LocationSearchResult):
     valor_couvert: float
     profile: ProfileLocationResult
 
+    model_config = {"from_attributes": True}
+
 class SpaceLocationResult(LocationSearchResult):
     """Schema para resultados de busca de spaces por localização"""
     profile_id: int
@@ -33,6 +39,8 @@ class SpaceLocationResult(LocationSearchResult):
     valor_couvert: float
     publico_estimado: str
     profile: ProfileLocationResult
+
+    model_config = {"from_attributes": True}
 
 class SpaceEventTypeLocationResult(LocationSearchResult):
     """Schema para resultados de busca de space_event_types por localização"""
@@ -45,6 +53,8 @@ class SpaceEventTypeLocationResult(LocationSearchResult):
     status: str
     space: SpaceLocationResult
 
+    model_config = {"from_attributes": True}
+
 class SpaceFestivalTypeLocationResult(LocationSearchResult):
     """Schema para resultados de busca de space_festival_types por localização"""
     space_id: int
@@ -55,6 +65,8 @@ class SpaceFestivalTypeLocationResult(LocationSearchResult):
     horario: str
     status: str
     space: SpaceLocationResult
+
+    model_config = {"from_attributes": True}
 
 class LocationSearchResponse(BaseModel):
     """Schema para resposta de busca por localização"""
@@ -69,7 +81,11 @@ class LocationSearchResponse(BaseModel):
     search_radius_km: float
     origin_cep: str
 
+    model_config = {"from_attributes": True}
+
 class LocationSearchRequest(BaseModel):
     """Schema para requisição de busca por localização"""
     return_full_data: bool = True  # True para dados completos, False para apenas IDs
-    max_results: Optional[int] = 100  # Limite máximo de resultados 
+    max_results: Optional[int] = 100  # Limite máximo de resultados
+
+    model_config = {"from_attributes": True} 

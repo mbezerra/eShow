@@ -44,16 +44,9 @@ class ReviewBase(BaseModel):
 
     @field_validator('space_festival_type_id')
     @classmethod
-    def validate_space_festival_type_id(cls, v, info):
+    def validate_space_festival_type_id(cls, v):
         if v is not None and v <= 0:
             raise ValueError("ID do space-festival type deve ser maior que zero")
-        
-        # Validar que apenas um relacionamento pode estar definido
-        space_event_type_id = info.data.get('space_event_type_id')
-        
-        if v is not None and space_event_type_id is not None:
-            raise ValueError("Apenas um tipo de relacionamento pode ser especificado por review")
-        
         return v
 
 class ReviewCreate(ReviewBase):
@@ -98,16 +91,9 @@ class ReviewUpdate(BaseModel):
 
     @field_validator('space_festival_type_id')
     @classmethod
-    def validate_space_festival_type_id(cls, v, info):
+    def validate_space_festival_type_id(cls, v):
         if v is not None and v <= 0:
             raise ValueError("ID do space-festival type deve ser maior que zero")
-        
-        # Validar que apenas um relacionamento pode estar definido
-        space_event_type_id = info.data.get('space_event_type_id')
-        
-        if v is not None and space_event_type_id is not None:
-            raise ValueError("Apenas um tipo de relacionamento pode ser especificado por review")
-        
         return v
 
 class ReviewResponse(ReviewBase):

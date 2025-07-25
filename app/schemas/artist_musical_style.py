@@ -28,6 +28,7 @@ class ArtistMusicalStyleCreate(ArtistMusicalStyleBase):
     pass
 
 class ArtistMusicalStyleResponse(ArtistMusicalStyleBase):
+    id: int
     created_at: datetime
 
     model_config = {"from_attributes": True}
@@ -36,6 +37,8 @@ class ArtistMusicalStyleWithRelations(ArtistMusicalStyleResponse):
     """Schema com dados relacionados incluídos"""
     artist: Optional[ArtistResponse] = None
     musical_style: Optional[MusicalStyleResponse] = None
+
+    model_config = {"from_attributes": True}
 
 class ArtistMusicalStyleListResponse(BaseModel):
     """Schema para resposta de lista de relacionamentos"""

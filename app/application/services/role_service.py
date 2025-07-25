@@ -9,13 +9,19 @@ class RoleService:
 
     def create_role(self, role_data: RoleCreate) -> RoleResponse:
         """Criar um novo role"""
+        # Converter string para RoleType
+        try:
+            role_type = RoleType(role_data.name)
+        except ValueError:
+            raise ValueError(f"Role '{role_data.name}' não é válido. Roles válidos: {[r.value for r in RoleType]}")
+        
         # Verificar se o role já existe
-        existing_role = self.role_repository.get_by_role(role_data.role)
+        existing_role = self.role_repository.get_by_role(role_type)
         if existing_role:
             raise ValueError("Role já existe")
 
         # Criar entidade de domínio
-        role = Role(role=role_data.role)
+        role = Role(role=role_type)
 
         # Salvar no repositório
         created_role = self.role_repository.create(role)
@@ -23,7 +29,7 @@ class RoleService:
         # Converter para schema de resposta
         return RoleResponse(
             id=created_role.id,
-            role=created_role.role,
+            name=created_role.role.value,
             created_at=created_role.created_at,
             updated_at=created_role.updated_at
         )
@@ -34,7 +40,7 @@ class RoleService:
         return [
             RoleResponse(
                 id=role.id,
-                role=role.role,
+                name=role.role.value,
                 created_at=role.created_at,
                 updated_at=role.updated_at
             )
@@ -49,7 +55,7 @@ class RoleService:
         
         return RoleResponse(
             id=role.id,
-            role=role.role,
+            name=role.role.value,
             created_at=role.created_at,
             updated_at=role.updated_at
         )
@@ -62,7 +68,7 @@ class RoleService:
         
         return RoleResponse(
             id=role.id,
-            role=role.role,
+            name=role.role.value,
             created_at=role.created_at,
             updated_at=role.updated_at
         )
@@ -74,19 +80,25 @@ class RoleService:
             return None
 
         # Atualizar campos fornecidos
-        if role_data.role is not None:
+        if role_data.name is not None:
+            # Converter string para RoleType
+            try:
+                role_type = RoleType(role_data.name)
+            except ValueError:
+                raise ValueError(f"Role '{role_data.name}' não é válido. Roles válidos: {[r.value for r in RoleType]}")
+            
             # Verificar se o novo role já existe
-            existing_role = self.role_repository.get_by_role(role_data.role)
+            existing_role = self.role_repository.get_by_role(role_type)
             if existing_role and existing_role.id != role_id:
                 raise ValueError("Role já existe")
-            role.role = role_data.role
+            role.role = role_type
 
         # Salvar alterações
         updated_role = self.role_repository.update(role)
         
         return RoleResponse(
             id=updated_role.id,
-            role=updated_role.role,
+            name=updated_role.role.value,
             created_at=updated_role.created_at,
             updated_at=updated_role.updated_at
         )

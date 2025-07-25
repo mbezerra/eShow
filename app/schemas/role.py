@@ -1,16 +1,19 @@
 from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
-from domain.entities.role import RoleType
 
 class RoleBase(BaseModel):
-    role: RoleType = Field(..., description="Tipo do role (Admin, Artista, Espaço)")
+    name: str = Field(..., min_length=1, max_length=50, description="Nome do role")
+
+    model_config = {"from_attributes": True}
 
 class RoleCreate(RoleBase):
     pass
 
 class RoleUpdate(BaseModel):
-    role: Optional[RoleType] = Field(None, description="Tipo do role (Admin, Artista, Espaço)")
+    name: Optional[str] = Field(None, min_length=1, max_length=50, description="Nome do role")
+
+    model_config = {"from_attributes": True}
 
 class RoleResponse(RoleBase):
     id: int

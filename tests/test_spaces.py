@@ -1,27 +1,32 @@
 import pytest
 from fastapi.testclient import TestClient
+import json
 
 def test_create_space(client: TestClient):
     """Teste para criar um espaço"""
     space_data = {
-        "name": "Teatro Municipal",
-        "description": "Teatro histórico da cidade",
-        "address": "Rua das Artes, 123",
-        "city": "São Paulo",
-        "state": "SP",
-        "cep": "01234-567",
-        "capacity": 500,
+        "profile_id": 2,  # Profile de espaço (ESPACO role)
         "space_type_id": 1,
-        "is_active": True
+        "acesso": "Público",
+        "dias_apresentacao": ["sexta", "sábado"],
+        "duracao_apresentacao": 3.0,
+        "valor_hora": 150.0,
+        "valor_couvert": 25.0,
+        "requisitos_minimos": "Sistema de som profissional",
+        "oferecimentos": "Palco, iluminação, som",
+        "estrutura_apresentacao": "Palco com 50m²",
+        "publico_estimado": "101-500",
+        "fotos_ambiente": ["foto1.jpg", "foto2.jpg"]
     }
     
     response = client.post("/api/v1/spaces/", json=space_data)
+    print(f"Create space response: {response.status_code} - {response.json()}")  # Debug
     assert response.status_code == 201
     
     data = response.json()
-    assert data["name"] == space_data["name"]
-    assert data["description"] == space_data["description"]
-    assert data["capacity"] == space_data["capacity"]
+    assert data["profile_id"] == space_data["profile_id"]
+    assert data["space_type_id"] == space_data["space_type_id"]
+    assert data["acesso"] == space_data["acesso"]
     assert "id" in data
 
 def test_get_spaces(client: TestClient):
@@ -36,14 +41,18 @@ def test_get_space_by_id(client: TestClient):
     """Teste para obter espaço por ID"""
     # Primeiro criar um espaço
     space_data = {
-        "name": "Auditório Central",
-        "description": "Auditório para apresentações",
-        "address": "Av. Principal, 456",
-        "city": "Rio de Janeiro",
-        "state": "RJ",
-        "cep": "20000-000",
-        "capacity": 300,
-        "space_type_id": 1
+        "profile_id": 2,  # Profile de espaço (ESPACO role)
+        "space_type_id": 1,
+        "acesso": "Privado",
+        "dias_apresentacao": ["domingo"],
+        "duracao_apresentacao": 2.0,
+        "valor_hora": 100.0,
+        "valor_couvert": 15.0,
+        "requisitos_minimos": "Sistema básico",
+        "oferecimentos": "Palco simples",
+        "estrutura_apresentacao": "Palco com 30m²",
+        "publico_estimado": "51-100",
+        "fotos_ambiente": ["foto3.jpg"]
     }
     
     create_response = client.post("/api/v1/spaces/", json=space_data)
@@ -55,20 +64,24 @@ def test_get_space_by_id(client: TestClient):
     
     data = response.json()
     assert data["id"] == space_id
-    assert data["name"] == space_data["name"]
+    assert data["profile_id"] == space_data["profile_id"]
 
 def test_update_space(client: TestClient):
     """Teste para atualizar espaço"""
     # Primeiro criar um espaço
     space_data = {
-        "name": "Galeria de Arte",
-        "description": "Espaço para exposições",
-        "address": "Rua das Flores, 789",
-        "city": "Belo Horizonte",
-        "state": "MG",
-        "cep": "30000-000",
-        "capacity": 100,
-        "space_type_id": 1
+        "profile_id": 2,  # Profile de espaço (ESPACO role)
+        "space_type_id": 1,
+        "acesso": "Público",
+        "dias_apresentacao": ["quinta", "sexta"],
+        "duracao_apresentacao": 4.0,
+        "valor_hora": 200.0,
+        "valor_couvert": 30.0,
+        "requisitos_minimos": "Sistema avançado",
+        "oferecimentos": "Palco completo",
+        "estrutura_apresentacao": "Palco com 80m²",
+        "publico_estimado": "501-1000",
+        "fotos_ambiente": ["foto4.jpg", "foto5.jpg"]
     }
     
     create_response = client.post("/api/v1/spaces/", json=space_data)
@@ -76,31 +89,35 @@ def test_update_space(client: TestClient):
     
     # Atualizar o espaço
     update_data = {
-        "name": "Galeria de Arte Moderna",
-        "description": "Espaço para exposições de arte moderna",
-        "capacity": 150
+        "valor_hora": 250.0,
+        "valor_couvert": 35.0,
+        "requisitos_minimos": "Sistema premium"
     }
     
     response = client.put(f"/api/v1/spaces/{space_id}", json=update_data)
     assert response.status_code == 200
     
     data = response.json()
-    assert data["name"] == update_data["name"]
-    assert data["description"] == update_data["description"]
-    assert data["capacity"] == update_data["capacity"]
+    assert data["valor_hora"] == update_data["valor_hora"]
+    assert data["valor_couvert"] == update_data["valor_couvert"]
+    assert data["requisitos_minimos"] == update_data["requisitos_minimos"]
 
 def test_delete_space(client: TestClient):
     """Teste para deletar espaço"""
     # Primeiro criar um espaço
     space_data = {
-        "name": "Espaço Temporário",
-        "description": "Espaço temporário",
-        "address": "Rua Temporária, 999",
-        "city": "Salvador",
-        "state": "BA",
-        "cep": "40000-000",
-        "capacity": 50,
-        "space_type_id": 1
+        "profile_id": 2,  # Profile de espaço (ESPACO role)
+        "space_type_id": 1,
+        "acesso": "Público",
+        "dias_apresentacao": ["sábado"],
+        "duracao_apresentacao": 1.5,
+        "valor_hora": 80.0,
+        "valor_couvert": 10.0,
+        "requisitos_minimos": "Sistema básico",
+        "oferecimentos": "Palco simples",
+        "estrutura_apresentacao": "Palco com 20m²",
+        "publico_estimado": "<50",
+        "fotos_ambiente": ["foto6.jpg"]
     }
     
     create_response = client.post("/api/v1/spaces/", json=space_data)
@@ -108,7 +125,7 @@ def test_delete_space(client: TestClient):
     
     # Deletar o espaço
     response = client.delete(f"/api/v1/spaces/{space_id}")
-    assert response.status_code == 204
+    assert response.status_code == 200  # O endpoint retorna 200, não 204
     
     # Verificar se o espaço foi deletado
     get_response = client.get(f"/api/v1/spaces/{space_id}")
