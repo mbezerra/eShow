@@ -1,10 +1,59 @@
 # 📋 Versionamento eShow API
 
-## 🚀 Versão Atual: v0.22.0
+## 🚀 Versão Atual: v0.22.1
 
 **Data**: Julho 2024  
 **Status**: ✅ **LANÇAMENTO**  
 **Compatibilidade**: Python 3.8+, FastAPI 0.100+
+
+---
+
+## 🐛 v0.22.1 - Correção de Bug no Sistema de Busca por Localização
+
+### **🔧 Correção Crítica: Coordenadas com Vírgula**
+
+#### **Problema Identificado:**
+- ❌ **Erro 500** no endpoint `/api/v1/location-search/spaces-for-artist`
+- ❌ **Erro**: `"must be real number, not str"` durante cálculo de distância
+- ❌ **Causa**: Profile ID 4 com coordenadas armazenadas como string com vírgula
+
+#### **Dados Problemáticos:**
+```python
+# ANTES (causando erro):
+latitude: "-22,9064"  # string com vírgula
+longitude: "-47,0616" # string com vírgula
+```
+
+#### **Solução Implementada:**
+- ✅ **Correção automática**: Conversão de string para float
+- ✅ **Substituição de vírgula**: Por ponto decimal
+- ✅ **Validação de tipos**: Conversão explícita no LocationSearchService
+- ✅ **Prevenção futura**: Tratamento robusto de tipos de dados
+
+#### **Resultado:**
+```python
+# DEPOIS (funcionando):
+latitude: -22.9064   # float correto
+longitude: -47.0616  # float correto
+```
+
+#### **Melhorias Adicionais:**
+- ✅ **Conversão explícita**: `float(artist.raio_atuacao)` no serviço
+- ✅ **Tratamento de None**: Valores padrão para coordenadas ausentes
+- ✅ **Logs melhorados**: Rastreamento de conversões de tipos
+- ✅ **Testes de validação**: Confirmação do funcionamento correto
+
+#### **Arquivos Modificados:**
+- `app/application/services/location_search_service.py`: Conversão explícita de tipos
+- `infrastructure/database/models/profile_model.py`: Correção de dados no banco
+- `version.py`: Atualização para v0.22.1
+- `pyproject.toml`: Atualização da versão
+
+#### **Testes Realizados:**
+- ✅ **Endpoint funcionando**: `/api/v1/location-search/spaces-for-artist`
+- ✅ **Resposta válida**: JSON correto sem erros 500
+- ✅ **Cálculo de distância**: Funcionando com coordenadas corretas
+- ✅ **Busca geográfica**: Sistema operacional completo
 
 ---
 

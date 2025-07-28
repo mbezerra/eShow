@@ -4,6 +4,22 @@
 
 A API eShow é uma plataforma completa para conectar artistas e espaços culturais, oferecendo funcionalidades de busca por localização, agendamento, e gestão de eventos. Este guia fornece informações detalhadas sobre todos os endpoints disponíveis, exemplos de uso e melhores práticas.
 
+## 🔧 Última Atualização: v0.22.1
+
+### **Correção de Bug Crítico - Sistema de Busca por Localização**
+
+**Problema Resolvido:**
+- ✅ **Erro 500 corrigido** no endpoint `/api/v1/location-search/spaces-for-artist`
+- ✅ **Causa identificada**: Coordenadas armazenadas como string com vírgula
+- ✅ **Solução implementada**: Conversão automática de tipos e correção de dados
+- ✅ **Sistema robusto**: Tratamento explícito para prevenir problemas futuros
+
+**Melhorias de Robustez:**
+- Conversão explícita de `raio_atuacao` para float
+- Tratamento de valores None em coordenadas
+- Validação de tipos em cálculos de distância
+- Logs melhorados para rastreamento de conversões
+
 ## 🔐 Autenticação
 
 A API utiliza autenticação JWT (JSON Web Token). Para acessar endpoints protegidos, inclua o token no header `Authorization`:

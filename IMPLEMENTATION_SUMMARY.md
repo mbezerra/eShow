@@ -1,14 +1,39 @@
 # Resumo da Implementação - eShow API
 
-## 🚀 Versão Atual: 0.20.0+
+## 🚀 Versão Atual: 0.22.1
 
-### ✨ Funcionalidades Implementadas na v0.20.0
+### ✨ Funcionalidades Implementadas na v0.22.1
+
+#### **Correção Crítica de Bug no Sistema de Busca por Localização:**
+- **Problema identificado**: Erro 500 no endpoint `/api/v1/location-search/spaces-for-artist`
+- **Causa raiz**: Profile ID 4 com coordenadas armazenadas como string com vírgula
+- **Erro específico**: `"must be real number, not str"` durante cálculo de distância
+- **Solução implementada**: Conversão automática de string para float
+- **Correção de dados**: Substituição de vírgula por ponto decimal no banco
+- **Prevenção futura**: Conversão explícita de tipos no LocationSearchService
+- **Validação completa**: Endpoint funcionando corretamente após correção
+- **Testes realizados**: Confirmação do funcionamento do sistema de busca geográfica
+
+#### **Melhorias de Robustez:**
+- **Conversão explícita**: `float(artist.raio_atuacao)` para garantir tipos corretos
+- **Tratamento de None**: Valores padrão para coordenadas ausentes
+- **Logs melhorados**: Rastreamento de conversões de tipos
+- **Validação de tipos**: Verificação robusta de dados geográficos
+
+#### **Arquivos Modificados:**
+- `app/application/services/location_search_service.py`: Conversão explícita de tipos
+- `infrastructure/database/models/profile_model.py`: Correção de dados no banco
+- `version.py`: Atualização para v0.22.1
+- `pyproject.toml`: Atualização da versão
+- `VERSIONING.md`: Documentação da correção
+
+### ✨ Funcionalidades Implementadas na v0.22.0
 
 #### **Documentação Completa e Estabilização:**
-- **Todas as documentações sincronizadas** e atualizadas para v0.20.0
+- **Todas as documentações sincronizadas** e atualizadas para v0.22.0
 - **API_USAGE.md**: Seção completa sobre Sistema de Perfis com coordenadas geográficas
 - **README.md**: Funcionalidades recentes atualizadas com coordenadas geográficas
-- **IMPLEMENTATION_SUMMARY.md**: Resumo técnico atualizado para v0.20.0
+- **IMPLEMENTATION_SUMMARY.md**: Resumo técnico atualizado para v0.22.0
 - **ARCHITECTURE.md**: Descrição da entidade Profile atualizada
 - **DATABASE_STRATEGY.md**: Consultas SQL atualizadas com coordenadas
 - **VERSIONING.md**: Changelog completo e atualizado
@@ -23,7 +48,7 @@
 - **Testes automatizados**: Cobertura de testes implementada
 
 #### **Versionamento Automatizado:**
-- **Tag Git v0.20.0**: Criada e sincronizada com repositório remoto
+- **Tag Git v0.22.0**: Criada e sincronizada com repositório remoto
 - **Versionamento semântico**: Padrão MAJOR.MINOR.PATCH seguido
 - **Changelog detalhado**: Histórico completo de mudanças
 - **Documentação sincronizada**: Todas as referências de versão atualizadas
