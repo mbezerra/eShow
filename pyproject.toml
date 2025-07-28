@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "eshow-api"
-version = "0.22.1"
+version = "0.23.0"
 description = "API construída com arquitetura hexagonal usando FastAPI"
 authors = [{name = "eShow Team", email = "team@eshow.com"}]
 readme = "README.md"

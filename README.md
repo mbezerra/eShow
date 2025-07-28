@@ -1,6 +1,6 @@
 # eShow API
 
-Versão: 0.22.1
+Versão: 0.23.0
 
 Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvido com **FastAPI** e arquitetura hexagonal.
 
@@ -26,9 +26,18 @@ Sistema de gerenciamento para artistas e espaços de entretenimento, desenvolvid
 - **Tabelas no Banco:** 18
 - **Schemas Pydantic:** 20 arquivos principais
 - **Cobertura de Testes:** Em desenvolvimento
-- **Versão Atual:** v0.22.1
+- **Versão Atual:** v0.23.0
 
 ## 🆕 **Funcionalidades Recentes**
+
+### Correção de Testes ✅ **v0.23.0 - NOVO**
+- **Problema resolvido**: Falhas em testes de integração e unitários
+- **EventType Management**: Conflito de nomes duplicados corrigido com UUIDs únicos
+- **Financial Management**: CPFs/CNPJs inválidos e duplicados corrigidos
+- **Isolamento de testes**: Problemas de interferência entre testes resolvidos
+- **Validação robusta**: Todos os CPFs/CNPJs agora seguem formato correto (11/14 dígitos)
+- **Testes estáveis**: 26 testes de integração e 7 testes de financial passando 100%
+- **Melhorias implementadas**: Nomes únicos, mensagens de erro informativas, isolamento adequado
 
 ### Correção de Bug Crítico ✅ **v0.22.1 - NOVO**
 - **Problema resolvido**: Erro 500 no endpoint `/api/v1/location-search/spaces-for-artist`
