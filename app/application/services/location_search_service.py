@@ -91,7 +91,9 @@ class LocationSearchService:
                 )
                 
                 # 6. Verificar se está dentro do raio de atuação
-                if distance <= artist.raio_atuacao:
+                # Garantir que raio_atuacao seja float
+                raio_atuacao = float(artist.raio_atuacao) if artist.raio_atuacao is not None else 0.0
+                if distance <= raio_atuacao:
                     # 7. Verificar se o espaço tem eventos/festivais com status CONTRATANDO
                     spaces = self.space_repository.get_by_profile_id(space_profile.id)
                     if spaces:
@@ -133,7 +135,7 @@ class LocationSearchService:
             return LocationSearchResponse(
                 results=results,
                 total_count=total_count,
-                search_radius_km=artist.raio_atuacao,
+                search_radius_km=raio_atuacao,
                 origin_cep=artist_profile.cep
             )
             
@@ -202,7 +204,9 @@ class LocationSearchService:
                 )
                 
                 # 7. Verificar se está dentro do raio de atuação do artista
-                if distance <= artist.raio_atuacao:
+                # Garantir que raio_atuacao seja float
+                raio_atuacao = float(artist.raio_atuacao) if artist.raio_atuacao is not None else 0.0
+                if distance <= raio_atuacao:
                     # 8. Verificar se o artista não tem agendamentos conflitantes
                     is_available = self._check_artist_availability(
                         db, artist.id, space.id
@@ -214,7 +218,7 @@ class LocationSearchService:
                                 id=artist.id,
                                 profile_id=artist.profile_id,
                                 artist_type_id=artist.artist_type_id,
-                                raio_atuacao=artist.raio_atuacao,
+                                raio_atuacao=raio_atuacao,
                                 valor_hora=artist.valor_hora,
                                 valor_couvert=artist.valor_couvert,
                                 distance_km=distance,
