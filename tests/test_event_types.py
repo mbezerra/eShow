@@ -1,7 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 
-def test_create_event_type(client: TestClient):
+def test_create_event_type(client: TestClient, db_session):
     """Teste para criar um tipo de evento"""
     event_type_data = {
         "type": "Concert"  # Mudando para um tipo único
@@ -14,7 +14,7 @@ def test_create_event_type(client: TestClient):
     assert data["type"] == event_type_data["type"]
     assert "id" in data
 
-def test_get_event_types(client: TestClient):
+def test_get_event_types(client: TestClient, db_session):
     """Teste para listar tipos de eventos"""
     response = client.get("/api/v1/event-types/")
     assert response.status_code == 200
@@ -22,7 +22,7 @@ def test_get_event_types(client: TestClient):
     data = response.json()
     assert isinstance(data, list)
 
-def test_get_event_type_by_id(client: TestClient):
+def test_get_event_type_by_id(client: TestClient, db_session):
     """Teste para obter tipo de evento por ID"""
     # Primeiro criar um tipo de evento
     event_type_data = {
@@ -40,7 +40,7 @@ def test_get_event_type_by_id(client: TestClient):
     assert data["id"] == event_type_id
     assert data["type"] == event_type_data["type"]
 
-def test_update_event_type(client: TestClient):
+def test_update_event_type(client: TestClient, db_session):
     """Teste para atualizar tipo de evento"""
     # Primeiro criar um tipo de evento
     event_type_data = {
@@ -61,7 +61,7 @@ def test_update_event_type(client: TestClient):
     data = response.json()
     assert data["type"] == update_data["type"]
 
-def test_delete_event_type(client: TestClient):
+def test_delete_event_type(client: TestClient, db_session):
     """Teste para deletar tipo de evento"""
     # Primeiro criar um tipo de evento
     event_type_data = {
