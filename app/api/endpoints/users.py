@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
 from app.schemas.user import UserCreate, UserResponse, UserUpdate
+from app.schemas.auth import UserRegister
 from app.application.services.user_service import UserService
+from app.application.services.auth_service import AuthService
 from app.application.dependencies import get_user_service
 from app.core.auth import get_current_active_user
 
@@ -9,12 +11,13 @@ router = APIRouter()
 
 @router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 def create_user(
-    user_data: UserCreate,
+    user_data: UserRegister,
     user_service: UserService = Depends(get_user_service)
 ):
     """Criar um novo usuário"""
     try:
-        user = user_service.create_user(user_data)
+        auth_service = AuthService(user_service)
+        user = auth_service.register_user(user_data)
         return user
     except ValueError as e:
         raise HTTPException(

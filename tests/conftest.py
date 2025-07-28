@@ -9,8 +9,10 @@ from app.main import app
 from app.core.auth import get_current_active_user
 from datetime import datetime, timedelta
 
-# Cria um arquivo temporário para o banco de dados SQLite
-_db_fd, _db_path = tempfile.mkstemp()
+# Usar banco de dados SQLite em arquivo temporário para testes
+import tempfile
+_db_fd, _db_path = tempfile.mkstemp(suffix='.db')
+os.close(_db_fd)
 SQLALCHEMY_DATABASE_URL = f"sqlite:///{_db_path}"
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -44,8 +46,13 @@ def setup_database():
         BookingModel, ReviewModel, FinancialModel, InterestModel, CepCoordinatesModel
     )
     
-    # Criar todas as tabelas
-    Base.metadata.create_all(bind=engine)
+    # Garantir que todas as tabelas sejam criadas
+    try:
+        Base.metadata.create_all(bind=engine)
+        print("✅ Todas as tabelas foram criadas com sucesso")
+    except Exception as e:
+        print(f"❌ Erro ao criar tabelas: {e}")
+        raise
     
     # Popular banco de teste com dados básicos
     session = TestingSessionLocal()
@@ -191,7 +198,6 @@ def setup_database():
     
     # Cleanup após todos os testes
     Base.metadata.drop_all(bind=engine)
-    os.close(_db_fd)
     os.unlink(_db_path)
 
 @pytest.fixture(scope="function")
@@ -206,8 +212,16 @@ def db_session():
 @pytest.fixture(scope="function")
 def client(setup_database, db_session):
     """Fixture para criar um cliente de teste com banco de dados configurado"""
+    # Garantir que as tabelas existam
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        print(f"Erro ao criar tabelas no client fixture: {e}")
+        raise
+    
     app.dependency_overrides[get_database_session] = override_get_db
-    app.dependency_overrides[get_current_active_user] = mock_get_current_active_user
+    # Não usar mock para get_current_active_user nos testes de integração
+    # app.dependency_overrides[get_current_active_user] = mock_get_current_active_user
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()

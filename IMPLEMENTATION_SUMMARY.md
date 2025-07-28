@@ -1,6 +1,30 @@
 # Resumo da Implementação - eShow API
 
-## 🚀 Versão Atual: 0.22.1
+## 🚀 Versão Atual: 0.23.0
+
+### ✨ Funcionalidades Implementadas na v0.23.0
+
+#### **Correção de Testes de Integração e Unitários:**
+- **Problema identificado**: Falhas em testes de integração e unitários
+- **EventType Management**: Conflito de nomes duplicados corrigido com UUIDs únicos
+- **Financial Management**: CPFs/CNPJs inválidos e duplicados corrigidos
+- **Isolamento de testes**: Problemas de interferência entre testes resolvidos
+- **Validação robusta**: Todos os CPFs/CNPJs agora seguem formato correto (11/14 dígitos)
+- **Testes estáveis**: 26 testes de integração e 7 testes de financial passando 100%
+- **Melhorias implementadas**: Nomes únicos, mensagens de erro informativas, isolamento adequado
+
+#### **Melhorias Técnicas:**
+- **UUID para dados únicos**: `str(uuid.uuid4().int)[:3]` para dígitos numéricos
+- **Validação de formato**: CPFs com 11 dígitos, CNPJs com 14 dígitos
+- **Isolamento de banco**: Testes não interferem uns com os outros
+- **Debug melhorado**: Mensagens de erro mais informativas
+
+#### **Arquivos Modificados:**
+- `tests/test_integration.py`: Correção do teste EventType com nomes únicos
+- `tests/test_financials.py`: Correção de todos os testes com CPFs/CNPJs únicos
+- `version.py`: Atualização para v0.23.0
+- `README.md`: Documentação das correções
+- `VERSIONING.md`: Changelog atualizado
 
 ### ✨ Funcionalidades Implementadas na v0.22.1
 

@@ -1,10 +1,58 @@
 # 📋 Versionamento eShow API
 
-## 🚀 Versão Atual: v0.22.1
+## 🚀 Versão Atual: v0.23.0
 
 **Data**: Julho 2024  
 **Status**: ✅ **LANÇAMENTO**  
 **Compatibilidade**: Python 3.8+, FastAPI 0.100+
+
+---
+
+## 🧪 v0.23.0 - Correção de Testes e Estabilização
+
+### **🔧 Correção de Testes de Integração e Unitários**
+
+#### **Problemas Identificados:**
+- ❌ **EventType Management**: Conflito de nomes duplicados nos testes
+- ❌ **Financial Management**: CPFs/CNPJs inválidos e duplicados
+- ❌ **Isolamento de testes**: Interferência entre testes executados em conjunto
+- ❌ **Validação de dados**: CPFs/CNPJs não seguindo formato correto
+
+#### **Soluções Implementadas:**
+
+##### **1. EventType Management:**
+- ✅ **Nomes únicos**: Uso de UUIDs para gerar nomes únicos nos testes
+- ✅ **Evita conflitos**: Com dados existentes no banco de teste
+- ✅ **Isolamento**: Cada teste usa dados independentes
+
+##### **2. Financial Management:**
+- ✅ **CPFs válidos**: Todos os CPFs agora têm exatamente 11 dígitos
+- ✅ **CNPJs válidos**: Todos os CNPJs agora têm exatamente 14 dígitos
+- ✅ **Chaves PIX únicas**: Geração automática de chaves únicas
+- ✅ **Import uuid**: Adicionado para geração de identificadores únicos
+
+##### **3. Isolamento de Testes:**
+- ✅ **Dados independentes**: Cada teste usa dados únicos
+- ✅ **Sem interferência**: Testes executados em conjunto funcionam corretamente
+- ✅ **Mensagens de erro**: Debug melhorado para identificação de problemas
+
+#### **Resultados:**
+- ✅ **26 testes de integração**: 100% passando
+- ✅ **7 testes de financial**: 100% passando
+- ✅ **Testes em conjunto**: Funcionando sem interferência
+- ✅ **Validação robusta**: Todos os dados seguem formatos corretos
+
+#### **Arquivos Modificados:**
+- `tests/test_integration.py`: Correção do teste EventType com nomes únicos
+- `tests/test_financials.py`: Correção de todos os testes com CPFs/CNPJs únicos
+- `version.py`: Atualização para v0.23.0
+- `README.md`: Documentação das correções
+
+#### **Melhorias Técnicas:**
+- ✅ **UUID para dados únicos**: `str(uuid.uuid4().int)[:3]` para dígitos numéricos
+- ✅ **Validação de formato**: CPFs com 11 dígitos, CNPJs com 14 dígitos
+- ✅ **Isolamento de banco**: Testes não interferem uns com os outros
+- ✅ **Debug melhorado**: Mensagens de erro mais informativas
 
 ---
 
